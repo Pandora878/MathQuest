@@ -173,7 +173,7 @@ const gradeProfiles={
     ["beforeAfter","Fase 7 • Número Vizinho","Antes e depois","purple"],["missingEasy","Fase 8 • Número Perdido","Complete 1 a 10","orange"],
     ["shapes","Fase 9 • Cidade das Formas","Formas divertidas","green"],["moreLess","Fase 10 • Mais ou Menos","Compare quantidades","gold"],
     ["additionVisual","Fase 11 • Oficina da Soma","Soma com desenhos","blue"],["mixedEasy","Fase 12 • Desafio do Explorador","Revisão divertida","purple"]]},
-  g1:{label:"1º Ano",title:"Aventura dos Números",description:"Desafios de sequência, comparação, adição, subtração, dobro, metade e problemas simples.",time:30,questions:8,lives:4,modes:[
+  g1:{label:"1º Ano",title:"Aventura dos Números",description:"Desafios de sequência, comparação, adição, subtração, dobro, metade e problemas simples. Tempo: 2 minutos.",time:120,questions:8,lives:4,modes:[
     ["addition","Fase 1 • Soma até 20","Some e descubra","blue"],
     ["subtraction","Fase 2 • Subtração até 20","Resolva as contas","purple"],
     ["sequence","Fase 3 • Sequência Desafiadora","Complete sequências","orange"],
