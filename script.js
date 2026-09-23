@@ -199,10 +199,13 @@ const gradeProfiles={
     ["compare","Fase 10 • Desafio de Comparação","Compare números de 2 e 3 algarismos","gold"],
     ["mixedG2","Fase 11 • Desafio Turbo","Misture as habilidades","blue"],
     ["mixedG2","Fase 12 • Grande Desafio","Desafio final misto","purple"]]},
-  g3:{label:"3º ano",title:"Missões do 3º ano",description:"As quatro operações e desafios de raciocínio.",time:15,questions:10,lives:3,modes:[
-    ["addition","Cidade dos Milhares","Adição","blue"],["subtraction","Vale dos Milhares","Subtração","purple"],
-    ["multiplication","Torre da Tabuada","Multiplicação","orange"],["division","Reino da Divisão","Divisão","green"],
-    ["mixed","Templo Matemático","Misto","gold"]]},
+  g3:{label:"3º ano",title:"Missões do 3º ano",description:"12 desafios variados, com contas mais fáceis, raciocínio e as quatro operações. Tempo: 30 segundos.",time:30,questions:12,lives:3,modes:[
+    ["addition","Cidade da Soma","Adição fácil","blue"],["subtraction","Vale da Subtração","Subtração fácil","purple"],
+    ["multiplication","Torre da Tabuada","Tabuada até 8","orange"],["division","Reino da Divisão","Divisões exatas","green"],
+    ["compare","Duelo dos Números","Maior, menor ou igual","gold"],["sequence","Trilha das Sequências","Descubra a sequência","blue"],
+    ["missingNumber","Número Perdido","Complete a sequência","purple"],["wordProblem","Probleminhas","Resolva situações simples","orange"],
+    ["addition","Desafio da Soma","Mais contas de adição","green"],["subtraction","Desafio da Subtração","Mais contas de subtração","gold"],
+    ["mixed","Templo Matemático","Misture as operações","blue"],["mixed","Grande Desafio","Desafio final do 3º ano","purple"]]},
   g4:{label:"4º ano",title:"Missões do 4º ano",description:"Quatro operações, frações, medidas e problemas.",time:15,questions:10,lives:3,modes:[
     ["addition","Cidade dos Grandes Números","Adição","blue"],["subtraction","Vale dos Desafios","Subtração","purple"],
     ["multiplication","Torre Multiplicadora","Multiplicação","orange"],["fraction","Ilha das Frações","Frações","green"],
@@ -518,7 +521,7 @@ function startGame(mode){
   const ri=difficultyLevel();
   const phaseIndex=Math.max(0,profile.modes.findIndex(m=>m[0]===mode));
   const phaseBonus=20+phaseIndex*5;
-  game={mode,grade:player.grade,question:0,totalQuestions:profile.questions,answer:0,lives:profile.lives,score:0,correct:0,wrong:0,combo:0,bestCombo:0,locked:false,timeLimit:Math.max(8,profile.time-ri*1.2),deadline:0,animationFrame:null,phaseIndex,phaseBonus};
+  game={mode,grade:player.grade,question:0,totalQuestions:profile.questions,answer:0,lives:profile.lives,score:0,correct:0,wrong:0,combo:0,bestCombo:0,locked:false,timeLimit:(player.grade==="g3"?30:Math.max(8,profile.time-ri*1.2)),deadline:0,animationFrame:null,phaseIndex,phaseBonus};
   showScreen("gameScreen");updateGameHeader();nextQuestion();
 }
 function nextQuestion(){
@@ -657,7 +660,7 @@ function generateGrade12Question(mode,grade){
 }
 
 function generateQuestion(mode,grade){
-  if((grade==="g1"||grade==="g2")){
+  if((grade==="g1"||grade==="g2"||grade==="g3")){
     const special=generateGrade12Question(mode,grade);
     if(special) return special;
   }
@@ -670,7 +673,7 @@ function generateQuestion(mode,grade){
     const ops={
       pre1:["count","compare","sequence","shapes","beforeAfter","missing","moreLess","patterns","additionVisual"],pre2:["count","addition","subtraction","sequence","compare","beforeAfter","missing","shapes","additionVisual"],
       g1:["addition","subtraction","sequence","compare"],g2:["addition","subtraction","multiplication","division"],
-      g3:["addition","subtraction","multiplication","division"],g4:["addition","subtraction","multiplication","fraction"],
+      g3:["addition","subtraction","multiplication","division","compare","sequence","missingNumber","wordProblem"],g4:["addition","subtraction","multiplication","fraction"],
       g5:["addition","subtraction","multiplication","division","fraction","decimal","percent"]
     };
     const list=ops[grade]||ops.g5;op=list[r(0,list.length-1)];
@@ -701,15 +704,15 @@ function generateQuestion(mode,grade){
   }else if(op==="additionVisual"){
     const a=r(1,grade==="pre1"?2:4), b=r(1,grade==="pre1"?2:4); answer=a+b; text=`Junte ${"🍎 ".repeat(a)} + ${"🍎 ".repeat(b)} = ?`; type="SOMA VISUAL"; options=makeNear(answer,1,3);
   }else if(op==="addition"){
-    const baseMax=grade==="pre2"?20:grade==="g1"?50:grade==="g2"?100:grade==="g3"?1000:grade==="g4"?5000:5000; const max=baseMax*(1+ri*.15);
+    const baseMax=grade==="pre2"?20:grade==="g1"?50:grade==="g2"?100:grade==="g3"?500:grade==="g4"?5000:5000; const max=grade==="g3"?500:baseMax*(1+ri*.15);
     a=r(1,Math.floor(max*.6));b=r(1,Math.floor(max*.4));answer=a+b;text=`${a} + ${b} = ?`;type="ADIÇÃO";options=makeNear(answer,2,Math.max(5,Math.floor(max*.05)));
   }else if(op==="subtraction"){
-    const baseMax=grade==="pre2"?20:grade==="g1"?50:grade==="g2"?100:grade==="g3"?1000:grade==="g4"?5000:8000; const max=baseMax*(1+ri*.15);
+    const baseMax=grade==="pre2"?20:grade==="g1"?50:grade==="g2"?100:grade==="g3"?500:grade==="g4"?5000:8000; const max=grade==="g3"?500:baseMax*(1+ri*.15);
     a=r(Math.ceil(max*.4),max);b=r(1,Math.floor(max*.35));if(b>a)b=a;answer=a-b;text=`${a} − ${b} = ?`;type="SUBTRAÇÃO";options=makeNear(answer,2,Math.max(5,Math.floor(max*.04)));
   }else if(op==="multiplication"){
-    const maxA=Math.min(20,(grade==="g2"?5:grade==="g3"?10:12)+ri*2);a=r(2,maxA);b=r(2,12+ri*2);answer=a*b;text=`${a} × ${b} = ?`;type="MULTIPLICAÇÃO";options=makeNear(answer,5,20);
+    const maxA=grade==="g3"?8:Math.min(20,(grade==="g2"?5:12)+ri*2);a=r(2,maxA);b=grade==="g3"?r(2,8):r(2,12+ri*2);answer=a*b;text=`${a} × ${b} = ?`;type="MULTIPLICAÇÃO";options=makeNear(answer,5,20);
   }else if(op==="division"){
-    const divisor=r(2,Math.min(18,(grade==="g2"?5:12)+ri*2)),quotient=r(2,Math.min(30,(grade==="g2"?10:20)+ri*3));a=divisor*quotient;answer=quotient;text=`${a} ÷ ${divisor} = ?`;type="DIVISÃO";options=makeNear(answer,1,10);
+    const divisor=grade==="g3"?r(2,8):r(2,Math.min(18,(grade==="g2"?5:12)+ri*2)),quotient=grade==="g3"?r(2,10):r(2,Math.min(30,(grade==="g2"?10:20)+ri*3));a=divisor*quotient;answer=quotient;text=`${a} ÷ ${divisor} = ?`;type="DIVISÃO";options=makeNear(answer,1,10);
   }else if(op==="fraction"){
     const den=r(2,Math.min(12,8+ri)),num=r(1,den-1);answer=num;text=`Quanto é ${num}/${den} de ${den}?`;type="FRAÇÃO";options=makeNear(answer,1,den+2);
   }else if(op==="decimal"){
