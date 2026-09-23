@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Teste Firebase - Math Quest</title>
+<style>
+body{margin:0;padding:24px;background:#07152c;color:#fff;font-family:Arial}.box{max-width:760px;margin:auto;background:#0d2344;border:1px solid #315d9d;border-radius:20px;padding:24px}.step{padding:10px 12px;border-radius:10px;background:#081832;margin:8px 0}.ok{color:#62edaa}.bad{color:#ff8795}.wait{color:#ffd166}button{padding:13px 18px;border:0;border-radius:12px;font-weight:700;cursor:pointer}
+</style></head><body><div class="box">
+<h1>🔥 Diagnóstico do Firebase</h1>
+<p>Projeto: <b>mathquest-e046d</b></p>
+<button id="go">Testar Firebase</button>
+<div id="out"></div>
+</div>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js?v=5"></script>
+<script>
+const out=document.getElementById('out');
+function step(t,c){const d=document.createElement('div');d.className='step '+(c||'');d.textContent=t;out.appendChild(d)}
+document.getElementById('go').onclick=async()=>{
+ out.innerHTML='';
+ try{
+  step('1/5 Configuração do Firebase carregada','wait');
+  if(!window.MATHQUEST_FIREBASE_CONFIG?.projectId) throw new Error('firebase-config.js não carregou.');
+  step('2/5 SDK carregado e inicializando...','wait');
+  if(!firebase.apps.length) firebase.initializeApp(window.MATHQUEST_FIREBASE_CONFIG);
+  const db=firebase.firestore(),auth=firebase.auth();
+  step('3/5 Testando leitura do ranking...','wait');
+  await db.collection('mathQuestRanking').doc('g5').collection('players').limit(1).get();
+  step('✓ Leitura do ranking: OK','ok');
+  step('4/5 Testando login anônimo...','wait');
+  if(!auth.currentUser) await auth.signInAnonymously();
+  step('✓ Login anônimo: OK — UID '+auth.currentUser.uid,'ok');
+  step('5/5 Testando gravação...','wait');
+  const ref=db.collection('mathQuestRanking').doc('g5').collection('players').doc(auth.currentUser.uid);
+  const old=await ref.get();
+  await ref.set({name:'Teste Firebase',points:old.exists?(Number(old.data().points)||0):0,level:1,rank:'Bronze',rankIndex:0,rankIcon:'🥉',character:'fox',grade:'g5',authUid:auth.currentUser.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+  step('✓ Gravação: OK','ok');
+  step('🎉 FIREBASE FUNCIONANDO EMSTE DISPOSITIVO!','ok');
+ }catch(e){
+  step('❌ '+(e.code||'erro')+': '+(e.message||e),'bad');
+  step('Corrija exatamente o item indicado acima e teste novamente.','bad');
+ }
+};
+</script></body></html>

@@ -1,0 +1,15 @@
+MATH QUEST — VERSÃO POLIDA
+
+Principais melhorias:
+- Pré I agora possui 10 fases lúdicas.
+- Pré II agora possui 10 fases lúdicas.
+- Novos tipos de desafio: vizinho do número, número escondido, mais ou menos, padrões e soma visual.
+- Fases podem ser concluídas e ficam marcadas com ✓.
+- Cada fase possui bônus de pontuação.
+- Editor de personagem ampliado.
+- Mais cores de roupas.
+- Novos itens: coroa, mago, flor, antena, medalha, gravata, capa e varinha.
+- Cores personalizáveis para cabeça, acessórios e olhos.
+- Dashboard com visual mais moderno, mapa de fases e missão do dia.
+- Ranking, conquistas, rank e Firebase foram preservados.
+- Layout responsivo para celular/tablet.

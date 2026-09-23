@@ -1,0 +1,22 @@
+PRÉ I E PRÉ II — VERSÃO MAIS FÁCIL
+
+Pré I:
+• 12 fases
+• números de 1 a 5
+• contagem, cores, formas, padrões e comparação
+• pequenas somas apenas com desenhos
+• 5 vidas
+• 30 segundos por questão
+• o rank NÃO aumenta a dificuldade
+
+Pré II:
+• 12 fases
+• números de 1 a 10
+• pequenas somas e subtrações com desenhos
+• sequências simples
+• formas, cores e comparação
+• 5 vidas
+• 28 segundos por questão
+• o rank NÃO aumenta a dificuldade
+
+Os anos do 1º ao 5º continuam usando o sistema normal de aumento de dificuldade por rank.
