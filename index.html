@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math Quest</title>
+<link rel="stylesheet" href="style.css?v=5">
+</head>
+<body>
+<div id="firebase-status-pill" style="position:fixed;right:14px;top:14px;z-index:9999;padding:7px 11px;border-radius:999px;background:#162a48;color:#b9c8dc;font:700 12px Arial;box-shadow:0 5px 20px #0004">● Firebase: conectando...</div>
+
+<section id="loginScreen" class="screen active">
+  <div class="login-wrapper">
+    <div class="brand"><div class="brand-icon">M</div><div><h1>MATH QUEST</h1><p>Aventura matemática</p></div></div>
+    <div class="login-card">
+      <div class="login-character" id="loginCharacter"></div>
+      <div class="login-title">Vamos começar?</div>
+      <p class="login-description">Crie seu perfil para entrar na aventura matemática.</p>
+      <label for="playerName">Nome do aluno</label>
+      <input id="playerName" type="text" maxlength="20" placeholder="Digite seu nome">
+      <button id="startButton" class="primary-button">Continuar <span>→</span></button>
+    </div>
+    <div class="copyright">Math Quest • Educação Matemática</div>
+  </div>
+</section>
+
+
+<section id="gradeScreen" class="screen grade-screen">
+  <div class="grade-wrapper">
+    <div class="grade-header">
+      <span>CONFIGURAÇÃO DA AVENTURA</span>
+      <h1>Qual é a sua turma?</h1>
+      <p>Escolha o nível para receber desafios adequados à idade.</p>
+    </div>
+    <div id="gradeOptions" class="grade-grid"></div>
+    <button id="gradeBack" class="secondary-button">← Voltar</button>
+  </div>
+</section>
+
+<section id="characterScreen" class="screen">
+  <div class="editor-page">
+    <aside class="editor-sidebar">
+      <div class="editor-logo">
+        <div class="editor-logo-mark">M</div>
+        <div><b>MATH<br>QUEST</b><span>APRENDER TAMBÉM É<br>UMA GRANDE AVENTURA</span></div>
+      </div>
+      <nav class="editor-nav">
+        <button class="editor-nav-item active">⌂ <span>Início</span></button>
+        <button class="editor-nav-item active">● <span>Meu Personagem</span></button>
+        <button class="editor-nav-item">◇ <span>Missões</span></button>
+        <button class="editor-nav-item">★ <span>Ranking</span></button>
+        <button class="editor-nav-item">✦ <span>Conquistas</span></button>
+        <button class="editor-nav-item">⚙ <span>Configurações</span></button>
+      </nav>
+      <div class="editor-sidebar-card"><strong>PEQUENOS<br>DESAFIOS<br>GRANDES<br>CONQUISTAS</strong></div>
+    </aside>
+
+    <main class="editor-main">
+      <header class="editor-topbar">
+        <button id="editorBack" class="editor-back">← Voltar</button>
+        <div><h1>Personalize seu personagem</h1><p>Crie um visual único e entre nessa aventura!</p></div>
+        <div class="editor-points">★ <b id="editorPoints">0</b><span>Pontos</span></div>
+      </header>
+
+      <div class="editor-workspace">
+        <div class="editor-controls">
+          <div class="editor-panel">
+            <h2>1. Escolha seu animal</h2>
+            <div id="animalOptions" class="animal-options"></div>
+          </div>
+
+          <div class="editor-panel">
+            <h2>2. Cor da pele / pelagem</h2>
+            <div id="furOptions" class="swatches"></div>
+          </div>
+
+          <div class="editor-panel">
+            <h2>3. Estilo da cabeça</h2>
+            <div id="headOptions" class="style-options"></div>
+          </div>
+
+          <div class="editor-panel">
+            <h2>4. Roupa (camisa/moletom)</h2>
+            <div id="shirtOptions" class="style-options"></div>
+          </div>
+
+          <div class="editor-panel">
+            <h2>5. Cor dos itens</h2>
+            <div class="color-pickers">
+              <label>Cor da cabeça <input id="headColorPicker" type="color" value="#2674ff"></label>
+              <label>Cor do acessório <input id="accessoryColorPicker" type="color" value="#ffd166"></label>
+              <label>Cor dos olhos <input id="eyeColorPicker" type="color" value="#182033"></label>
+            </div>
+          </div>
+
+          <div class="editor-panel">
+            <h2>6. Acessórios e itens especiais</h2>
+            <div id="accessoryOptions" class="style-options"></div>
+          </div>
+        </div>
+
+        <aside class="editor-preview">
+          <div class="speech">✦ Conhecimento<br>te leva mais longe!</div>
+          <div id="bigCharacter" class="big-character"></div>
+          <div class="preview-stat"><span>Nome</span><b id="previewName">Luna</b><i>✎</i></div>
+          <div class="preview-stat"><span>Nível</span><b id="previewLevel">1</b><div class="preview-xp"><div id="previewXpBar"></div></div><small id="previewXp">0 / 100 XP</small></div>
+          <div class="preview-stat points-stat">★ <b id="previewPoints">0</b><span>Pontos</span></div>
+          <button id="enterGameButton" class="save-character">✓ &nbsp; Salvar Personagem</button>
+        </aside>
+      </div>
+
+      <div class="editor-bottom">
+        <div><h2>Prévia no Ranking</h2><div class="rank-preview"><div id="rankCharacter"></div><b id="rankName">Luna</b><span>✎</span></div></div>
+        <div class="mini-stats"><div><b>8</b><span>Acertos</span></div><div><b>2</b><span>Erros</span></div><div><b>80%</b><span>Precisão</span></div><div><b>4</b><span>Melhor combo</span></div></div>
+      </div>
+    </main>
+  </div>
+</section>
+
+<section id="menuScreen" class="screen dashboard-screen">
+  <div class="dashboard">
+    <header class="dashboard-header">
+      <div class="profile">
+        <div id="smallCharacter" class="small-character"></div>
+        <div><strong id="dashboardName">Jogador</strong><span id="dashboardGrade">Turma</span><span id="dashboardLevel">Nível 1</span></div>
+      </div>
+      <div class="top-stats">
+        <div class="top-stat"><span>Pontos</span><strong id="totalPoints">0</strong></div>
+        <div class="top-stat"><span>Recorde</span><strong id="recordPoints">0</strong></div>
+      </div>
+    </header>
+
+    <div class="welcome"><div><span id="gradeBadge">ÁREA DO JOGADOR</span><h1 id="gradeTitle">Escolha sua missão</h1><p id="gradeDescription">Resolva os desafios antes que o tempo acabe.</p></div></div>
+
+    <div class="xp-card">
+      <div class="xp-info"><strong>Progresso</strong><span id="xpText">0 / 100 XP</span></div>
+      <div class="xp-track"><div id="xpBar" class="xp-bar"></div></div>
+    </div>
+
+    <div class="rank-card" id="rankCard">
+      <div class="rank-main"><div class="rank-icon" id="rankIcon">🥉</div><div><span>RANK ATUAL</span><h2 id="rankName">Bronze</h2><small id="rankNext">Faltam 500 pontos para Prata</small></div></div>
+      <div class="rank-progress"><div class="rank-progress-head"><b>Progresso do rank</b><strong id="rankProgressText">0%</strong></div><div class="rank-track"><div id="rankBar"></div></div></div>
+    </div>
+
+    <div class="dashboard-toolbar"><div><h2 class="section-heading">Mapa de fases</h2><p class="section-subtitle">Complete as fases em ordem e desbloqueie novos desafios.</p></div><div class="daily-badge">🎯 Missão do dia</div></div>
+    <div id="missionGrid" class="mission-grid"></div>
+
+    <h2 class="section-heading">Conquistas</h2>
+    <div id="achievementGrid" class="achievement-grid"></div>
+
+    <div class="ranking-card">
+      <div class="ranking-header"><div><span>COMPETIÇÃO</span><h2>Ranking da turma</h2><small id="rankingStatus" class="ranking-status">Conectando ao ranking...</small></div><div class="trophy">★</div></div>
+      <div class="ranking-head"><span>#</span><span>Jogador</span><span>Pontos</span><span>Nível</span></div>
+      <div id="ranking" class="ranking-body"></div>
+    </div>
+  </div>
+</section>
+
+<section id="gameScreen" class="screen game-screen">
+  <div class="game-container">
+    <header class="game-header">
+      <button id="exitGame" class="icon-button">←</button>
+      <div class="question-counter">Questão <strong id="questionNumber">1</strong><span> / 10</span></div>
+      <div class="lives"><span id="life1" class="life active"></span><span id="life2" class="life active"></span><span id="life3" class="life active"></span></div>
+    </header>
+
+    <div class="timer-container">
+      <div class="timer-label"><span>TEMPO</span><strong id="timerText">15.0</strong></div>
+      <div class="timer-track"><div id="timerBar" class="timer-bar"></div></div>
+    </div>
+
+    <main class="question-card">
+      <div id="questionType" class="question-type">ADIÇÃO</div>
+      <div id="questionText" class="question-text">15 + 7 = ?</div>
+      <p class="question-help">Escolha a resposta correta</p>
+      <div id="answers" class="answers"></div>
+      <div id="feedback" class="feedback"></div>
+    </main>
+
+    <div class="game-footer">
+      <div><span>Pontos</span><strong id="roundPoints">0</strong></div>
+      <div><span>Combo</span><strong id="combo" class="combo-value">x0</strong></div>
+    </div>
+  </div>
+</section>
+
+<section id="resultScreen" class="screen">
+  <div class="result-card">
+    <div id="resultCharacter" class="result-character"></div>
+    <div class="result-label">DESAFIO ENCERRADO</div>
+    <h1 id="resultTitle">Muito bem!</h1>
+    <p id="resultMessage">Você terminou a missão.</p>
+    <div class="final-points"><span>Pontuação</span><strong id="finalPoints">0</strong></div>
+    <div class="result-stats">
+      <div><strong id="correctCount">0</strong><span>Acertos</span></div>
+      <div><strong id="wrongCount">0</strong><span>Erros</span></div>
+      <div><strong id="accuracy">0%</strong><span>Precisão</span></div>
+      <div><strong id="bestCombo">0</strong><span>Melhor combo</span></div>
+    </div>
+    <button id="backMenu" class="primary-button">Voltar ao mapa <span>→</span></button>
+  </div>
+</section>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js?v=5"></script>
+<script src="firebase-ranking.js?v=5"></script>
+<script src="script.js?v=5"></script>
+</body>
+</html>

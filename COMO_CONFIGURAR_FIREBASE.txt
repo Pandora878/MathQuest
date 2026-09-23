@@ -1,0 +1,30 @@
+MATH QUEST — CORREÇÃO FINAL FIREBASE
+
+1. Firebase Console > Authentication > Sign-in method > Anonymous > ATIVAR.
+2. Firebase Console > Authentication > Settings > Authorized domains:
+   adicione pandora878.github.io
+3. Firebase Console > Firestore Database > crie o banco.
+4. Firestore > Rules > publique o arquivo firestore.rules deste ZIP.
+5. No GitHub, substitua TODOS os arquivos da versão anterior pelos deste ZIP.
+6. Espere o GitHub Pages atualizar.
+7. Teste:
+   https://pandora878.github.io/MathQuest5ano/TESTAR_FIREBASE.html
+
+O teste verifica:
+- configuração;
+- SDK;
+- leitura;
+- login anônimo;
+- gravação.
+
+Se outro tablet falhar, abra o mesmo TESTAR_FIREBASE.html nele. O erro exibido identifica a configuração que falta.
+
+Ranks:
+Bronze 0–499
+Prata 500–1199
+Ouro 1200–2499
+Platina 2500–4999
+Diamante 5000–8999
+Mestre 9000+
+
+A pontuação é compartilhada por turma no Firestore.
