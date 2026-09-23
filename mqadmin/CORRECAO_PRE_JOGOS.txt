@@ -1,0 +1,8 @@
+CORREÇÃO PRÉ I E PRÉ II
+
+- As 12 fases do Pré I e Pré II agora usam um gerador próprio e seguro.
+- Fases de formas, comparação, vizinhos, padrões e números perdidos não caem mais no gerador dos anos maiores.
+- Corrigida a exibição de quebras de linha nas perguntas.
+- Corrigida a identificação de respostas de texto/emoji.
+- Mantidos os tempos: Pré I 30s e Pré II 28s.
+- O restante do jogo e o painel administrativo foram preservados.

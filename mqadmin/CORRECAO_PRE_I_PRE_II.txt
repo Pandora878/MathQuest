@@ -1,0 +1,5 @@
+CORREÇÃO DESTA VERSÃO
+
+- Corrigido o travamento nas fases de sequência do Pré I/Pré II causado por uma variável inexistente.
+- Adicionado fallback seguro para que Pré I e Pré II sempre recebam uma questão válida.
+- Mantido o painel Admin com login Google e ranking das turmas.

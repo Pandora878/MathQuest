@@ -540,7 +540,7 @@ function nextQuestion(){
   document.getElementById("questionNumber").textContent=game.question;
   document.querySelector(".question-counter span").textContent=" / "+game.totalQuestions;
   document.getElementById("questionType").textContent=q.type;
-  document.getElementById("questionText").textContent=q.text;
+  document.getElementById("questionText").innerHTML=String(q.text).replace(/\n/g,"<br>");
   document.getElementById("feedback").textContent="";
   document.getElementById("answers").innerHTML="";
   document.getElementById("timerText").textContent=game.timeLimit.toFixed(1);
@@ -564,45 +564,72 @@ function easyOptions(answer,max){
   return vals;
 }
 function generatePreQuestion(mode,grade){
-  const max=grade==="pre1"?5:10;
+  const isPre1=grade==="pre1";
+  const max=isPre1?5:10;
+  const pick=(arr)=>arr[random(0,arr.length-1)];
+  const options4=(answer,maxOpt=max)=>{
+    const vals=[answer]; let guard=0;
+    while(vals.length<4 && guard++<100){
+      const v=random(1,Math.max(4,maxOpt));
+      if(!vals.includes(v)) vals.push(v);
+    }
+    return shuffle(vals);
+  };
+
   if(mode==="count"){
-    const n=random(1,max), icons=["🍎","⭐","🐶","🌸","🧸"], icon=icons[random(0,icons.length-1)];
-    return {text:`Conte: ${Array(n).fill(icon).join(" ")} = ?`,answer:n,type:"CONTAGEM",options:easyOptions(n,max)};
+    const n=random(1,max), icon=pick(["🍎","⭐","🐶","🌸","🧸"]);
+    return {text:`Conte: ${Array(n).fill(icon).join(" ")} = ?`,answer:n,type:"CONTAGEM",options:options4(n,max)};
   }
   if(mode==="sameDifferent"){
-    const n=random(1,grade==="pre1"?4:6),same=Math.random()<.5;
+    const n=random(1,isPre1?4:6), same=Math.random()<0.5;
     const a=Array(n).fill("🔵").join(" ");
-    const b=same?a:Array(Math.max(1,n+(Math.random()<.5?-1:1))).fill("🔵").join(" ");
-    const answer=same?"IGUAIS":"DIFERENTES";
-    return {text:`${a}<br><br>${b}<br><br>São iguais ou diferentes?`,answer,type:"OBSERVE",options:["IGUAIS","DIFERENTES"]};
+    const b=same?a:Array(Math.max(1,n+(Math.random()<0.5?-1:1))).fill("🔵").join(" ");
+    return {text:`${a}<br><br>${b}<br><br>São iguais ou diferentes?`,answer:same?"IGUAIS":"DIFERENTES",type:"OBSERVE",options:["IGUAIS","DIFERENTES"]};
   }
   if(mode==="colorMatch"){
     const colors=[["🔴","VERMELHO"],["🔵","AZUL"],["🟡","AMARELO"],["🟢","VERDE"]];
-    const p=colors[random(0,3)];
+    const p=pick(colors);
     return {text:`Qual é a cor? ${p[0]}`,answer:p[1],type:"CORES",options:colors.map(x=>x[1])};
   }
+  if(mode==="shapes"){
+    const shapes=[["círculo",0],["quadrado",4],["triângulo",3]];
+    const picked=pick(shapes);
+    return {text:`Qual é a forma? ${picked[0]} 🔵\n\nQuantos lados ela tem?`,answer:picked[1],type:"FORMAS",options:[0,3,4,5]};
+  }
   if(mode==="sequenceEasy"){
-    const start=grade==="pre1"?random(1,2):random(1,5),answer=start+3;
-    return {text:`Complete: ${start} • ${start+1} • ${start+2} • ?`,answer,type:"SEQUÊNCIA",options:easyOptions(answer,max)};
+    const start=isPre1?random(1,2):random(1,5), answer=start+3;
+    return {text:`Complete: ${start} • ${start+1} • ${start+2} • ?`,answer,type:"SEQUÊNCIA",options:options4(answer,max)};
   }
   if(mode==="missingEasy"){
-    const start=random(1,6),answer=start+1;
-    return {text:`Complete: ${start} • ? • ${start+2}`,answer,type:"NÚMERO PERDIDO",options:easyOptions(answer,10)};
+    const start=random(1,isPre1?3:6), answer=start+1;
+    return {text:`Complete: ${start} • ? • ${start+2}`,answer,type:"NÚMERO PERDIDO",options:options4(answer,max)};
+  }
+  if(mode==="beforeAfter"){
+    const n=isPre1?random(2,4):random(2,9), after=Math.random()<0.5, answer=after?n+1:n-1;
+    return {text:after?`Qual número vem depois do ${n}?`:`Qual número vem antes do ${n}?`,answer,type:"VIZINHO DO NÚMERO",options:options4(answer,max)};
+  }
+  if(mode==="moreLess"){
+    let a=random(1,max),b=random(1,max); while(a===b)b=random(1,max);
+    const answer=Math.max(a,b);
+    return {text:`Qual grupo tem mais?\n\n${"● ".repeat(a)}\nOU\n${"● ".repeat(b)}`,answer,type:"MAIS OU MENOS",options:[a,b,...options4(answer,max)].filter((v,i,arr)=>arr.indexOf(v)===i).slice(0,4)};
+  }
+  if(mode==="patterns"){
+    const shapes=["🔵","🟡","🟢","🔴"], first=random(0,3), second=(first+1)%4;
+    return {text:`Qual vem depois?\n${shapes[first]} ${shapes[second]} ${shapes[first]} ${shapes[second]} ?`,answer:shapes[first],type:"PADRÕES",options:[shapes[first],shapes[second],shapes[(second+1)%4],shapes[(first+2)%4]]};
   }
   if(mode==="additionVisual"){
-    const a=random(1,grade==="pre1"?2:4),b=random(1,grade==="pre1"?2:4),answer=a+b;
-    return {text:`Junte ${Array(a).fill("🍎").join(" ")} + ${Array(b).fill("🍎").join(" ")} = ?`,answer,type:"SOMA COM DESENHOS",options:easyOptions(answer,grade==="pre1"?5:8)};
+    const maxA=isPre1?2:4, a=random(1,maxA), b=random(1,maxA), answer=a+b;
+    return {text:`Junte ${Array(a).fill("🍎").join(" ")} + ${Array(b).fill("🍎").join(" ")} = ?`,answer,type:"SOMA COM DESENHOS",options:options4(answer,isPre1?5:8)};
   }
   if(mode==="subtractionVisual"){
-    const a=random(2,5),b=random(1,a-1),answer=a-b;
-    return {text:`Você tem ${Array(a).fill("🧸").join(" ")} e tira ${b}. Quantos ficam?`,answer,type:"SUBTRAÇÃO COM DESENHOS",options:easyOptions(answer,5)};
+    const a=random(2,isPre1?4:5), b=random(1,a-1), answer=a-b;
+    return {text:`Você tem ${Array(a).fill("🧸").join(" ")} e tira ${b}. Quantos ficam?`,answer,type:"SUBTRAÇÃO COM DESENHOS",options:options4(answer,5)};
   }
   if(mode==="mixedEasy"){
-    return generatePreQuestion(["count","colorMatch","sequenceEasy","additionVisual"][random(0,3)],grade);
+    return generatePreQuestion(pick(["count","colorMatch","sequenceEasy","additionVisual","moreLess"]),grade);
   }
-  return null;
+  return generatePreQuestion("count",grade);
 }
-
 
 function challengeOptions(answer,min,max){
   const vals=[answer];
@@ -672,7 +699,7 @@ function generateQuestion(mode,grade){
     if(special) return special;
   }
   const r=(a,b)=>random(a,b), ri=difficultyLevel();
-  if((grade==="pre1"||grade==="pre2") && ["count","sameDifferent","colorMatch","sequenceEasy","missingEasy","additionVisual","subtractionVisual","mixedEasy"].includes(mode)){
+  if(grade==="pre1"||grade==="pre2"){
     return generatePreQuestion(mode,grade);
   }
   let op=mode;
@@ -771,7 +798,7 @@ if(game.locked)return;
 game.locked=true;game.wrong++;game.combo=0;
 document.getElementById("feedback").textContent="Tempo esgotado. O desafio terminou.";
 document.getElementById("feedback").style.color="#ff5b68";
-document.querySelectorAll(".answer-button").forEach(b=>{if(Number(b.textContent)===game.answer)b.classList.add("correct");});
+document.querySelectorAll(".answer-button").forEach(b=>{if(String(b.textContent)===String(game.answer))b.classList.add("correct");});
 setTimeout(()=>finishGame("time"),900);
 }
 
@@ -790,7 +817,7 @@ document.getElementById("questionText").classList.add("pop");
 button.classList.add("wrong");game.wrong++;game.lives--;game.combo=0;
 document.getElementById("feedback").textContent=`Resposta correta: ${game.answer}`;
 document.getElementById("feedback").style.color="#ff5b68";
-document.querySelectorAll(".answer-button").forEach(b=>{if(Number(b.textContent)===game.answer)b.classList.add("correct");});
+document.querySelectorAll(".answer-button").forEach(b=>{if(String(b.textContent)===String(game.answer))b.classList.add("correct");});
 }
 updateGameHeader();
 setTimeout(()=>{if(game.lives<=0)finishGame("lives");else nextQuestion();},850);
