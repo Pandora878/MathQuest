@@ -19,6 +19,7 @@
       <label for="playerName">Nome do aluno</label>
       <input id="playerName" type="text" maxlength="20" placeholder="Digite seu nome">
       <button id="startButton" class="primary-button">Continuar <span>→</span></button>
+      <a class="admin-access" href="admin.html">🔐 Área do administrador</a>
     </div>
     <div class="copyright">Math Quest • Educação Matemática</div>
   </div>
@@ -207,5 +208,34 @@
 <script src="firebase-config.js?v=5"></script>
 <script src="firebase-ranking.js?v=5"></script>
 <script src="script.js?v=5"></script>
+
+<a href="admin.html" class="admin-access-btn" aria-label="Área do administrador">
+  <span>⚙️</span> Área do Admin
+</a>
+<style>
+.admin-access-btn{
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  z-index:9999;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:11px 16px;
+  border-radius:999px;
+  background:#29231f;
+  color:#fff;
+  text-decoration:none;
+  font:600 14px/1.1 Arial,sans-serif;
+  box-shadow:0 6px 18px rgba(0,0,0,.18);
+  transition:transform .2s ease,opacity .2s ease;
+}
+.admin-access-btn:hover{transform:translateY(-2px);opacity:.94}
+.admin-access-btn span{font-size:15px}
+@media(max-width:600px){
+  .admin-access-btn{right:12px;bottom:12px;padding:10px 13px;font-size:13px}
+}
+</style>
+
 </body>
 </html>

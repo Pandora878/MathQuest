@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Math Quest — Painel do Administrador</title>
+<link rel="stylesheet" href="admin.css?v=1">
+</head>
+<body>
+<div id="loading" class="center"><div class="loader"></div><p>Verificando acesso...</p></div>
+<section id="authScreen" class="center hidden"><div class="auth-card"><div class="logo">M</div><h1>Painel do Administrador</h1><p>Entre com sua conta Google para acompanhar o desempenho das turmas.</p><button id="googleLogin" class="google-btn"><span>G</span> Entrar com Google</button><a href="index.html">← Voltar para o jogo</a><div id="authMsg" class="msg"></div></div></section>
+<section id="deniedScreen" class="center hidden"><div class="auth-card"><div class="logo">🔒</div><h1>Acesso não autorizado</h1><p>Esta conta Google entrou corretamente, mas ainda não está cadastrada como administradora.</p><div class="uid-box"><small>UID da conta</small><code id="deniedUid"></code></div><p class="small">Peça para o responsável pelo Firebase criar um documento <b>admins/&lt;UID&gt;</b> com <b>role: "admin"</b>.</p><button id="logoutDenied" class="secondary">Sair</button></div></section>
+<section id="dashboard" class="hidden">
+<header class="admin-header"><div><div class="eyebrow">MATH QUEST • GESTÃO</div><h1>Painel do Administrador</h1><p>Visão geral do desempenho, ranking e dificuldades dos alunos.</p></div><div class="header-actions"><span id="adminEmail"></span><button id="refresh" class="secondary">↻ Atualizar</button><button id="logout" class="secondary">Sair</button></div></header>
+<main class="wrap">
+<div class="filters"><label>Turma<select id="gradeFilter"><option value="all">Todas as turmas</option></select></label><label>Ordenar por<select id="sortFilter"><option value="points">Pontos</option><option value="accuracy">Precisão</option><option value="difficulty">Dificuldade</option><option value="level">Nível</option></select></label><div class="updated" id="updatedAt">—</div></div>
+<div class="stats" id="stats"></div>
+<div class="grid-two"><section class="panel"><div class="panel-head"><div><span>RANKING</span><h2>Ranking geral das turmas</h2></div></div><div class="table-wrap"><table><thead><tr><th>#</th><th>Aluno</th><th>Turma</th><th>Pontos</th><th>Nível</th><th>Precisão</th><th>Dificuldade</th></tr></thead><tbody id="rankingBody"></tbody></table></div></section><section class="panel"><div class="panel-head"><div><span>DESEMPENHO</span><h2>Onde estão as dificuldades?</h2></div></div><div id="difficulty" class="difficulty"></div></section></div>
+<section class="panel"><div class="panel-head"><div><span>ALUNOS</span><h2>Detalhamento individual</h2></div><input id="search" placeholder="🔎 Buscar aluno..."></div><div class="table-wrap"><table><thead><tr><th>Aluno</th><th>Turma</th><th>Pontos</th><th>Acertos</th><th>Erros</th><th>Precisão</th><th>Último desafio</th><th>Melhor combo</th></tr></thead><tbody id="studentsBody"></tbody></table></div></section>
+<section class="panel"><div class="panel-head"><div><span>TURMAS</span><h2>Resumo por turma</h2></div></div><div id="gradeCards" class="grade-cards"></div></section>
+<div class="notice">Os dados mostrados neste painel são os resultados registrados pelo jogo no Firestore. A análise de “dificuldade” é baseada na menor precisão registrada por tipo de desafio.</div>
+</main></section>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js?v=5"></script><script src="admin.js?v=1"></script>
+</body></html>

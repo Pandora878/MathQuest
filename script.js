@@ -493,7 +493,14 @@ async function sendScoreOnline(){
       character:characterForRanking(),
       grade:player.grade||'g5',
       rank:player.rank,
-      rankIndex:player.rankIndex
+      rankIndex:player.rankIndex,
+      mode:game.mode||'mixed',
+      correct:game.correct,
+      wrong:game.wrong,
+      totalQuestions:game.totalQuestions,
+      accuracy:game.totalQuestions ? Math.round((game.correct/game.totalQuestions)*100) : 0,
+      bestCombo:game.bestCombo,
+      timeLimit:game.timeLimit
     });
     if(saved && Number.isFinite(Number(saved.points))){
       player.points=Number(saved.points);
@@ -576,7 +583,7 @@ function generatePreQuestion(mode,grade){
   }
   if(mode==="sequenceEasy"){
     const start=grade==="pre1"?random(1,2):random(1,5),answer=start+3;
-    return {text:`Complete: ${start} • ${start+1} • ${start+2} • ?`,answer,type:"SEQUÊNCIA",options:easyOptions(answer,max)};
+    return {text:`Complete: ${start} • ${start+1} • ${start+2} • ?`,answer,type:"SEQUÊNCIA",options:easyOptions(answer,grade==="pre1"?5:10)};
   }
   if(mode==="missingEasy"){
     const start=random(1,6),answer=start+1;
@@ -593,6 +600,8 @@ function generatePreQuestion(mode,grade){
   if(mode==="mixedEasy"){
     return generatePreQuestion(["count","colorMatch","sequenceEasy","additionVisual"][random(0,3)],grade);
   }
+  // Fallback seguro para turmas da Educação Infantil: nunca deixar uma fase sem questão.
+  if(grade==="pre1"||grade==="pre2") return generatePreQuestion("count",grade);
   return null;
 }
 
