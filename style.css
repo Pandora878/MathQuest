@@ -381,3 +381,40 @@ body{background:radial-gradient(circle at 15% 0,#1b2450 0,transparent 34%),radia
 @media(max-width:650px){.skin-options{grid-template-columns:repeat(2,minmax(0,1fr))}.character-shop-actions{flex-direction:column;align-items:stretch}.character-shop-actions span{text-align:center}}
 
 .skin-original{background:linear-gradient(135deg,#334155,#64748b)}
+
+/* Menu: acesso rápido à personalização */
+.menu-character-actions{margin:18px 0 22px;padding:14px 16px;border:1px solid #263b5f;border-radius:18px;background:linear-gradient(135deg,#111f39,#142744);display:flex;align-items:center;justify-content:space-between;gap:16px;box-shadow:0 12px 30px rgba(0,0,0,.16)}
+.menu-character-callout{display:flex;align-items:center;gap:12px;min-width:0}
+.menu-character-avatar{width:62px;height:62px;border-radius:16px;background:#0c172b;border:1px solid #385071;display:grid;place-items:center;overflow:hidden;flex:0 0 62px}
+.menu-character-avatar svg{width:58px;height:58px}
+.menu-character-callout span,.character-store-head span{display:block;font-size:10px;letter-spacing:.14em;font-weight:900;color:#8198bc}
+.menu-character-callout strong{display:block;color:#f2f6ff;font-size:16px;margin-top:3px}
+.menu-character-callout small{display:block;color:#91a3c0;font-size:12px;margin-top:3px}
+.menu-character-button,.character-store-customize{border:0;border-radius:12px;padding:12px 16px;background:linear-gradient(135deg,#3974e8,#6d5df6);color:#fff;font-weight:900;cursor:pointer;box-shadow:0 8px 22px rgba(57,116,232,.24);transition:.16s;white-space:nowrap}
+.menu-character-button:hover,.character-store-customize:hover{transform:translateY(-2px);filter:brightness(1.06)}
+
+/* Loja de personagens e itens no menu */
+.character-store-panel{margin:0 0 36px;padding:20px;border:1px solid #263b5f;border-radius:22px;background:linear-gradient(145deg,#101d35,#13243f);box-shadow:0 12px 30px rgba(0,0,0,.13)}
+.character-store-head{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:18px}
+.character-store-head h2{margin:5px 0;color:#f2f6ff;font-size:22px}
+.character-store-head p{margin:0;color:#91a3c0;font-size:13px}
+.character-store-grid{display:block}
+.store-subtitle{display:flex;align-items:end;justify-content:space-between;gap:10px;margin:12px 0 9px}
+.store-subtitle span{font-weight:900;color:#eef4ff;font-size:14px}
+.store-subtitle small{color:#8296b6;font-size:11px}
+.store-character-row{display:grid;grid-template-columns:repeat(6,minmax(110px,1fr));gap:10px}
+.store-character-card,.store-skin-card{border:1px solid #29415f;background:#0d1a30;border-radius:15px;padding:10px;text-align:center;transition:.16s}
+.store-character-card:hover,.store-skin-card:hover{transform:translateY(-2px);border-color:#4b79ba}
+.store-character-card.active,.store-skin-card.active{border-color:#36c8ff;box-shadow:0 0 0 2px rgba(54,200,255,.14)}
+.store-character-preview{height:88px;display:grid;place-items:center;overflow:hidden}
+.store-character-preview svg{width:86px;height:86px}
+.store-character-card strong,.store-skin-card strong{display:block;color:#eef4ff;font-size:13px}
+.store-character-card small,.store-skin-card small{display:block;color:#91a3c0;font-size:10px;min-height:25px;margin-top:3px}
+.store-character-card button,.store-skin-card button{width:100%;margin-top:7px;border:1px solid #38567d;border-radius:9px;padding:7px 6px;background:#183052;color:#fff;font-size:10px;font-weight:900;cursor:pointer}
+.store-character-card button:hover,.store-skin-card button:hover{background:#24518a}
+.skins-subtitle{margin-top:20px}
+.store-skin-row{display:grid;grid-template-columns:repeat(6,minmax(110px,1fr));gap:10px}
+.store-skin-preview{height:58px;border-radius:11px;border:1px solid rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.16);margin-bottom:7px}
+.store-skin-preview.skin-rainbow{animation:skinRgb 2s linear infinite}
+@media(max-width:1100px){.store-character-row,.store-skin-row{grid-template-columns:repeat(3,minmax(110px,1fr))}}
+@media(max-width:700px){.menu-character-actions,.character-store-head{align-items:stretch;flex-direction:column}.menu-character-button,.character-store-customize{width:100%}.store-character-row,.store-skin-row{grid-template-columns:repeat(2,minmax(110px,1fr))}}

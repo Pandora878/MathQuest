@@ -1,0 +1,17 @@
+ATUALIZAÇÃO — LOJA DE PERSONAGENS + CONTA DE TESTE JÚLIA
+
+1. No menu do jogo foi adicionado o botão “🎨 Personalizar personagem”.
+   Ele abre diretamente o editor completo do personagem.
+
+2. Abaixo da Loja de ajudas foi adicionada a “Loja de itens e personagens”.
+   Ela mostra os 6 animais e as skins, com botões para usar/comprar.
+
+3. A conta digitada como “Júlia” ou “Julia” é reconhecida como conta de teste da administradora.
+   - Saldo exibido: ∞ moedas.
+   - As compras da loja não descontam moedas.
+   - Todas as skins ficam desbloqueadas para teste.
+   - As ajudas durante as missões não consomem moedas.
+
+4. O saldo normal dos demais alunos continua funcionando normalmente.
+
+5. A conta de teste usa o armazenamento local do navegador, como as demais contas do projeto.

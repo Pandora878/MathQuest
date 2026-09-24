@@ -139,8 +139,10 @@ box.appendChild(b);
 });
 }
 function animalThumb(id){
-const old=customization.animal,oldF=customization.fur,oldSkin=customization.skin;customization.animal=id;customization.fur=null;customization.skin=null;
-const s=createCharacterSVG();customization.animal=old;customization.fur=oldF;
+const old=customization.animal,oldF=customization.fur,oldSkin=customization.skin;
+customization.animal=id;customization.fur=null;customization.skin=null;
+const s=createCharacterSVG();
+customization.animal=old;customization.fur=oldF;customization.skin=oldSkin;
 return s;
 }
 function buildFurOptions(){
@@ -178,6 +180,7 @@ function buildSkinOptions(){
   const box=document.getElementById("skinOptions");
   if(!box)return;
   if(!Array.isArray(player.ownedSkins))player.ownedSkins=[];
+  if(isJuliaAdminAccount()) player.ownedSkins=Object.keys(SKINS);
   const owned=new Set(player.ownedSkins);
   box.innerHTML="";
   const items=[{name:"Original",key:null,cost:0,stops:[]}].concat(Object.values(SKINS));
@@ -199,12 +202,14 @@ function buildSkinOptions(){
       </div>`;
     card.querySelector(".character-shop-button").onclick=()=>{
       if(item.key!==null && !owned.has(item.key)){
-        const balance=Number(player.coins)||0;
-        if(balance<item.cost){
-          alert(`Você precisa de ${item.cost} moedas para desbloquear a skin ${item.name}.`);
-          return;
+        if(!isJuliaAdminAccount()){
+          const balance=Number(player.coins)||0;
+          if(balance<item.cost){
+            alert(`Você precisa de ${item.cost} moedas para desbloquear a skin ${item.name}.`);
+            return;
+          }
+          player.coins=balance-item.cost;
         }
-        player.coins=balance-item.cost;
         owned.add(item.key);
         player.ownedSkins=Array.from(owned);
       }
@@ -218,7 +223,7 @@ function buildSkinOptions(){
     box.appendChild(card);
   });
   const coinEl=document.getElementById("skinCoinBalance");
-  if(coinEl)coinEl.textContent=Number(player.coins)||0;
+  if(coinEl)coinEl.textContent=displayCoinBalance();
 }
 
 function buildCharacterEditor(){
@@ -396,10 +401,27 @@ if(saved){
   }catch(e){}
 }
 }
+function normalizeAccountName(name){
+  return String(name||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim().toLowerCase();
+}
+function isJuliaAdminAccount(){
+  return normalizeAccountName(player.name)==="julia";
+}
+function applyTestAdminAccount(){
+  if(!isJuliaAdminAccount())return;
+  // Conta de teste da administradora: saldo funcionalmente infinito e todas as skins liberadas.
+  player.adminTestAccount=true;
+  player.coins=999999999;
+  player.ownedSkins=Object.keys(SKINS);
+}
+function displayCoinBalance(){
+  return isJuliaAdminAccount()?"∞":String(Number(player.coins)||0);
+}
 function storageKey(){return "mathQuestPlayer_"+player.name.toLowerCase().replace(/[^a-z0-9áéíóúãõç]+/gi,"_");}
 function savePlayer(){
   player.customization=customization;
   player.ownedSkins=Array.from(new Set(player.ownedSkins||[]));
+  if(isJuliaAdminAccount()){player.adminTestAccount=true;player.coins=999999999;player.ownedSkins=Object.keys(SKINS);}
   localStorage.setItem(storageKey(),JSON.stringify(player));
 }
 
@@ -425,7 +447,7 @@ function openCharacterEditor(){
 function startLogin(){
   const input=document.getElementById("playerName"),name=input.value.trim();
   if(!name){input.focus();return;}
-  player.name=name;loadPlayer();selectedGrade=player.grade||"g5";buildGradeOptions();showScreen("gradeScreen");
+  player.name=name;loadPlayer();applyTestAdminAccount();savePlayer();selectedGrade=player.grade||"g5";buildGradeOptions();showScreen("gradeScreen");
 }
 document.getElementById("startButton").onclick=startLogin;
 document.getElementById("playerName").addEventListener("keydown",e=>{if(e.key==="Enter")startLogin();});
@@ -436,6 +458,9 @@ document.getElementById("adminGamesButton").onclick=openAdminGames;
 document.getElementById("adminAnalyticsButton").onclick=openAdminAnalytics;
 document.getElementById("adminAnalyticsBackButton").onclick=()=>{renderAdminArea();showScreen("adminScreen");};
 document.getElementById("adminGamesBackButton").onclick=()=>{renderAdminArea();showScreen("adminScreen");};
+const openCharacterFromMenu=()=>{applyTestAdminAccount();buildCharacterEditor();document.getElementById("editorPoints").textContent=player.points;document.getElementById("previewPoints").textContent=player.points;document.getElementById("previewLevel").textContent=player.level;document.getElementById("previewXp").textContent=(player.xp%100)+" / 100 XP";document.getElementById("previewXpBar").style.width=(player.xp%100)+"%";showScreen("characterScreen");};
+document.getElementById("openCharacterFromMenu").onclick=openCharacterFromMenu;
+document.getElementById("openCharacterStoreButton").onclick=openCharacterFromMenu;
 document.getElementById("enterGameButton").onclick=()=>{
   player.customization=JSON.parse(JSON.stringify(customization));
   savePlayer();
@@ -446,6 +471,7 @@ document.getElementById("editorBack").onclick=()=>{savePlayer();buildGradeOption
 
 
 async function updateDashboard(){
+  applyTestAdminAccount();
   const profile=gradeProfiles[player.grade]||gradeProfiles.g5;
   if(window.FirebaseRanking && FirebaseRanking.isConfigured()){
     try{
@@ -467,6 +493,9 @@ async function updateDashboard(){
   document.getElementById("totalPoints").textContent=player.points;
   document.getElementById("recordPoints").textContent=player.record;
   document.getElementById("smallCharacter").innerHTML=createCharacterSVG();
+  const menuAvatar=document.getElementById("menuCharacterAvatar");
+  if(menuAvatar)menuAvatar.innerHTML=createCharacterSVG();
+  renderCharacterStoreDashboard();
   const xp=player.xp%100;
   document.getElementById("xpText").textContent=`${xp} / 100 XP`;
   document.getElementById("xpBar").style.width=xp+"%";
@@ -815,12 +844,12 @@ const SHOP_ITEMS={
  life:{name:"Vida extra",icon:"❤️",cost:10,desc:"Recupera 1 vida na missão."}
 };
 function updateCoinUI(){
- const amount=(game && game.adminMode) ? "∞" : (player.coins||0);
- ["coinBalance","gameCoins"].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=amount;});
+ const amount=(game && game.adminMode) || isJuliaAdminAccount() ? "∞" : (player.coins||0);
+ ["coinBalance","gameCoins","skinCoinBalance"].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=amount;});
 }
 function spendCoins(cost){
  if(!game || !document.getElementById("answers")) return false;
- if(game.adminMode) return true;
+ if(game.adminMode || isJuliaAdminAccount()) return true;
  if((player.coins||0)<cost){
   const f=document.getElementById("feedback");if(f){f.textContent=`Você precisa de ${cost} moedas.`;f.style.color="#ffb648";}
   return false;
@@ -848,6 +877,57 @@ function extraLife(){
  game.lives=Math.min(3,game.lives+1);game.lifeUsed=true;updateGameHeader();
  const f=document.getElementById("feedback");if(f){f.textContent="❤️ Você ganhou uma vida extra!";f.style.color="#20a875";}
 }
+function renderCharacterStoreDashboard(){
+  const box=document.getElementById("characterStoreDashboard");
+  if(!box)return;
+  const owned=new Set(player.ownedSkins||[]);
+  const animalCards=Object.entries(animals).map(([id,a])=>{
+    const active=customization.animal===id;
+    return `<div class="store-character-card ${active?"active":""}">
+      <div class="store-character-preview">${animalThumb(id)}</div>
+      <strong>${a.name}</strong><small>${a.role}</small>
+      <button type="button" data-store-animal="${id}">${active?"✓ Em uso":"Usar personagem"}</button>
+    </div>`;
+  }).join("");
+  const skinCards=Object.values(SKINS).map(item=>{
+    const isOwned=isJuliaAdminAccount()||owned.has(item.key);
+    const active=customization.skin===item.key;
+    return `<div class="store-skin-card ${active?"active":""}">
+      <div class="store-skin-preview skin-${item.key}"></div>
+      <strong>${item.name}</strong><small>${active?"Equipado":isOwned?"Desbloqueado":item.cost+" 🪙"}</small>
+      <button type="button" data-store-skin="${item.key}">${active?"✓ Em uso":isOwned?"Usar":"Comprar"}</button>
+    </div>`;
+  }).join("");
+  box.innerHTML=`<div class="store-subtitle"><span>🐾 Personagens</span><small>Escolha seu companheiro</small></div><div class="store-character-row">${animalCards}</div><div class="store-subtitle skins-subtitle"><span>✨ Skins</span><small>${isJuliaAdminAccount()?"Conta Júlia • moedas infinitas":"Desbloqueie com moedas"}</small></div><div class="store-skin-row">${skinCards}</div>`;
+  box.querySelectorAll("[data-store-animal]").forEach(btn=>btn.onclick=()=>{
+    customization.animal=btn.dataset.storeAnimal;
+    customization.fur=null;
+    player.character=customization.animal;
+    player.customization=customization;
+    savePlayer();
+    refreshCharacter();
+    renderCharacterStoreDashboard();
+    updateCoinUI();
+  });
+  box.querySelectorAll("[data-store-skin]").forEach(btn=>btn.onclick=()=>{
+    const key=btn.dataset.storeSkin, item=SKINS[key];
+    if(!item)return;
+    const ownedNow=isJuliaAdminAccount()||owned.has(key);
+    if(!ownedNow){
+      const balance=Number(player.coins)||0;
+      if(balance<item.cost){alert(`Você precisa de ${item.cost} moedas para desbloquear a skin ${item.name}.`);return;}
+      player.coins=balance-item.cost;
+      player.ownedSkins=Array.from(new Set([...(player.ownedSkins||[]),key]));
+    }
+    customization.skin=key;
+    player.customization=customization;
+    savePlayer();
+    refreshCharacter();
+    renderCharacterStoreDashboard();
+    updateCoinUI();
+  });
+}
+
 function renderShopDashboard(){
  const box=document.getElementById("shopDashboardItems");if(!box)return;
  box.innerHTML=Object.values(SHOP_ITEMS).map(it=>`<div class="shop-dashboard-card"><strong>${it.icon} ${it.name}</strong><small>${it.desc}</small><b>${it.cost} 🪙</b></div>`).join("");

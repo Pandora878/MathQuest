@@ -162,6 +162,14 @@
 
     <div class="welcome"><div><span id="gradeBadge">ÁREA DO JOGADOR</span><h1 id="gradeTitle">Escolha sua missão</h1><p id="gradeDescription">Resolva os desafios antes que o tempo acabe.</p></div></div>
 
+    <div class="menu-character-actions">
+      <div class="menu-character-callout">
+        <div class="menu-character-avatar" id="menuCharacterAvatar"></div>
+        <div><span>SEU PERSONAGEM</span><strong>Deixe seu personagem do seu jeito</strong><small>Troque o animal, roupas, acessórios e skins.</small></div>
+      </div>
+      <button id="openCharacterFromMenu" class="menu-character-button">🎨 Personalizar personagem</button>
+    </div>
+
     <div class="xp-card">
       <div class="xp-info"><strong>Progresso</strong><span id="xpText">0 / 100 XP</span></div>
       <div class="xp-track"><div id="xpBar" class="xp-bar"></div></div>
@@ -170,7 +178,19 @@
 
     <h2 class="section-heading">Conquistas</h2>
     <div id="achievementGrid" class="achievement-grid"></div>
-    <div class="student-shop-panel"><div class="student-shop-head"><div><span>MOEDINHAS</span><h2>Loja de ajudas</h2><p>100% = <strong>10 🪙</strong> • 90% a 99% = <strong>5 🪙</strong> • até 80% = <strong>2 🪙</strong></p></div><strong>🪙 <b id="coinBalance">0</b></strong></div><div id="shopDashboardItems" class="shop-dashboard-items"></div></div>
+
+    <div class="student-shop-panel">
+      <div class="student-shop-head"><div><span>MOEDINHAS</span><h2>Loja de ajudas</h2><p>100% = <strong>10 🪙</strong> • 90% a 99% = <strong>5 🪙</strong> • até 80% = <strong>2 🪙</strong></p></div><strong>🪙 <b id="coinBalance">0</b></strong></div>
+      <div id="shopDashboardItems" class="shop-dashboard-items"></div>
+    </div>
+
+    <div class="character-store-panel">
+      <div class="character-store-head">
+        <div><span>PERSONAGENS E VISUAIS</span><h2>Loja de itens e personagens</h2><p>Escolha seu animal ou desbloqueie uma skin especial.</p></div>
+        <button id="openCharacterStoreButton" class="character-store-customize">🎨 Personalizar</button>
+      </div>
+      <div id="characterStoreDashboard" class="character-store-grid"></div>
+    </div>
   </div>
 </section>
 <section id="gameScreen" class="screen game-screen">
