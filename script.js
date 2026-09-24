@@ -25,15 +25,37 @@ const accessoryStyles=[
 {name:"Mochila",key:"backpack"}, {name:"Cachecol",key:"scarf"}, {name:"Coroa",key:"crown"},
 {name:"Medalha",key:"medal"}, {name:"Gravata",key:"bowtie"}, {name:"Capa",key:"cape"}, {name:"Varinha",key:"wand"}
 ];
-let customization={animal:"fox",fur:null,shirt:"#2674ff",head:"cap",accessory:"none",headColor:"#2674ff",accessoryColor:"#ffd166",eyeColor:"#182033"};
+const SKINS={
+  mint:{name:"Menta",key:"mint",cost:25,stops:["#20c997","#0d6b55"]},
+  candy:{name:"Candy",key:"candy",cost:35,stops:["#ff7ab6","#8e5cf7"]},
+  emerald:{name:"Esmeralda",key:"emerald",cost:45,stops:["#20c997","#075e45"]},
+  ice:{name:"Gelo",key:"ice",cost:55,stops:["#b8f3ff","#4c9cff"]},
+  royal:{name:"Royal",key:"royal",cost:70,stops:["#8b5cf6","#3b176e"]},
+  cosmic:{name:"Cósmica",key:"cosmic",cost:90,stops:["#18235e","#6d28d9","#111827"]},
+  plasma:{name:"Plasma",key:"plasma",cost:110,stops:["#ff4dff","#5826c7","#00e5ff"]},
+  diamond:{name:"Diamante",key:"diamond",cost:140,stops:["#d8f8ff","#72a7ff","#ffffff"]},
+  rainbow:{name:"Arco-íris",key:"rainbow",cost:180,stops:["#ff2d55","#ffd60a","#00e5ff","#7c3aed","#ff2d55"]},
+  champion:{name:"Campeão",key:"champion",cost:220,stops:["#fff0a8","#f2b632","#8b5e00"]},
+  master:{name:"Mestre",key:"master",cost:300,stops:["#c084fc","#7c3aed","#1e1b4b"]}
+};
+let customization={animal:"fox",fur:null,shirt:"#2674ff",head:"cap",accessory:"none",skin:null,headColor:"#2674ff",accessoryColor:"#ffd166",eyeColor:"#182033"};
 
 function currentAnimal(){return animals[customization.animal]||animals.fox}
 function animalColors(){
 const a=currentAnimal();
 return {base:customization.fur||a.base,light:a.light,accent:a.accent};
 }
+function skinGradientSVG(){
+  const s=SKINS[customization.skin];
+  if(!s)return "";
+  const stops=s.stops;
+  return `<linearGradient id="skinGrad" x1="0" y1="0" x2="1" y2="1">${stops.map((color,i)=>`<stop offset="${Math.round(i/(stops.length-1)*100)}%" stop-color="${color}"/>`).join("")}${customization.skin==="rainbow"?'<animateTransform attributeName="gradientTransform" type="rotate" from="0 .5 .5" to="360 .5 .5" dur="2s" repeatCount="indefinite"/>':""}</linearGradient>`;
+}
+function skinFill(base){
+  return customization.skin && SKINS[customization.skin] ? "url(#skinGrad)" : base;
+}
 function animalFace(){
-const a=currentAnimal(), c=animalColors(), base=c.base, light=c.light, accent=c.accent;
+const a=currentAnimal(), c=animalColors(), base=skinFill(c.base), light=c.light, accent=c.accent;
 let ears="", stripes="";
 if(customization.animal==="fox") ears=`<path d="M54 74L48 15L91 48Z" fill="${base}"/><path d="M166 74L172 15L129 48Z" fill="${base}"/><path d="M57 58L54 30L76 49Z" fill="#ffc4c4"/><path d="M163 58L166 30L144 49Z" fill="#ffc4c4"/>`;
 if(customization.animal==="panda") ears=`<circle cx="65" cy="48" r="25" fill="#161b29"/><circle cx="155" cy="48" r="25" fill="#161b29"/>`;
@@ -80,7 +102,7 @@ return x;
 function createCharacterSVG(){
 const c=animalColors();
 return `<svg viewBox="0 0 220 270" xmlns="http://www.w3.org/2000/svg">
-<defs><linearGradient id="bodyGrad" x1="0" x2="1"><stop stop-color="${customization.shirt||"#2674ff"}"/><stop offset="1" stop-color="#64a3ff"/></linearGradient></defs>
+<defs><linearGradient id="bodyGrad" x1="0" x2="1"><stop stop-color="${customization.shirt||"#2674ff"}"/><stop offset="1" stop-color="#64a3ff"/></linearGradient>${skinGradientSVG()}</defs>
 <ellipse cx="110" cy="252" rx="65" ry="10" fill="#000" opacity=".25"/>
 ${customization.accessory==="backpack"?headAccessorySVG():""}
 ${animalFace()}
@@ -111,13 +133,13 @@ function buildAnimalOptions(){
 const box=document.getElementById("animalOptions");box.innerHTML="";
 Object.entries(animals).forEach(([id,a])=>{
 const b=document.createElement("button");b.className="animal-card"+(customization.animal===id?" selected":"");
-b.innerHTML=`<div>${animalThumb(id)}</div><span>${a.name}</span>`;
+b.innerHTML=`<div class="animal-card-image">${animalThumb(id)}</div><span>${a.name}</span>`;
 b.onclick=()=>{customization.animal=id;customization.fur=null;document.querySelectorAll(".animal-card").forEach(x=>x.classList.remove("selected"));b.classList.add("selected");buildFurOptions();refreshCharacter();};
 box.appendChild(b);
 });
 }
 function animalThumb(id){
-const old=customization.animal,oldF=customization.fur;customization.animal=id;customization.fur=null;
+const old=customization.animal,oldF=customization.fur,oldSkin=customization.skin;customization.animal=id;customization.fur=null;customization.skin=null;
 const s=createCharacterSVG();customization.animal=old;customization.fur=oldF;
 return s;
 }
@@ -152,6 +174,53 @@ function styleIcon(key){
 const icons={normal:"●",glasses:"◉",bandana:"◆",cap:"⌒",headphones:"◉",hood:"◒",crown:"♛",wizard:"△",flower:"✿",antenna:"•",none:"∅",backpack:"▣",scarf:"≈",medal:"●",bowtie:"◆",cape:"◇",wand:"✦"};
 return icons[key]||"•";
 }
+function buildSkinOptions(){
+  const box=document.getElementById("skinOptions");
+  if(!box)return;
+  if(!Array.isArray(player.ownedSkins))player.ownedSkins=[];
+  const owned=new Set(player.ownedSkins);
+  box.innerHTML="";
+  const items=[{name:"Original",key:null,cost:0,stops:[]}].concat(Object.values(SKINS));
+  items.forEach(item=>{
+    const isOwned=item.key===null || owned.has(item.key);
+    const selected=customization.skin===item.key;
+    const card=document.createElement("div");
+    card.className="character-shop-card"+(selected?" selected":"")+(isOwned?"":" locked");
+    const previewClass=item.key?`skin-${item.key}`:"skin-original";
+    const priceText=item.key?(isOwned?"Desbloqueada":`${item.cost} 🪙`):"Grátis";
+    const actionText=selected?"✓ Usando":(isOwned?"Usar":"Comprar");
+    card.innerHTML=`
+      <div class="skin-preview ${previewClass}"></div>
+      <strong>${item.name}</strong>
+      <small>${isOwned?(selected?"Skin equipada":"Pronta para usar"):"Desbloqueie com moedas"}</small>
+      <div class="character-shop-actions">
+        <button type="button" class="character-shop-button">${actionText}</button>
+        <span class="character-shop-price">${priceText}</span>
+      </div>`;
+    card.querySelector(".character-shop-button").onclick=()=>{
+      if(item.key!==null && !owned.has(item.key)){
+        const balance=Number(player.coins)||0;
+        if(balance<item.cost){
+          alert(`Você precisa de ${item.cost} moedas para desbloquear a skin ${item.name}.`);
+          return;
+        }
+        player.coins=balance-item.cost;
+        owned.add(item.key);
+        player.ownedSkins=Array.from(owned);
+      }
+      customization.skin=item.key;
+      player.customization=customization;
+      savePlayer();
+      updateCoinUI();
+      buildSkinOptions();
+      refreshCharacter();
+    };
+    box.appendChild(card);
+  });
+  const coinEl=document.getElementById("skinCoinBalance");
+  if(coinEl)coinEl.textContent=Number(player.coins)||0;
+}
+
 function buildCharacterEditor(){
 buildAnimalOptions();buildFurOptions();buildStyles();refreshCharacter();
 }
@@ -264,6 +333,7 @@ if(saved){
   try{
     player={...player,...JSON.parse(saved)};
     if(player.customization) customization={...customization,...player.customization};
+    if(!Array.isArray(player.ownedSkins))player.ownedSkins=[];
     syncLocalRank();
   }catch(e){}
 }
@@ -321,12 +391,17 @@ if(saved){
   try{
     player={...player,...JSON.parse(saved)};
     if(player.customization) customization={...customization,...player.customization};
+    if(!Array.isArray(player.ownedSkins))player.ownedSkins=[];
     syncLocalRank();
   }catch(e){}
 }
 }
 function storageKey(){return "mathQuestPlayer_"+player.name.toLowerCase().replace(/[^a-z0-9áéíóúãõç]+/gi,"_");}
-function savePlayer(){player.customization=customization;localStorage.setItem(storageKey(),JSON.stringify(player));}
+function savePlayer(){
+  player.customization=customization;
+  player.ownedSkins=Array.from(new Set(player.ownedSkins||[]));
+  localStorage.setItem(storageKey(),JSON.stringify(player));
+}
 
 function buildGradeOptions(){
   const box=document.getElementById("gradeOptions");box.innerHTML="";
@@ -740,15 +815,17 @@ const SHOP_ITEMS={
  life:{name:"Vida extra",icon:"❤️",cost:10,desc:"Recupera 1 vida na missão."}
 };
 function updateCoinUI(){
- ["coinBalance","gameCoins"].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=player.coins||0;});
+ const amount=(game && game.adminMode) ? "∞" : (player.coins||0);
+ ["coinBalance","gameCoins"].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=amount;});
 }
 function spendCoins(cost){
  if(!game || !document.getElementById("answers")) return false;
+ if(game.adminMode) return true;
  if((player.coins||0)<cost){
   const f=document.getElementById("feedback");if(f){f.textContent=`Você precisa de ${cost} moedas.`;f.style.color="#ffb648";}
   return false;
  }
- player.coins-=cost;savePlayer();updateCoinUI();return true;
+ if(!game.adminMode){player.coins=Math.max(0,(player.coins||0)-cost);savePlayer();}updateCoinUI();return true;
 }
 function useHint(){
  if(game.locked||game.adminMode||game.hintUsed)return;

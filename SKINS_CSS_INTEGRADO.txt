@@ -1,0 +1,15 @@
+MATH QUEST — INTEGRAÇÃO DE PERSONALIZAÇÃO E SKINS
+
+Nesta versão foram integrados ao jogo:
+- CSS solicitado para character-shop-button, skins e animal-card.
+- Loja de skins dentro da tela de personalização.
+- 11 skins: Menta, Candy, Esmeralda, Gelo, Royal, Cósmica, Plasma, Diamante, Arco-íris, Campeão e Mestre.
+- Compra das skins usando as moedas do jogador.
+- Skins compradas ficam salvas no jogador.
+- Skin selecionada altera a aparência do animal.
+- Skin Arco-íris possui animação.
+- Cartões de animais usam a classe animal-card-image.
+- Layout responsivo para telas menores.
+- Firebase e demais arquivos do projeto foram preservados.
+
+Os preços das skins estão no script.js e podem ser alterados na constante SKINS.

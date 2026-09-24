@@ -1,0 +1,1 @@
+No modo Administrador, a loja mostra moedas infinitas (∞) e as compras não consomem moedas.
