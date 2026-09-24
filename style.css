@@ -167,3 +167,34 @@ body{background:radial-gradient(circle at 15% 0,#1b2450 0,transparent 34%),radia
 .student-shop-head{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:15px}.student-shop-head span,.analytics-title span{font-size:11px;font-weight:900;letter-spacing:.13em;color:#6b7c92}.student-shop-head h2{margin:5px 0;color:#17283f}.student-shop-head p{margin:0;color:#718096;font-size:13px}.student-shop-head>strong{font-size:24px;white-space:nowrap;color:#a46b08}.shop-dashboard-items{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.shop-dashboard-card{border:1px solid #e5eaf2;border-radius:15px;padding:14px;background:#f9fbff}.shop-dashboard-card strong{display:block;color:#1c3150}.shop-dashboard-card small{display:block;color:#738196;margin-top:4px;line-height:1.35}.shop-dashboard-card b{display:block;margin-top:9px;color:#a46b08}
 .game-shop{margin-top:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:12px}.game-shop-title{display:flex;justify-content:space-between;color:#dbe5f5;font-size:13px;margin-bottom:9px}.game-shop-title span{color:#8fa1bb}.shop-items{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.shop-item{display:flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.1);background:#101d35;color:#eaf1fb;border-radius:12px;padding:9px;cursor:pointer;text-align:left}.shop-item:hover{background:#172947}.shop-icon{font-size:20px}.shop-item span:nth-child(2){flex:1}.shop-item strong,.shop-item small{display:block}.shop-item small{color:#8fa1bb;font-size:10px;margin-top:2px}.shop-item>b{font-size:11px;color:#ffd166;white-space:nowrap}.hint-hidden{opacity:.25!important;text-decoration:line-through!important}.final-coins{text-align:center;margin:-5px 0 18px;color:#b27a10;font-weight:800}
 .admin-analysis-button{border:1px solid #5d78b9;background:#1d3159;color:#fff;border-radius:14px;padding:13px 18px;font-weight:900;cursor:pointer}.admin-analytics-screen{overflow:auto;background:#f5f7fb}.analytics-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}.analytics-summary>div{background:#fff;border:1px solid #e5eaf2;border-radius:18px;padding:18px}.analytics-summary span{display:block;color:#718096;font-size:11px;font-weight:900;letter-spacing:.1em}.analytics-summary strong{display:block;margin-top:7px;font-size:30px;color:#17283f}.analytics-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:18px}.analytics-card{background:#fff;border:1px solid #e5eaf2;border-radius:20px;padding:18px;box-shadow:0 8px 25px rgba(20,35,60,.05)}.analytics-card.wide{grid-column:1/-1}.analytics-title h2{margin:5px 0 15px;color:#18283f}.analytics-table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:10px;border-bottom:1px solid #edf0f5;white-space:nowrap}th{color:#6c7b8f;font-size:11px;text-transform:uppercase}td{color:#26384f}.student-risk{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #edf0f5}.student-risk>b{width:28px;height:28px;border-radius:8px;background:#fff0ed;color:#d94b42;display:grid;place-items:center}.student-risk strong,.student-risk small{display:block}.student-risk small{color:#738196;margin-top:3px}.difficulty-row{margin:12px 0}.difficulty-row>div:first-child{display:flex;justify-content:space-between;gap:10px}.difficulty-row strong{color:#20324a}.difficulty-row span{color:#758398;font-size:12px}.difficulty-track{height:8px;background:#e8edf4;border-radius:99px;margin-top:7px;overflow:hidden}.difficulty-track i{display:block;height:100%;background:#5c86c8;border-radius:99px}.admin-loading,.admin-error{padding:30px;background:#fff;border-radius:18px;color:#66768b}@media(max-width:900px){.shop-dashboard-items,.shop-items,.analytics-summary{grid-template-columns:1fr}.analytics-grid{grid-template-columns:1fr}.analytics-card.wide{grid-column:auto}.student-shop-head{align-items:flex-start;flex-direction:column}}
+
+/* ===== LOJA — VISUAL INTEGRADO AO JOGO ===== */
+.student-shop-panel{
+  margin:28px 0 34px;
+  background:linear-gradient(180deg,#111c33 0%,#0d172b 100%);
+  border:1px solid rgba(125,151,198,.22);
+  border-radius:22px;
+  padding:20px;
+  box-shadow:0 14px 35px rgba(0,0,0,.18);
+}
+.student-shop-head{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:16px}
+.student-shop-head span{font-size:11px;font-weight:900;letter-spacing:.13em;color:#8295b5}
+.student-shop-head h2{margin:5px 0;color:#f1f5ff;font-size:23px}
+.student-shop-head p{margin:0;color:#91a2be;font-size:13px}
+.student-shop-head>strong{font-size:25px;white-space:nowrap;color:#ffd166}
+.shop-dashboard-items{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.shop-dashboard-card{
+  border:1px solid rgba(126,151,197,.16);
+  border-radius:15px;
+  padding:15px;
+  background:#15233d;
+  transition:.18s ease;
+}
+.shop-dashboard-card:hover{transform:translateY(-2px);border-color:rgba(126,151,197,.32);background:#182947}
+.shop-dashboard-card strong{display:block;color:#eef4ff;font-size:15px}
+.shop-dashboard-card small{display:block;color:#91a2be;margin-top:5px;line-height:1.4}
+.shop-dashboard-card b{display:block;margin-top:10px;color:#ffd166}
+@media(max-width:900px){
+  .shop-dashboard-items{grid-template-columns:1fr}
+  .student-shop-head{align-items:flex-start;flex-direction:column}
+}

@@ -673,16 +673,16 @@ function startGame(mode,isAdmin=false){
   game={mode,grade:player.grade,question:0,totalQuestions:profile.questions,answer:0,lives:profile.lives,score:0,correct:0,wrong:0,combo:0,bestCombo:0,locked:false,timeLimit:profile.time,deadline:0,animationFrame:null,phaseIndex,phaseBonus,adminMode:!!isAdmin,wrongStreak:0,hintUsed:false,changeUsed:false,lifeUsed:false,penaltyCount:0,timeoutCount:0,guessCount:0};
   showScreen("gameScreen");renderShop();updateGameHeader();nextQuestion();
 }
-function nextQuestion(){
+function nextQuestion(replaceCurrent=false){
   cancelTimer();
   if(game.question>=game.totalQuestions){finishGame("complete");return;}
   if(game.lives<=0){finishGame("lives");return;}
-  if(!replaceCurrent) game.question++;game.locked=false;
+  if(!replaceCurrent) game.question++; game.locked=false;
   const q=generateQuestion(game.mode,game.grade);game.answer=q.answer;
   document.getElementById("questionNumber").textContent=game.question;
   document.querySelector(".question-counter span").textContent=" / "+game.totalQuestions;
   document.getElementById("questionType").textContent=q.type;
-  document.getElementById("questionText").textContent=q.text;
+  document.getElementById("questionText").innerHTML=q.text;
   document.getElementById("feedback").textContent="";
   document.getElementById("answers").innerHTML="";
   document.getElementById("timerText").textContent=game.timeLimit.toFixed(1);
