@@ -1,18 +1,127 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // ================================
+    // FUNÇÕES DE SEGURANÇA
+    // ================================
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return signedIn()
+        && exists(
+          /databases/$(database)/documents/admins/$(request.auth.uid)
+        )
+        && get(
+          /databases/$(database)/documents/admins/$(request.auth.uid)
+        ).data.role == "admin";
+    }
+
+
+    // ================================
+    // ADMINISTRADORES
+    // ================================
+
+    match /admins/{uid} {
+
+      // Cada administrador pode consultar
+      // o próprio registro.
+      allow read: if signedIn()
+        && request.auth.uid == uid;
+
+      // Não permite criar/alterar administrador
+      // pelo aplicativo.
+      allow write: if false;
+    }
+
+
+    // ================================
+    // RANKING DO MATH QUEST
+    // ================================
+
     match /mathQuestRanking/{grade}/players/{playerId} {
-      allow read: if true;
-      allow create: if request.auth != null
+
+      // -------------------------------
+      // LEITURA
+      // -------------------------------
+
+      // Alunos logados podem visualizar
+      // o ranking da turma.
+      //
+      // Administradores também podem visualizar
+      // todos os rankings.
+      allow read: if signedIn();
+
+
+      // -------------------------------
+      // CRIAÇÃO
+      // -------------------------------
+
+      // ADMIN:
+      // Pode criar registros para testes,
+      // correções ou gerenciamento.
+      allow create: if isAdmin();
+
+
+      // ALUNO:
+      // Só pode criar o próprio registro.
+      allow create: if signedIn()
         && playerId == request.auth.uid
         && request.resource.data.authUid == request.auth.uid
         && request.resource.data.grade == grade;
-      allow update: if request.auth != null
+
+
+      // -------------------------------
+      // ATUALIZAÇÃO
+      // -------------------------------
+
+      // ADMIN:
+      // Pode atualizar qualquer jogador.
+      //
+      // Isso permite que a conta administradora
+      // tenha moedas infinitas no modo de teste,
+      // sem ficar limitada às regras dos alunos.
+      allow update: if isAdmin();
+
+
+      // ALUNO:
+      // Só pode atualizar o próprio registro.
+      allow update: if signedIn()
         && playerId == request.auth.uid
+
+        // O documento antigo pertence ao próprio usuário.
         && resource.data.authUid == request.auth.uid
+
+        // O novo documento continua pertencendo
+        // ao próprio usuário.
         && request.resource.data.authUid == request.auth.uid
+
+        // Não pode trocar a turma pelo cliente.
         && request.resource.data.grade == grade;
-      allow delete: if false;
+
+
+      // -------------------------------
+      // EXCLUSÃO
+      // -------------------------------
+
+      // Somente administrador pode apagar
+      // jogadores do ranking.
+      allow delete: if isAdmin();
+    }
+
+
+    // ================================
+    // BLOQUEIO GERAL
+    // ================================
+
+    // Qualquer coleção que não tenha uma
+    // regra específica acima fica bloqueada.
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }
