@@ -240,7 +240,7 @@ function syncLocalRank(){const r=getRankInfo(player.points);player.rank=r.name;p
 function difficultyLevel(){return (player.grade==="pre1"||player.grade==="pre2")?0:getRankInfo(player.points).index;}
 
 let selectedGrade=null;
-let player={name:"",character:"fox",points:0,record:0,level:1,xp:0,grade:"g5",rank:"Bronze",rankIndex:0,rankIcon:"🥉",correctTotal:0,missionsCompleted:0,completedMissions:[],coins:0,totalQuestions:0,totalCorrect:0,totalWrong:0,totalTimeouts:0,totalChutes:0,totalPenalties:0,maxWrongStreak:0,modeStats:{}};
+let player={name:"",character:"fox",points:0,record:0,level:1,xp:0,grade:"g5",rank:"Bronze",rankIndex:0,rankIcon:"🥉",correctTotal:0,missionsCompleted:0,completedMissions:[],coins:0,questionCoins:0,totalQuestions:0,totalCorrect:0,totalWrong:0,totalTimeouts:0,totalChutes:0,totalPenalties:0,maxWrongStreak:0,modeStats:{}};
 
 let game={
 mode:"",question:0,totalQuestions:10,answer:0,lives:3,score:0,correct:0,wrong:0,combo:0,bestCombo:0,
@@ -555,9 +555,21 @@ function renderAdminArea(){
 async function openAdminAnalytics(){
  showScreen("adminAnalyticsScreen");
  const box=document.getElementById("adminAnalyticsBody");if(!box)return;
- box.innerHTML='<div class="admin-loading">Carregando dados das turmas...</div>';
- try{renderAdminAnalytics(await FirebaseRanking.getAllPlayers());}
- catch(e){box.innerHTML=`<div class="admin-error">Não foi possível carregar os dados: ${escapeHTML(e.message||"erro")}</div>`;}
+ if(window._adminLiveUnsubscribe){try{window._adminLiveUnsubscribe();}catch(e){}window._adminLiveUnsubscribe=null;}
+ box.innerHTML='<div class="admin-loading">Carregando dados das turmas em tempo real...</div>';
+ if(window.FirebaseRanking && FirebaseRanking.isConfigured() && FirebaseRanking.watchAllPlayers){
+   window._adminLiveUnsubscribe=FirebaseRanking.watchAllPlayers(players=>{
+     renderAdminAnalytics(players||[]);
+     const stamp=document.getElementById("adminLiveStatus");
+     if(stamp)stamp.textContent="● Atualizado em tempo real";
+   },err=>{
+     console.error(err);
+     if(!box.innerHTML.includes("turma-analysis-section")) box.innerHTML=`<div class="admin-error">Não foi possível carregar os dados: ${escapeHTML(err.message||"erro")}</div>`;
+   });
+ }else{
+   try{renderAdminAnalytics(await FirebaseRanking.getAllPlayers());}
+   catch(e){box.innerHTML=`<div class="admin-error">Não foi possível carregar os dados: ${escapeHTML(e.message||"erro")}</div>`;}
+ }
 }
 function renderAdminAnalytics(players){
  const names={pre1:"Pré I",pre2:"Pré II",g1:"1º ano",g2:"2º ano",g3:"3º ano",g4:"4º ano",g5:"5º ano"};
@@ -593,6 +605,7 @@ function renderAdminAnalytics(players){
    <div><span>PENALIDADES</span><strong>${totalPen}</strong></div>
  </div>
 
+ <div id="adminLiveStatus" class="admin-live-status">● Conectando ao tempo real...</div>
  <div class="turma-filter-bar">
    <strong>Visualizar turma:</strong>
    <button class="turma-filter active" data-turma="all">Todas</button>
@@ -1028,9 +1041,15 @@ function generateQuestion(mode,grade){
   }else if(op==="division"){
     const divisor=r(2,Math.min(18,(grade==="g2"?5:12)+ri*2)),quotient=r(2,Math.min(30,(grade==="g2"?10:20)+ri*3));a=divisor*quotient;answer=quotient;text=`${a} ÷ ${divisor} = ?`;type="DIVISÃO";options=makeNear(answer,1,10);
   }else if(op==="fraction"){
-    const fractions=[[1,2,4],[1,2,6],[1,2,8],[1,2,10],[1,2,12],[1,3,6],[1,3,9],[1,4,8],[1,4,12],[1,4,16],[1,5,10],[1,5,20],[2,5,10],[2,5,20],[3,4,8],[3,4,12],[3,4,20],[2,3,12],[2,3,18],[4,5,10],[4,5,20]];
-    const f=fractions[r(0,fractions.length-1)],num=f[0],den=f[1],total=f[2];
-    answer=(total*num)/den;
+    // Frações sempre construídas para terem resultado inteiro e verificável.
+    const fractionBank=[
+      [1,2],[1,3],[1,4],[1,5],[1,6],[2,3],[2,5],[3,4],[3,5],[4,5]
+    ];
+    const pair=fractionBank[r(0,fractionBank.length-1)];
+    const num=pair[0],den=pair[1];
+    const multiplier=r(2,12);
+    const total=den*multiplier;
+    answer=num*multiplier;
     text=`Quanto é ${num}/${den} de ${total}?`;
     type="FRAÇÃO";
     options=makeNear(answer,1,Math.max(4,answer+3));
@@ -1088,6 +1107,23 @@ showContinueButton("Ver resultado →");
 setTimeout(()=>{if(game && game.locked && game.wrong>0)finishGame("time");},900);
 }
 
+function awardQuestionCoins(seconds, isCorrect){
+ if(game.adminMode || !isCorrect)return 0;
+ const limit=Math.max(1,game.timeLimit);
+ const ratio=seconds/limit;
+ let coins=2;
+ if(ratio<=0.20) coins=8;
+ else if(ratio<=0.40) coins=6;
+ else if(ratio<=0.60) coins=5;
+ else if(ratio<=0.80) coins=4;
+ else coins=2;
+ player.coins=(Number(player.coins)||0)+coins;
+ player.questionCoins=(Number(player.questionCoins)||0)+coins;
+ savePlayer();
+ updateCoinUI();
+ return coins;
+}
+
 function answerQuestion(button,value){
  if(game.locked)return;
  game.locked=true;cancelTimer();
@@ -1100,7 +1136,11 @@ function answerQuestion(button,value){
    const remaining=Math.max(0,game.deadline-performance.now())/1000;
    const gained=10+Math.floor(remaining)+Math.min(game.combo*2,20);
    game.score+=gained;
-   document.getElementById("feedback").textContent=`Resposta correta! +${gained} pontos`;
+   const questionCoins=awardQuestionCoins(reactionSeconds,true);
+   if(window.FirebaseRanking && FirebaseRanking.isConfigured() && FirebaseRanking.saveLiveProgress){
+     FirebaseRanking.saveLiveProgress({grade:player.grade,points:(Number(player.points)||0)+game.score,coins:player.coins||0}).catch(()=>{});
+   }
+   document.getElementById("feedback").textContent=`Resposta correta! +${gained} pontos • +${questionCoins} 🪙`;
    document.getElementById("feedback").style.color="#20a875";
    document.getElementById("questionText").classList.add("pop");
  }else{

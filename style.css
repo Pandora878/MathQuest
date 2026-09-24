@@ -338,3 +338,5 @@ body{background:radial-gradient(circle at 15% 0,#1b2450 0,transparent 34%),radia
   box-shadow:0 8px 22px rgba(43,86,181,.22);
 }
 .continue-question-button:hover{filter:brightness(1.08);transform:translateY(-1px)}
+
+.admin-live-status{display:inline-flex;align-items:center;gap:6px;margin:0 0 12px;color:#20a875;font-size:12px;font-weight:800}

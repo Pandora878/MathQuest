@@ -129,6 +129,49 @@ async function getAllPlayers(){
  return all;
 }
 
+
+function watchAllPlayers(onData,onError){
+ const unsubs=[];
+ let alive=true;
+ init({requireAuth:false}).then(()=>{
+   const grades=['pre1','pre2','g1','g2','g3','g4','g5'];
+   const byGrade={};
+   let readyCount=0;
+   grades.forEach(g=>{
+     const q=db.collection('mathQuestRanking').doc(g).collection('players').orderBy('points','desc').limit(500);
+     const u=q.onSnapshot(snap=>{
+       byGrade[g]=snap.docs.map(d=>({id:d.id,...d.data(),grade:g}));
+       readyCount++;
+       const all=grades.flatMap(x=>byGrade[x]||[]);
+       if(alive)onData(all);
+     },e=>{if(alive&&onError)onError(Object.assign(new Error(errorText(e)),{code:e&&e.code}))});
+     unsubs.push(u);
+   });
+ }).catch(e=>onError&&onError(e));
+ return ()=>{alive=false;unsubs.forEach(u=>{try{u()}catch(e){}});};
+}
+
+async function saveLiveProgress(data){
+ const user=await ensureAuth();
+ const g=grade(data.grade);
+ const ref=db.collection('mathQuestRanking').doc(g).collection('players').doc(user.uid);
+ await db.runTransaction(async tx=>{
+   const snap=await tx.get(ref);
+   if(!snap.exists)return;
+   const old=snap.data();
+   const points=Math.max(Number(old.points)||0,Math.floor(Number(data.points)||0));
+   tx.set(ref,{
+     points,
+     level:Math.max(Number(old.level)||1,Math.floor(points/100)+1),
+     rank:getRankInfo(points).name,
+     rankIndex:getRankInfo(points).index,
+     rankIcon:getRankInfo(points).icon,
+     coins:Math.max(Number(old.coins)||0,Number(data.coins)||0),
+     updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+   },{merge:true});
+ });
+}
+
 function watchRanking(g,onData,onError){
  if(unsubscribe){unsubscribe();unsubscribe=null;}
  init({requireAuth:false}).then(()=>{
@@ -140,5 +183,5 @@ function watchRanking(g,onData,onError){
  }).catch(e=>onError&&onError(e));
 }
 
-window.FirebaseRanking={isConfigured,init,ensureAuth,saveScore,loadScore,getAllPlayers,watchRanking,getRankInfo,explainError:errorText,RANKS};
+window.FirebaseRanking={isConfigured,init,ensureAuth,saveScore,loadScore,getAllPlayers,watchRanking,watchAllPlayers,saveLiveProgress,getRankInfo,explainError:errorText,RANKS};
 })();
