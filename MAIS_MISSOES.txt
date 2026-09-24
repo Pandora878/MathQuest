@@ -1,0 +1,16 @@
+MATH QUEST — MAIS MISSÕES PARA GANHAR MOEDAS
+
+- Pré I: 12 missões
+- Pré II: 12 missões
+- 1º ano: 12 missões
+- 2º ano: 12 missões
+- 3º ano: 12 missões
+- 4º ano: 15 missões
+- 5º ano: 15 missões
+
+Cada missão concluída pelo aluno rende 10 moedas.
+Se a missão terminar por tempo ou por perda de vidas, não recebe as 10 moedas da conclusão.
+A loja mantém:
+- Dica — 5 moedas
+- Mudar questão — 8 moedas
+- Vida extra — 10 moedas

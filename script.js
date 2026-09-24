@@ -176,43 +176,49 @@ const gradeProfiles={
     ["shapes","Fase 9 • Cidade das Formas","Formas divertidas","green"],["moreLess","Fase 10 • Mais ou Menos","Compare quantidades","gold"],
     ["additionVisual","Fase 11 • Oficina da Soma","Soma com desenhos","blue"],["mixedEasy","Fase 12 • Desafio do Explorador","Revisão divertida","purple"]]},
   g1:{label:"1º Ano",title:"Aventura dos Números",description:"Desafios de sequência, comparação, adição, subtração, dobro, metade e problemas simples.",time:120,questions:8,lives:4,modes:[
-    ["addition","Fase 1 • Soma até 20","Some e descubra","blue"],
-    ["subtraction","Fase 2 • Subtração até 20","Resolva as contas","purple"],
-    ["sequence","Fase 3 • Sequência Desafiadora","Complete sequências","orange"],
-    ["compare","Fase 4 • Maior, Menor ou Igual","Compare números","green"],
-    ["missingNumber","Fase 5 • Número Perdido","Descubra o número","gold"],
-    ["wordProblem","Fase 6 • Probleminhas","Pense e resolva","blue"],
-    ["doubleHalf","Fase 7 • Dobro e Metade","Descubra o dobro ou metade","purple"],
-    ["mixedG1","Fase 8 • Desafio Relâmpago","Misture tudo","orange"],
-    ["sequence","Fase 9 • Sequência Maluca","Pule de 2 em 2 e de 5 em 5","green"],
-    ["compare","Fase 10 • Duelo dos Números","Qual é maior?","gold"],
-    ["addition","Fase 11 • Desafio até 30","Somas maiores","blue"],
-    ["mixedG1","Fase 12 • Mestre dos Problemas","Desafio final misto","purple"]]},
+    ["addition","Fase 1 • Soma até 20","Some e descubra","blue"],["subtraction","Fase 2 • Subtração até 20","Resolva as contas","purple"],
+    ["sequence","Fase 3 • Sequência Desafiadora","Complete sequências","orange"],["compare","Fase 4 • Maior, Menor ou Igual","Compare números","green"],
+    ["missingNumber","Fase 5 • Número Perdido","Descubra o número","gold"],["wordProblem","Fase 6 • Probleminhas","Pense e resolva","blue"],
+    ["doubleHalf","Fase 7 • Dobro e Metade","Descubra o dobro ou metade","purple"],["mixedG1","Fase 8 • Desafio Relâmpago","Misture tudo","orange"],
+    ["sequence","Fase 9 • Sequência Maluca","Pule de 2 em 2 e de 5 em 5","green"],["compare","Fase 10 • Duelo dos Números","Qual é maior?","gold"],
+    ["addition","Fase 11 • Desafio até 30","Somas maiores","blue"],["mixedG1","Fase 12 • Mestre dos Problemas","Desafio final misto","purple"],
+    ["addition","Fase 13 • Parque da Soma","Some com atenção","blue"],["subtraction","Fase 14 • Parque da Subtração","Resolva as diferenças","purple"],["sequence","Fase 15 • Caminho das Sequências","Descubra a regra","orange"]]},
   g2:{label:"2º Ano",title:"Missão Matemática",description:"Desafios com números maiores, sequências variadas, operações e problemas de raciocínio.",time:120,questions:8,lives:4,modes:[
-    ["addition","Fase 1 • Soma até 100","Resolva as somas","blue"],
-    ["subtraction","Fase 2 • Subtração até 100","Resolva as subtrações","purple"],
-    ["sequence","Fase 3 • Sequências Secretas","Descubra a regra","orange"],
-    ["compare","Fase 4 • Batalha dos Números","Maior, menor ou igual","green"],
-    ["missingNumber","Fase 5 • Número Misterioso","Descubra o número","gold"],
-    ["wordProblem","Fase 6 • Problemas do Dia","Use o raciocínio","blue"],
-    ["multiplicationIntro","Fase 7 • Grupos Iguais","Introdução à multiplicação","purple"],
-    ["doubleHalf","Fase 8 • Dobro e Metade","Pense rápido","orange"],
-    ["sequence","Fase 9 • Sequência Saltitante","De 2, 3, 5 e 10 em 10","green"],
-    ["compare","Fase 10 • Desafio de Comparação","Compare números de 2 e 3 algarismos","gold"],
-    ["mixedG2","Fase 11 • Desafio Turbo","Misture as habilidades","blue"],
-    ["mixedG2","Fase 12 • Grande Desafio","Desafio final misto","purple"]]},
+    ["addition","Fase 1 • Soma até 100","Resolva as somas","blue"],["subtraction","Fase 2 • Subtração até 100","Resolva as subtrações","purple"],
+    ["sequence","Fase 3 • Sequências Secretas","Descubra a regra","orange"],["compare","Fase 4 • Batalha dos Números","Maior, menor ou igual","green"],
+    ["missingNumber","Fase 5 • Número Misterioso","Descubra o número","gold"],["wordProblem","Fase 6 • Problemas do Dia","Use o raciocínio","blue"],
+    ["multiplicationIntro","Fase 7 • Grupos Iguais","Introdução à multiplicação","purple"],["doubleHalf","Fase 8 • Dobro e Metade","Pense rápido","orange"],
+    ["sequence","Fase 9 • Sequência Saltitante","De 2, 3, 5 e 10 em 10","green"],["compare","Fase 10 • Desafio de Comparação","Compare números de 2 e 3 algarismos","gold"],
+    ["mixedG2","Fase 11 • Desafio Turbo","Misture as habilidades","blue"],["mixedG2","Fase 12 • Grande Desafio","Desafio final misto","purple"],
+    ["wordProblem","Fase 13 • Mercado dos Problemas","Use o raciocínio","blue"],["multiplicationIntro","Fase 14 • Grupos Secretos","Forme grupos iguais","purple"],["mixedG2","Fase 15 • Mestre do 2º Ano","Desafio final","gold"]]},
   g3:{label:"3º ano",title:"Missões do 3º ano",description:"As quatro operações e desafios de raciocínio.",time:60,questions:10,lives:3,modes:[
-    ["addition","Cidade dos Milhares","Adição","blue"],["subtraction","Vale dos Milhares","Subtração","purple"],
-    ["multiplication","Torre da Tabuada","Multiplicação","orange"],["division","Reino da Divisão","Divisão","green"],
-    ["mixed","Templo Matemático","Misto","gold"]]},
-  g4:{label:"4º ano",title:"Missões do 4º ano",description:"Quatro operações, frações, medidas, decimais e desafios.",time:40,questions:15,lives:3,modes:[
-    ["addition","Cidade dos Grandes Números","Adição","blue"],["subtraction","Vale dos Desafios","Subtração","purple"],
-    ["multiplication","Torre Multiplicadora","Multiplicação","orange"],["fraction","Ilha das Frações","Frações","green"],
-    ["mixed","Templo Matemático","Misto","gold"]]},
+    ["addition","Fase 1 • Cidade dos Milhares","Adição","blue"],["subtraction","Fase 2 • Vale dos Milhares","Subtração","purple"],
+    ["multiplication","Fase 3 • Torre da Tabuada","Multiplicação","orange"],["division","Fase 4 • Reino da Divisão","Divisão","green"],
+    ["mixed","Fase 5 • Templo Matemático","Misto","gold"],["addition","Fase 6 • Cofre das Somas","Somas com números maiores","blue"],
+    ["subtraction","Fase 7 • Ponte da Subtração","Subtrações desafiadoras","purple"],["multiplication","Fase 8 • Fábrica da Tabuada","Multiplicações","orange"],
+    ["division","Fase 9 • Desafio dos Grupos","Divisões exatas","green"],["mixed","Fase 10 • Missão Relâmpago","Misture as operações","gold"],
+    ["addition","Fase 11 • Desafio Final de Soma","Resolva com atenção","blue"],["mixed","Fase 12 • Mestre do 3º Ano","Desafio final","purple"],
+    ["subtraction","Fase 13 • Museu dos Números","Subtrações","purple"],["multiplication","Fase 14 • Desafio da Tabuada","Multiplique","orange"],["division","Fase 15 • Ponte dos Quocientes","Divida em grupos","green"]]},
+  g4:{label:"4º ano",title:"Missões do 4º ano",description:"Quatro operações, frações, decimais e desafios.",time:40,questions:15,lives:3,modes:[
+    ["addition","Fase 1 • Cidade dos Grandes Números","Adição","blue"],["subtraction","Fase 2 • Vale dos Desafios","Subtração","purple"],
+    ["multiplication","Fase 3 • Torre Multiplicadora","Multiplicação","orange"],["division","Fase 4 • Reino da Divisão","Divisão","green"],
+    ["fraction","Fase 5 • Ilha das Frações","Frações","teal"],["decimal","Fase 6 • Laboratório dos Decimais","Decimais","gold"],
+    ["mixed","Fase 7 • Templo Matemático","Desafio misto","purple"],["addition","Fase 8 • Cofre da Adição","Números grandes","blue"],
+    ["subtraction","Fase 9 • Ponte da Subtração","Cálculos rápidos","purple"],["multiplication","Fase 10 • Fábrica da Multiplicação","Multiplique com atenção","orange"],
+    ["division","Fase 11 • Desafio da Divisão","Divisões exatas","green"],["fraction","Fase 12 • Laboratório das Frações","Partes e inteiros","teal"],
+    ["decimal","Fase 13 • Cidade dos Decimais","Some e compare decimais","gold"],["mixed","Fase 14 • Desafio dos Exploradores","Misture tudo","purple"],
+    ["mixed","Fase 15 • Grande Final do 4º Ano","Desafio final","red"],
+    ["addition","Fase 16 • Estação dos Números","Adição","blue"],["subtraction","Fase 17 • Desafio das Diferenças","Subtração","purple"],["multiplication","Fase 18 • Arena da Multiplicação","Multiplicação","orange"],["division","Fase 19 • Laboratório da Divisão","Divisão","green"],["mixed","Fase 20 • Mestre do 4º Ano","Desafio final","red"]]},
   g5:{label:"5º ano",title:"Missões do 5º ano",description:"Operações, frações, decimais, porcentagens e desafios.",time:30,questions:15,lives:3,modes:[
-    ["addition","Vila da Soma","Adição","blue"],["subtraction","Floresta dos Números","Subtração","purple"],
-    ["multiplication","Torre da Tabuada","Multiplicação","orange"],["division","Reino da Divisão","Divisão","green"],
-    ["mixed","Templo Matemático","Desafio misto","gold"],["boss","Desafio Final","Modo avançado","red"]]}
+    ["addition","Fase 1 • Vila da Soma","Adição","blue"],["subtraction","Fase 2 • Floresta dos Números","Subtração","purple"],
+    ["multiplication","Fase 3 • Torre da Tabuada","Multiplicação","orange"],["division","Fase 4 • Reino da Divisão","Divisão","green"],
+    ["fraction","Fase 5 • Ilha das Frações","Frações","teal"],["decimal","Fase 6 • Laboratório dos Decimais","Decimais","gold"],
+    ["percent","Fase 7 • Cidade das Porcentagens","Porcentagens","orange"],["mixed","Fase 8 • Templo Matemático","Desafio misto","gold"],
+    ["boss","Fase 9 • Desafio Final","Modo avançado","red"],["addition","Fase 10 • Cofre dos Números","Adições desafiadoras","blue"],
+    ["subtraction","Fase 11 • Vale da Subtração","Subtrações desafiadoras","purple"],["multiplication","Fase 12 • Fábrica da Multiplicação","Multiplicações","orange"],
+    ["division","Fase 13 • Reino dos Quocientes","Divisões","green"],["fraction","Fase 14 • Desafio das Frações","Frações","teal"],
+    ["decimal","Fase 15 • Grande Final do 5º Ano","Decimais e raciocínio","red"],
+    ["percent","Fase 16 • Mercado das Porcentagens","Porcentagens","orange"],["fraction","Fase 17 • Oficina das Frações","Frações","teal"],["decimal","Fase 18 • Desafio dos Decimais","Decimais","gold"],["mixed","Fase 19 • Arena Matemática","Desafio misto","purple"],["boss","Fase 20 • Mestre do 5º Ano","Grande desafio final","red"]]}
 };
 const RANKS_LOCAL=[
 {name:'Bronze',icon:'🥉',min:0,next:500,color:'#cd7f32'},
@@ -499,7 +505,7 @@ async function sendScoreOnline(){
       analytics:{
         mode:game.mode, attempts:game.correct+game.wrong, correct:game.correct, wrong:game.wrong,
         timeouts:game.timeoutCount||0, chutes:game.guessCount||0, penalties:game.penaltyCount||0,
-        maxWrongStreak:game.wrongStreak||0, missionCompleted:1,
+        maxWrongStreak:game.wrongStreak||0, missionCompleted:1, suspiciousAnswers:game.suspiciousAnswers||0,
         recentAttempts:[{mode:game.mode,grade:player.grade,correct:game.correct,wrong:game.wrong,
           chutes:game.guessCount||0,timeouts:game.timeoutCount||0,penalties:game.penaltyCount||0,
           accuracy:(game.correct+game.wrong)?Math.round(game.correct/(game.correct+game.wrong)*100):0,
@@ -670,7 +676,7 @@ function startGame(mode,isAdmin=false){
   const ri=difficultyLevel();
   const phaseIndex=Math.max(0,profile.modes.findIndex(m=>m[0]===mode));
   const phaseBonus=20+phaseIndex*5;
-  game={mode,grade:player.grade,question:0,totalQuestions:profile.questions,answer:0,lives:profile.lives,score:0,correct:0,wrong:0,combo:0,bestCombo:0,locked:false,timeLimit:profile.time,deadline:0,animationFrame:null,phaseIndex,phaseBonus,adminMode:!!isAdmin,wrongStreak:0,hintUsed:false,changeUsed:false,lifeUsed:false,penaltyCount:0,timeoutCount:0,guessCount:0};
+  game={mode,grade:player.grade,question:0,totalQuestions:profile.questions,answer:0,lives:profile.lives,score:0,correct:0,wrong:0,combo:0,bestCombo:0,locked:false,timeLimit:profile.time,deadline:0,animationFrame:null,phaseIndex,phaseBonus,adminMode:!!isAdmin,wrongStreak:0,hintUsed:false,changeUsed:false,lifeUsed:false,penaltyCount:0,timeoutCount:0,guessCount:0,rapidWrongStreak:0,suspiciousAnswers:0,questionStartedAt:0};
   showScreen("gameScreen");renderShop();updateGameHeader();nextQuestion();
 }
 function nextQuestion(replaceCurrent=false){
@@ -687,7 +693,7 @@ function nextQuestion(replaceCurrent=false){
   document.getElementById("answers").innerHTML="";
   document.getElementById("timerText").textContent=game.timeLimit.toFixed(1);
   document.getElementById("timerBar").style.width="100%";
-  createAnswers(q.answer,q.options);updateGameHeader();startTimer();
+  createAnswers(q.answer,q.options);updateGameHeader();game.questionStartedAt=performance.now();startTimer();
 }
 function makeNear(answer,step=1,spread=10){
   const vals=[answer];let tries=0;
@@ -925,8 +931,11 @@ setTimeout(()=>finishGame("time"),900);
 function answerQuestion(button,value){
  if(game.locked)return;
  game.locked=true;cancelTimer();
+ const reactionSeconds=Math.max(0,(performance.now()-(game.questionStartedAt||performance.now()))/1000);
  if(value===game.answer){
-   button.classList.add("correct");game.correct++;game.combo++;game.bestCombo=Math.max(game.bestCombo,game.combo);game.wrongStreak=0;
+   button.classList.add("correct");
+   game.correct++;game.combo++;game.bestCombo=Math.max(game.bestCombo,game.combo);
+   game.wrongStreak=0;game.rapidWrongStreak=0;
    const remaining=Math.max(0,game.deadline-performance.now())/1000;
    const gained=10+Math.floor(remaining)+Math.min(game.combo*2,20);
    game.score+=gained;
@@ -934,21 +943,54 @@ function answerQuestion(button,value){
    document.getElementById("feedback").style.color="#20a875";
    document.getElementById("questionText").classList.add("pop");
  }else{
-   button.classList.add("wrong");game.wrong++;game.guessCount=(game.guessCount||0)+1;game.lives--;game.combo=0;game.wrongStreak=(game.wrongStreak||0)+1;game.penaltyCount=(game.penaltyCount||0)+1;
-   const penalty=game.wrongStreak>=2?7:4;
+   button.classList.add("wrong");
+   game.wrong++;game.lives--;game.combo=0;game.wrongStreak=(game.wrongStreak||0)+1;
+
+   // Anti-chute comportamental:
+   // uma resposta errada isolada NÃO gera penalidade.
+   // Só é sinalizada como possível chute quando há duas respostas erradas
+   // muito rápidas consecutivas. O limiar é adaptado à faixa etária.
+   const fastLimit = ({
+     pre1:2.5,pre2:2.2,g1:1.8,g2:1.6,g3:1.4,g4:1.2,g5:1.1
+   })[game.grade] || 1.3;
+   const wasRapid = reactionSeconds < fastLimit;
+   if(wasRapid){
+     game.rapidWrongStreak=(game.rapidWrongStreak||0)+1;
+   }else{
+     game.rapidWrongStreak=0;
+   }
+
+   let isChute=false;
+   if(!game.adminMode && wasRapid && game.rapidWrongStreak>=2){
+     isChute=true;
+     game.guessCount=(game.guessCount||0)+1;
+     game.suspiciousAnswers=(game.suspiciousAnswers||0)+1;
+     game.penaltyCount=(game.penaltyCount||0)+1;
+   }
+
    if(!game.adminMode){
-     document.getElementById("feedback").textContent=`Resposta errada: 0 pontos nesta questão. Aguarde ${penalty}s antes de continuar. Evite chutar!`;
+     if(isChute){
+       document.getElementById("feedback").textContent=`⚠️ Possível chute detectado (${reactionSeconds.toFixed(1)}s). 0 pontos e aguarde 7s.`;
+       document.getElementById("feedback").style.color="#ff5b68";
+     }else{
+       document.getElementById("feedback").textContent=`Resposta errada. Sem penalidade — reveja com calma e tente novamente.`;
+       document.getElementById("feedback").style.color="#ffb648";
+     }
    }else{
      document.getElementById("feedback").textContent=`Resposta correta: ${game.answer}`;
+     document.getElementById("feedback").style.color="#ffb648";
    }
-   document.getElementById("feedback").style.color="#ff5b68";
-   document.querySelectorAll(".answer-button").forEach(b=>{if(Number(b.textContent)===game.answer)b.classList.add("correct");});
+   document.querySelectorAll(".answer-button").forEach(b=>{
+     if(String(b.textContent)===String(game.answer))b.classList.add("correct");
+   });
  }
  updateGameHeader();
- const wait=(!game.adminMode && game.wrongStreak>=2)?7000:((!game.adminMode && game.wrongStreak>=1)?4000:850);
- setTimeout(()=>{if(game.lives<=0)finishGame("lives");else nextQuestion();},wait);
-}
 
+ const wait=(!game.adminMode && wasRapid && game.rapidWrongStreak>=2)?7000:850;
+ setTimeout(()=>{
+   if(game.lives<=0)finishGame("lives");else nextQuestion();
+ },wait);
+}
 function updateGameHeader(){
 document.getElementById("roundPoints").textContent=game.score;
 document.getElementById("combo").textContent="x"+game.combo;
@@ -958,7 +1000,11 @@ document.getElementById("combo").textContent="x"+game.combo;
 async function finishGame(reason){
 cancelTimer();
 if(game.wrong===0) game.score+=game.phaseBonus||0;
-const missionCoins=(!game.adminMode && reason==="complete")?10:0;
+const missionTotal=game.correct+game.wrong;
+const missionAccuracy=missionTotal?Math.round(game.correct/missionTotal*100):0;
+const missionCoins=(!game.adminMode && reason==="complete")
+  ? (missionAccuracy===100 ? 10 : (missionAccuracy>=90 ? 5 : (missionAccuracy<=80 ? 2 : 0)))
+  : 0;
 if(!game.adminMode){
  player.coins=(player.coins||0)+missionCoins;
  player.totalQuestions=(player.totalQuestions||0)+game.correct+game.wrong;
@@ -968,11 +1014,12 @@ if(!game.adminMode){
  player.totalChutes=(player.totalChutes||0)+(game.guessCount||0);
  player.totalPenalties=(player.totalPenalties||0)+(game.penaltyCount||0);
  player.maxWrongStreak=Math.max(player.maxWrongStreak||0,game.wrongStreak||0);
- player.points+=game.score;player.xp=player.points;player.record=Math.max(player.record,game.score);player.correctTotal=(player.correctTotal||0)+game.correct;player.missionsCompleted=(player.missionsCompleted||0)+(reason==="complete"?1:0);player.completedMissions=Array.from(new Set([...(player.completedMissions||[]),game.mode]));player.bestCombo=Math.max(player.bestCombo||0,game.bestCombo);const missionTotal=game.correct+game.wrong;const acc=missionTotal?Math.round(game.correct/missionTotal*100):0;player.bestAccuracy=Math.max(player.bestAccuracy||0,acc);syncLocalRank();savePlayer();await sendScoreOnline();
+ player.points+=game.score;player.xp=player.points;player.record=Math.max(player.record,game.score);player.correctTotal=(player.correctTotal||0)+game.correct;player.missionsCompleted=(player.missionsCompleted||0)+(reason==="complete"?1:0);player.completedMissions=Array.from(new Set([...(player.completedMissions||[]),game.mode]));player.bestCombo=Math.max(player.bestCombo||0,game.bestCombo);const acc=missionAccuracy;player.bestAccuracy=Math.max(player.bestAccuracy||0,acc);syncLocalRank();savePlayer();await sendScoreOnline();
 }
 document.getElementById("resultCharacter").innerHTML=createCharacterSVG(player.character);
 document.getElementById("finalPoints").textContent=game.score;
- document.getElementById("finalCoins").textContent=game.adminMode?"—":"+"+missionCoins+" 🪙";
+ document.getElementById("finalCoins").textContent=game.adminMode?"—":
+   (missionCoins===10?"+10 🪙 • missão perfeita":missionCoins===5?"+5 🪙 • 90% ou mais":missionCoins===2?"+2 🪙 • até 80%":" +0 🪙 • 81% a 89%");
 document.getElementById("correctCount").textContent=game.correct;
 document.getElementById("wrongCount").textContent=game.wrong;
 const total=game.correct+game.wrong;

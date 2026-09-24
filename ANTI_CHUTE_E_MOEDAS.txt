@@ -1,0 +1,33 @@
+MATH QUEST — ANTI-CHUTE + RECOMPENSAS
+
+ANTI-CHUTE:
+- O jogo mede o tempo entre o aparecimento da questão e a resposta.
+- Uma resposta errada isolada NÃO recebe penalidade de anti-chute.
+- Se houver duas respostas erradas muito rápidas consecutivas, o sistema marca como "possível chute".
+- O limite de resposta rápida é adaptado por turma:
+  Pré I 2,5s | Pré II 2,2s | 1º 1,8s | 2º 1,6s | 3º 1,4s | 4º 1,2s | 5º 1,1s.
+- Só o padrão repetido de respostas rápidas e erradas gera a espera de 7s.
+- O administrador consegue acompanhar os chutes sinalizados separadamente dos erros normais.
+- O sistema é comportamental/heurístico: não afirma a intenção da criança, apenas identifica um padrão compatível com chute.
+- Uma resposta normal errada continua contando como erro da questão e pode consumir uma vida, mas não recebe a penalidade extra de anti-chute.
+
+MOEDAS POR MISSÃO:
+- 100% de acerto: +10 moedas.
+- 90% a 99%: +5 moedas.
+- Até 80%: +2 moedas.
+- 81% a 89%: +0 moedas.
+- Tempo esgotado ou perda de todas as vidas: não há recompensa de conclusão.
+
+MISSÕES:
+- Pré I: 12
+- Pré II: 12
+- 1º ano: 15
+- 2º ano: 15
+- 3º ano: 15
+- 4º ano: 20
+- 5º ano: 20
+
+LOJA:
+- Dica: 5 moedas
+- Mudar questão: 8 moedas
+- Vida extra: 10 moedas
