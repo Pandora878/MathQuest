@@ -1092,6 +1092,7 @@ function answerQuestion(button,value){
  if(game.locked)return;
  game.locked=true;cancelTimer();
  const reactionSeconds=Math.max(0,(performance.now()-(game.questionStartedAt||performance.now()))/1000);
+ let wasRapid=false;
  if(value===game.answer){
    button.classList.add("correct");
    game.correct++;game.combo++;game.bestCombo=Math.max(game.bestCombo,game.combo);
@@ -1113,7 +1114,7 @@ function answerQuestion(button,value){
    const fastLimit = ({
      pre1:2.5,pre2:2.2,g1:1.8,g2:1.6,g3:1.4,g4:1.2,g5:1.1
    })[game.grade] || 1.3;
-   const wasRapid = reactionSeconds < fastLimit;
+   wasRapid = reactionSeconds < fastLimit;
    if(wasRapid){
      game.rapidWrongStreak=(game.rapidWrongStreak||0)+1;
    }else{
