@@ -303,3 +303,19 @@ body{background:radial-gradient(circle at 15% 0,#1b2450 0,transparent 34%),radia
   .turma-analysis-grid .analytics-card:nth-child(3){grid-column:auto}
   .turma-filter-bar{align-items:flex-start;flex-direction:column}
 }
+
+/* ===== POLIMENTO E ESTABILIDADE VISUAL DO JOGO ===== */
+#answers{min-height:170px}
+.answer-button{
+  min-height:78px;
+  transition:transform .15s ease,box-shadow .15s ease,background .15s ease,border-color .15s ease;
+}
+.answer-button:not(:disabled):hover{transform:translateY(-2px)}
+.answer-button.correct{box-shadow:0 0 0 2px rgba(32,168,117,.25),0 8px 22px rgba(32,168,117,.12)}
+.answer-button.wrong{box-shadow:0 0 0 2px rgba(255,91,104,.18)}
+#feedback{min-height:26px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:800}
+.question-card{overflow:hidden}
+@media(max-width:760px){
+  #answers{grid-template-columns:1fr!important}
+  .answer-button{min-height:64px}
+}

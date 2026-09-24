@@ -1,0 +1,7 @@
+Correções desta versão:
+- Proteção contra missão sem gerador de questão.
+- Fallback automático para uma questão válida.
+- Proteção contra duas transições simultâneas.
+- Limpeza do temporizador de transição ao iniciar/trocar questão.
+- Loja protegida quando o tabuleiro ainda não está pronto.
+- Visual dos botões e feedback refinado.

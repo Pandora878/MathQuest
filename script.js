@@ -730,6 +730,7 @@ function updateCoinUI(){
  ["coinBalance","gameCoins"].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=player.coins||0;});
 }
 function spendCoins(cost){
+ if(!game || !document.getElementById("answers")) return false;
  if((player.coins||0)<cost){
   const f=document.getElementById("feedback");if(f){f.textContent=`Você precisa de ${cost} moedas.`;f.style.color="#ffb648";}
   return false;
@@ -774,15 +775,33 @@ function startGame(mode,isAdmin=false){
   const ri=difficultyLevel();
   const phaseIndex=Math.max(0,profile.modes.findIndex(m=>m[0]===mode));
   const phaseBonus=20+phaseIndex*5;
-  game={mode,grade:player.grade,question:0,totalQuestions:profile.questions,answer:0,lives:profile.lives,score:0,correct:0,wrong:0,combo:0,bestCombo:0,locked:false,timeLimit:profile.time,deadline:0,animationFrame:null,phaseIndex,phaseBonus,adminMode:!!isAdmin,wrongStreak:0,hintUsed:false,changeUsed:false,lifeUsed:false,penaltyCount:0,timeoutCount:0,guessCount:0,rapidWrongStreak:0,suspiciousAnswers:0,questionStartedAt:0};
+  game={mode,grade:player.grade,question:0,totalQuestions:profile.questions,answer:0,lives:profile.lives,score:0,correct:0,wrong:0,combo:0,bestCombo:0,locked:false,timeLimit:profile.time,deadline:0,animationFrame:null,transitionTimer:null,phaseIndex,phaseBonus,adminMode:!!isAdmin,wrongStreak:0,hintUsed:false,changeUsed:false,lifeUsed:false,penaltyCount:0,timeoutCount:0,guessCount:0,rapidWrongStreak:0,suspiciousAnswers:0,questionStartedAt:0};
   showScreen("gameScreen");renderShop();updateGameHeader();nextQuestion();
 }
 function nextQuestion(replaceCurrent=false){
   cancelTimer();
+  if(game && game.transitionTimer){clearTimeout(game.transitionTimer);game.transitionTimer=null;}
   if(game.question>=game.totalQuestions){finishGame("complete");return;}
   if(game.lives<=0){finishGame("lives");return;}
   if(!replaceCurrent) game.question++; game.locked=false;
-  const q=generateQuestion(game.mode,game.grade);game.answer=q.answer;
+  let q;
+  try{
+    q=generateQuestion(game.mode,game.grade);
+  }catch(error){
+    console.error("Erro ao gerar questão:",error);
+    q=null;
+  }
+  if(!q || q.answer===undefined || !q.text){
+    // Fallback seguro para que nenhuma missão consiga travar a partida.
+    q=generateQuestion("addition",game.grade);
+  }
+  if(!q || q.answer===undefined || !q.text){
+    q={text:"Resolva: 1 + 1 = ?",answer:2,type:"ADIÇÃO",options:[1,2,3,4]};
+  }
+  if(!Array.isArray(q.options) || q.options.length<2){
+    q.options=makeNear(q.answer,1,4);
+  }
+  game.answer=q.answer;
   document.getElementById("questionNumber").textContent=game.question;
   document.querySelector(".question-counter span").textContent=" / "+game.totalQuestions;
   document.getElementById("questionType").textContent=q.type;
@@ -913,6 +932,8 @@ function generateGrade12Question(mode,grade){
 }
 
 function generateQuestion(mode,grade){
+  // Nomes de missões são independentes do tipo matemático.
+  if(mode==="mixedG1" || mode==="mixedG2") mode="mixed";
   if((grade==="g1"||grade==="g2")){
     const special=generateGrade12Question(mode,grade);
     if(special) return special;
@@ -1085,7 +1106,8 @@ function answerQuestion(button,value){
  updateGameHeader();
 
  const wait=(!game.adminMode && wasRapid && game.rapidWrongStreak>=2)?7000:850;
- setTimeout(()=>{
+ game.transitionTimer=setTimeout(()=>{
+   game.transitionTimer=null;
    if(game.lives<=0)finishGame("lives");else nextQuestion();
  },wait);
 }
