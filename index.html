@@ -1,250 +1,368 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Math Quest</title>
-<link rel="stylesheet" href="style.css?v=5">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PlanejaEdu — Planos de Aula</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="app.js" defer></script>
 </head>
 <body>
-<div id="firebase-status-pill" style="position:fixed;right:14px;top:14px;z-index:9999;padding:7px 11px;border-radius:999px;background:#162a48;color:#b9c8dc;font:700 12px Arial;box-shadow:0 5px 20px #0004">● Firebase: conectando...</div>
-
-<section id="loginScreen" class="screen active">
-  <div class="login-wrapper">
-    <div class="brand"><div class="brand-icon">M</div><div><h1>MATH QUEST</h1><p>Aventura matemática</p></div></div>
-    <div class="login-card">
-      <div class="login-character" id="loginCharacter"></div>
-      <div class="login-title">Vamos começar?</div>
-      <p class="login-description">Digite seu nome para entrar. Use o mesmo nome em outro dispositivo para recuperar sua conta.</p>
-      <label for="playerName">Nome do aluno</label>
-      <input id="playerName" type="text" maxlength="20" placeholder="Digite seu nome">
-      <button id="startButton" class="primary-button">Continuar <span>→</span></button>
-    </div>
-    <div class="copyright">Math Quest • Educação Matemática</div>
-  </div>
-</section>
-
-
-<section id="gradeScreen" class="screen grade-screen">
-  <div class="grade-wrapper">
-    <div class="grade-header">
-      <span>CONFIGURAÇÃO DA AVENTURA</span>
-      <h1>Qual é a sua turma?</h1>
-      <p>Escolha o nível para receber desafios adequados à idade.</p>
-    </div>
-    <div id="gradeOptions" class="grade-grid"></div>
-    <div class="grade-actions"><button id="gradeBack" class="secondary-button">← Voltar</button><button id="adminAccessButton" class="admin-access-button">⚙ Área do Administrador</button></div>
-  </div>
-</section>
-
-<section id="characterScreen" class="screen">
-  <div class="editor-page">
-    <aside class="editor-sidebar">
-      <div class="editor-logo">
-        <div class="editor-logo-mark">M</div>
-        <div><b>MATH<br>QUEST</b><span>APRENDER TAMBÉM É<br>UMA GRANDE AVENTURA</span></div>
+  <div id="loginScreen" class="login-screen">
+    <div class="login-shell">
+      <div class="login-brand-panel">
+        <div class="login-brand">
+          <div class="brand-mark">📚</div>
+          <div>
+            <strong>PlanejaEdu</strong>
+            <span>Gestão pedagógica inteligente</span>
+          </div>
+        </div>
+        <div class="login-panel-content">
+          <span class="eyebrow">PLANEJAMENTO ESCOLAR</span>
+          <h1>Seu planejamento.<br><em>Mais organizado.</em></h1>
+          <p>Crie, organize e acompanhe seus planos de aula com uma experiência simples, elegante e profissional.</p>
+          <div class="login-benefits">
+            <div><b>✓</b><span>Planos organizados por turma e disciplina</span></div>
+            <div><b>✓</b><span>Integração com Firebase</span></div>
+            <div><b>✓</b><span>Impressão e PDF com cabeçalho institucional</span></div>
+          </div>
+        </div>
+        <div class="login-footer">PlanejaEdu • Gestão de planos de aula</div>
       </div>
-      <nav class="editor-nav">
-        <button class="editor-nav-item active">⌂ <span>Início</span></button>
-        <button class="editor-nav-item active">● <span>Meu Personagem</span></button>
-        <button class="editor-nav-item">◇ <span>Missões</span></button>
-        <button class="editor-nav-item student-hidden-ranking" type="button" aria-hidden="true" tabindex="-1">★ <span>Meu progresso</span></button>
-        <button class="editor-nav-item">✦ <span>Conquistas</span></button>
-        <button class="editor-nav-item">⚙ <span>Configurações</span></button>
+
+      <div class="login-card">
+        <div class="auth-tabs">
+          <button id="tabLogin" class="auth-tab active" type="button">Entrar</button>
+          <button id="tabSignup" class="auth-tab" type="button">Criar conta</button>
+        </div>
+
+        <div id="loginPanel">
+          <h2>Bem-vindo(a) de volta</h2>
+          <p class="auth-subtitle">Entre para acessar seus planejamentos.</p>
+          <form id="loginForm">
+            <label>E-mail
+              <input id="email" type="email" placeholder="seuemail@escola.com" required>
+            </label>
+            <label>Senha
+              <input id="password" type="password" placeholder="Digite sua senha" required>
+            </label>
+            <button class="primary full" type="submit">Entrar na plataforma <span>→</span></button>
+          </form>
+          <button id="demoBtn" class="secondary full">Conhecer em modo demonstração</button>
+          <small>Use sua conta cadastrada no Firebase.</small>
+        </div>
+
+        <div id="signupPanel" class="hidden">
+          <h2>Crie sua conta</h2>
+          <p class="auth-subtitle">Cadastre seu acesso para começar a planejar.</p>
+          <form id="signupForm">
+            <label>Nome completo
+              <input id="signupName" type="text" placeholder="Seu nome completo" required>
+            </label>
+            <label>E-mail
+              <input id="signupEmail" type="email" placeholder="seuemail@escola.com" required>
+            </label>
+            <label>Senha
+              <input id="signupPassword" type="password" minlength="6" placeholder="Mínimo de 6 caracteres" required>
+            </label>
+            <label>Confirmar senha
+              <input id="signupPassword2" type="password" minlength="6" placeholder="Repita sua senha" required>
+            </label>
+            <button class="primary full" type="submit">Criar minha conta <span>→</span></button>
+          </form>
+          <small>A conta será criada no Firebase Authentication.</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="paymentScreen" class="payment-screen hidden">
+    <div class="payment-card">
+      <div class="payment-brand">
+        <div class="brand-mark small">📚</div>
+        <div><strong>PlanejaEdu</strong><span>Acesso à plataforma</span></div>
+      </div>
+
+      <div class="payment-step">
+        <span>01</span><div><b>Ative seu acesso</b><small>Pagamento único de R$ 10,00</small></div>
+      </div>
+
+      <div class="pix-box">
+        <div class="pix-title">
+          <span class="pix-icon">PIX</span>
+          <div><b>Libere seu acesso</b><small>Escaneie o QR Code abaixo</small></div>
+        </div>
+        <img src="assets/pix-10-reais.png" class="pix-image" alt="QR Code para pagamento de R$ 10,00">
+        <div class="payment-value"><span>Valor do acesso</span><strong>R$ 10,00</strong></div>
+      </div>
+
+      <div class="payment-instructions">
+        <div><span>1</span> Faça o PIX de <b>R$ 10,00</b>.</div>
+        <div><span>2</span> Tire um print ou guarde o comprovante.</div>
+        <div><span>3</span> Clique abaixo e envie seu pedido pelo WhatsApp.</div>
+      </div>
+
+      <a id="whatsappRequestBtn" class="whatsapp-btn" href="#" target="_blank" rel="noopener">
+        <span>◉</span> Enviar pedido pelo WhatsApp
+      </a>
+      <button id="paymentRefreshBtn" class="secondary full" type="button">Já enviei o pedido — verificar acesso</button>
+      <button id="paymentLogoutBtn" class="link-btn" type="button">Sair da conta</button>
+
+      <div id="paymentStatus" class="payment-status pending">
+        <b>⏳ Aguardando liberação</b>
+        <span>Após enviar o comprovante, o administrador irá analisar e liberar sua conta.</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="app" class="app hidden">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark small">📚</div>
+        <div><strong>Planeja<span>Edu</span></strong><small>GESTÃO PEDAGÓGICA</small></div>
+      </div>
+
+      <div class="menu-label">MENU PRINCIPAL</div>
+      <nav>
+        <button data-page="dashboard" class="nav-btn active"><span class="nav-icon">⌂</span><span>Visão geral</span></button>
+        <button data-page="novo" class="nav-btn"><span class="nav-icon">＋</span><span>Novo plano</span><b class="nav-badge">Criar</b></button>
+        <button data-page="planos" class="nav-btn"><span class="nav-icon">▤</span><span>Meus planos</span></button>
+        <button data-page="calendario" class="nav-btn"><span class="nav-icon">□</span><span>Planejamento</span></button>
+        <button data-page="bncc" class="nav-btn"><span class="nav-icon">◇</span><span>BNCC</span></button>
       </nav>
-      <div class="editor-sidebar-card"><strong>PEQUENOS<br>DESAFIOS<br>GRANDES<br>CONQUISTAS</strong></div>
+
+      <div class="sidebar-divider"></div>
+      <div id="adminMenuWrap" class="hidden">
+        <div class="sidebar-divider"></div>
+        <div class="menu-label">ADMINISTRAÇÃO</div>
+        <nav>
+          <button data-page="admin" class="nav-btn"><span class="nav-icon">⚙</span><span>Gestão de professoras</span></button>
+        </nav>
+      </div>
+
+      <div class="menu-label">SISTEMA</div>
+      <nav>
+        <button id="profileBtn" class="nav-btn"><span class="nav-icon">○</span><span>Meu perfil</span></button>
+        <button id="logoutBtn" class="nav-btn"><span class="nav-icon">↪</span><span>Sair da conta</span></button>
+      </nav>
+
+      <div class="sidebar-user">
+        <div class="avatar" id="sideAvatar">P</div>
+        <div><strong id="sideUserName">Professor(a)</strong><span>Conta ativa</span></div>
+        <i>•••</i>
+      </div>
     </aside>
 
-    <main class="editor-main">
-      <header class="editor-topbar">
-        <button id="editorBack" class="editor-back">← Voltar</button>
-        <div><h1>Personalize seu personagem</h1><p>Crie um visual único e entre nessa aventura!</p></div>
-        <div class="editor-points">★ <b id="editorPoints">0</b><span>Pontos</span></div>
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <h2 id="pageTitle">Início</h2>
+          <span id="welcomeText">Bem-vindo(a)!</span>
+        </div>
+        <button id="headerNewBtn" class="primary">+ Novo plano</button>
       </header>
 
-      <div class="editor-workspace">
-        <div class="editor-controls">
-          <div class="editor-panel">
-            <h2>1. Escolha seu animal</h2>
-            <div id="animalOptions" class="animal-options"></div>
+      <section id="page-dashboard" class="page">
+        <div class="hero">
+          <div>
+            <span class="eyebrow">PLANEJAMENTO ESCOLAR</span>
+            <h1>Organize seus planos de aula em um só lugar.</h1>
+            <p>Crie, salve, pesquise, imprima e gere PDFs com o cabeçalho correto para cada instituição.</p>
+            <button class="primary" id="heroNewBtn">Criar plano agora</button>
           </div>
+          <div class="hero-icon">🗂️</div>
+        </div>
+        <div class="stats">
+          <div class="stat"><span>Planos salvos</span><strong id="statPlans">0</strong></div>
+          <div class="stat"><span>Este mês</span><strong id="statMonth">0</strong></div>
+          <div class="stat"><span>Favoritos</span><strong id="statFav">0</strong></div>
+        </div>
+        <div class="section-head"><h3>Últimos planos</h3><button class="text-btn" data-page="planos">Ver todos</button></div>
+        <div id="recentPlans" class="cards"></div>
+      </section>
 
-          <div class="editor-panel">
-            <h2>2. Cor da pele / pelagem</h2>
-            <div id="furOptions" class="swatches"></div>
-          </div>
-
-          <div class="editor-panel">
-            <h2>3. Estilo da cabeça</h2>
-            <div id="headOptions" class="style-options"></div>
-          </div>
-
-          <div class="editor-panel">
-            <h2>4. Roupa (camisa/moletom)</h2>
-            <div id="shirtOptions" class="style-options"></div>
-          </div>
-
-          <div class="editor-panel">
-            <h2>5. Cor dos itens</h2>
-            <div class="color-pickers">
-              <label>Cor da cabeça <input id="headColorPicker" type="color" value="#2674ff"></label>
-              <label>Cor do acessório <input id="accessoryColorPicker" type="color" value="#ffd166"></label>
-              <label>Cor dos olhos <input id="eyeColorPicker" type="color" value="#182033"></label>
+      <section id="page-novo" class="page hidden">
+        <div class="form-layout">
+          <form id="planForm" class="form-card">
+            <div class="section-title"><span>1</span><div><h3>Identificação</h3><p>Defina instituição, etapa, turma e componente.</p></div></div>
+            <div class="grid two">
+              <label>Instituição
+                <select id="instituicao" required>
+                  <option value="">Selecione</option>
+                  <option value="creche">Creche</option>
+                  <option value="escola">Escola Municipal Professora Irmã Blandina CISZ</option>
+                  <option value="integral">Educação em Tempo Integral</option>
+                </select>
+              </label>
+              <label>Ano/Série
+                <select id="etapa" required>
+                  <option value="">Selecione</option>
+                  <option>Educação Infantil</option><option>Pré I</option><option>Pré II</option>
+                  <option>1º ano</option><option>2º ano</option><option>3º ano</option><option>4º ano</option><option>5º ano</option>
+                </select>
+              </label>
+              <label>Turma <input id="turma" placeholder="Ex.: 3º ano A"></label>
+              <label>Componente curricular
+                <select id="disciplina" required>
+                  <option value="">Selecione</option>
+                  <option>Português</option><option>Matemática</option><option>Ciências</option><option>História</option>
+                  <option>Geografia</option><option>Ensino Religioso</option><option>Arte</option><option>Educação Física</option>
+                  <option>Projetos interdisciplinares</option>
+                </select>
+              </label>
+              <label>Professor(a) <input id="professor" placeholder="Nome do professor"></label>
+              <label>Data <input id="data" type="date"></label>
+              <label>Duração <input id="duracao" placeholder="Ex.: 2 aulas / 90 minutos"></label>
+              <label>Unidade temática <input id="unidade" placeholder="Ex.: Números"></label>
             </div>
-          </div>
 
-          <div class="editor-panel">
-            <h2>6. Acessórios e itens especiais</h2>
-            <div id="accessoryOptions" class="style-options"></div>
-          </div>
-
-          <div class="editor-panel skin-shop-panel">
-            <div class="skin-shop-heading">
-              <div>
-                <h2>7. Loja de skins</h2>
-                <p>Desbloqueie visuais especiais usando suas moedas.</p>
-              </div>
-              <strong>🪙 <b id="skinCoinBalance">0</b></strong>
+            <div class="section-title"><span>2</span><div><h3>Conteúdo pedagógico</h3><p>Preencha manualmente ou use um modelo rápido.</p></div></div>
+            <div class="quick-models">
+              <button type="button" data-model="leitura">📖 Leitura e interpretação</button>
+              <button type="button" data-model="fracao">➗ Frações</button>
+              <button type="button" data-model="ciencias">🔬 Ciências</button>
+              <button type="button" data-model="projeto">🌱 Projeto interdisciplinar</button>
             </div>
-            <div id="skinOptions" class="skin-options"></div>
+            <label>Tema <input id="tema" required placeholder="Tema da aula"></label>
+            <label>Objeto de conhecimento <textarea id="objeto" rows="2"></textarea></label>
+            <label>Habilidades da BNCC <textarea id="habilidades" rows="3" placeholder="Código e descrição da habilidade"></textarea></label>
+            <div class="grid two">
+              <label>Objetivo geral <textarea id="objetivoGeral" rows="4"></textarea></label>
+              <label>Objetivos específicos <textarea id="objetivosEspecificos" rows="4"></textarea></label>
+            </div>
+            <label>Conteúdos <textarea id="conteudos" rows="4"></textarea></label>
+            <label>Metodologia <textarea id="metodologia" rows="5"></textarea></label>
+            <label>Desenvolvimento da aula <textarea id="desenvolvimento" rows="6"></textarea></label>
+            <label>Recursos didáticos <textarea id="recursos" rows="3"></textarea></label>
+            <label>Atividades <textarea id="atividades" rows="5"></textarea></label>
+            <div class="grid two">
+              <label>Avaliação <textarea id="avaliacao" rows="4"></textarea></label>
+              <label>Adaptações e inclusão <textarea id="inclusao" rows="4"></textarea></label>
+            </div>
+            <label>Referências <textarea id="referencias" rows="3"></textarea></label>
+
+            <div class="form-actions">
+              <button type="button" id="clearBtn" class="secondary">Limpar</button>
+              <button type="button" id="previewBtn" class="secondary">Pré-visualizar</button>
+              <button type="submit" class="primary">Salvar plano</button>
+            </div>
+          </form>
+
+          <aside class="preview-card">
+            <div class="preview-head"><strong>Prévia</strong><span id="previewInstitution">Selecione a instituição</span></div>
+            <div id="miniHeader" class="mini-header">O cabeçalho aparecerá aqui.</div>
+            <div id="miniPreview" class="mini-preview">
+              <h3 id="miniTema">Tema da aula</h3>
+              <p id="miniMeta">Ano/Série • Componente</p>
+              <hr>
+              <strong>Objetivo geral</strong><p id="miniObjetivo">—</p>
+              <strong>Metodologia</strong><p id="miniMetodologia">—</p>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="page-planos" class="page hidden">
+        <div class="toolbar">
+          <input id="searchPlans" placeholder="🔎 Pesquisar por tema, turma ou disciplina">
+          <select id="filterDisc"><option value="">Todas as disciplinas</option></select>
+        </div>
+        <div id="allPlans" class="cards"></div>
+      </section>
+
+      <section id="page-calendario" class="page hidden">
+        <div class="calendar-card">
+          <h3>Planejamento semanal</h3>
+          <div id="weeklyGrid" class="weekly-grid"></div>
+        </div>
+      </section>
+
+      <section id="page-bncc" class="page hidden">
+        <div class="bncc-card">
+          <h3>Banco de habilidades</h3>
+          <p>Cadastre ou consulte códigos e descrições usados nos seus planos. O banco pode ser ampliado no Firebase.</p>
+          <div id="bnccList" class="bncc-list"></div>
+        </div>
+      </section>
+
+      <section id="page-admin" class="page hidden">
+        <div class="admin-hero">
+          <div>
+            <span class="eyebrow">ÁREA ADMINISTRATIVA</span>
+            <h1>Gestão personalizada das professoras</h1>
+            <p>Defina exatamente quais etapas, disciplinas e recursos cada conta poderá utilizar.</p>
+          </div>
+          <div class="admin-hero-icon">⚙</div>
+        </div>
+
+        <div class="admin-payment-card admin-card">
+          <div class="admin-card-head">
+            <div><span class="card-kicker">ACESSOS</span><h3>Pedidos de acesso e pagamentos</h3></div>
+            <button id="refreshAccessBtn" class="secondary">Atualizar</button>
+          </div>
+          <p class="admin-help">Aprove professoras que pagaram ou libere contas gratuitamente quando desejar.</p>
+          <div id="accessRequestList" class="access-list">
+            <div class="empty-admin">Carregando pedidos...</div>
           </div>
         </div>
 
-        <aside class="editor-preview">
-          <div class="speech">✦ Conhecimento<br>te leva mais longe!</div>
-          <div id="bigCharacter" class="big-character"></div>
-          <div class="preview-stat"><span>Nome</span><b id="previewName">Luna</b><i>✎</i></div>
-          <div class="preview-stat"><span>Nível</span><b id="previewLevel">1</b><div class="preview-xp"><div id="previewXpBar"></div></div><small id="previewXp">0 / 100 XP</small></div>
-          <div class="preview-stat points-stat">★ <b id="previewPoints">0</b><span>Pontos</span></div>
-          <button id="enterGameButton" class="save-character">✓ &nbsp; Salvar Personagem</button>
-        </aside>
-      </div>
+        <div class="admin-grid">
+          <div class="admin-card">
+            <div class="admin-card-head">
+              <div><span class="card-kicker">CONTAS</span><h3>Professoras cadastradas</h3></div>
+              <button id="refreshTeachersBtn" class="secondary">Atualizar</button>
+            </div>
+            <div id="teacherList" class="teacher-list">
+              <div class="empty-admin">Carregando contas...</div>
+            </div>
+          </div>
 
-      <div class="editor-bottom">
-        <div><h2>Prévia do personagem</h2><div class="rank-preview"><div id="rankCharacter"></div><b id="rankName">Luna</b><span>✎</span></div></div>
-        <div class="mini-stats"><div><b>8</b><span>Acertos</span></div><div><b>2</b><span>Erros</span></div><div><b>80%</b><span>Precisão</span></div><div><b>4</b><span>Melhor combo</span></div></div>
-      </div>
+          <div class="admin-card">
+            <div class="admin-card-head">
+              <div><span class="card-kicker">PERSONALIZAÇÃO</span><h3>Permissões da conta</h3></div>
+              <span id="selectedTeacherLabel" class="selected-label">Nenhuma selecionada</span>
+            </div>
+            <form id="teacherAccessForm">
+              <input type="hidden" id="selectedTeacherId">
+              <label>Nome da professora
+                <input id="adminTeacherName" readonly>
+              </label>
+              <label>E-mail
+                <input id="adminTeacherEmail" readonly>
+              </label>
+              <label>Instituição
+                <select id="adminInstitution">
+                  <option value="creche">Creche</option>
+                  <option value="escola">Escola Municipal Professora Irmã Blandina CISZ</option>
+                  <option value="integral">Educação em Tempo Integral</option>
+                </select>
+              </label>
+              <div class="permission-section">
+                <div class="permission-title">Etapas liberadas</div>
+                <div id="stageChecks" class="check-grid"></div>
+              </div>
+              <div class="permission-section">
+                <div class="permission-title">Disciplinas liberadas</div>
+                <div id="subjectChecks" class="check-grid"></div>
+              </div>
+              <div class="permission-section">
+                <div class="permission-title">Recursos liberados</div>
+                <div id="featureChecks" class="check-grid"></div>
+              </div>
+              <label>Observação interna
+                <textarea id="adminNotes" rows="3" placeholder="Ex.: Plano personalizado para a professora..."></textarea>
+              </label>
+              <button id="saveTeacherAccess" class="primary full" type="submit">Salvar personalização</button>
+            </form>
+          </div>
+        </div>
+      </section>
     </main>
   </div>
-</section>
 
-<section id="adminScreen" class="screen admin-screen">
-<div class="admin-page">
-<header class="admin-header"><div><span>ÁREA RESTRITA</span><h1>Painel do Administrador</h1><p>Veja todas as turmas, todas as fases e entre em qualquer jogo para testar.</p></div><div class="admin-header-actions"><button id="adminAnalyticsButton" class="admin-analysis-button">📊 Analisar turmas</button><button id="adminGamesButton" class="admin-games-button">🎮 Jogos</button><button id="adminBackButton" class="secondary-button">← Voltar</button></div></header>
-<div class="admin-info"><div>🎮 <strong>Modo de teste</strong><span>Jogar aqui não altera o ranking dos alunos.</span></div><div>⏱️ <strong>Tempos</strong><span>Pré I/II 60s • 1º/2º 120s • 3º 60s • 4º 40s • 5º 30s</span></div><div>🚫 <strong>Anti-chute</strong><span>Erros consecutivos geram espera e perda de pontos.</span></div></div>
-<div id="adminGradeGrid" class="admin-grade-grid"></div>
-</div></section>
-
-<section id="adminAnalyticsScreen" class="screen admin-analytics-screen"><div class="admin-page"><header class="admin-header"><div><span>ÁREA RESTRITA • GESTÃO</span><h1>Análise das turmas</h1><p>Desempenho, dificuldades, erros/chutes, penalidades e ranking — somente para o administrador.</p></div><button id="adminAnalyticsBackButton" class="secondary-button">← Voltar</button></header><div id="adminAnalyticsBody"></div></div></section>
-<section id="adminGamesScreen" class="screen admin-games-screen">
-<div class="admin-page">
-<header class="admin-header">
-  <div><span>ÁREA RESTRITA • ADMIN</span><h1>Jogos</h1><p>Todas as turmas e todas as fases estão desbloqueadas para teste.</p></div>
-  <button id="adminGamesBackButton" class="secondary-button">← Voltar ao painel</button>
-</header>
-<div class="admin-unlocked-banner">🔓 <strong>Modo administrador:</strong> todas as fases estão liberadas. Jogar aqui não altera o ranking dos alunos.</div>
-<div id="adminGamesGrid" class="admin-games-grid"></div>
-</div>
-</section>
-
-<section id="menuScreen" class="screen dashboard-screen">
-  <div class="dashboard">
-    <header class="dashboard-header">
-      <div class="profile">
-        <div id="smallCharacter" class="small-character"></div>
-        <div><strong id="dashboardName">Jogador</strong><span id="dashboardGrade">Turma</span><span id="dashboardLevel">Nível 1</span></div>
-      </div>
-      <div class="top-stats">
-        <div class="top-stat"><span>Pontos</span><strong id="totalPoints">0</strong></div>
-        <div class="top-stat"><span>Recorde</span><strong id="recordPoints">0</strong></div>
-      </div>
-    </header>
-
-    <div class="welcome"><div><span id="gradeBadge">ÁREA DO JOGADOR</span><h1 id="gradeTitle">Escolha sua missão</h1><p id="gradeDescription">Resolva os desafios antes que o tempo acabe.</p></div></div>
-
-    <div class="menu-character-actions">
-      <div class="menu-character-callout">
-        <div class="menu-character-avatar" id="menuCharacterAvatar"></div>
-        <div><span>SEU PERSONAGEM</span><strong>Deixe seu personagem do seu jeito</strong><small>Troque o animal, roupas, acessórios e skins.</small></div>
-      </div>
-      <button id="openCharacterFromMenu" class="menu-character-button">🎨 Personalizar personagem</button>
-    </div>
-
-    <div class="xp-card">
-      <div class="xp-info"><strong>Progresso</strong><span id="xpText">0 / 100 XP</span></div>
-      <div class="xp-track"><div id="xpBar" class="xp-bar"></div></div>
-    </div><div class="dashboard-toolbar"><div><h2 class="section-heading">Mapa de fases</h2><p class="section-subtitle">Complete as fases em ordem e desbloqueie novos desafios.</p></div><div class="daily-badge">🎯 Missão do dia</div></div>
-    <div id="missionGrid" class="mission-grid"></div>
-
-    <h2 class="section-heading">Conquistas</h2>
-    <div id="achievementGrid" class="achievement-grid"></div>
-
-    <div class="student-shop-panel">
-      <div class="student-shop-head"><div><span>MOEDINHAS</span><h2>Loja de ajudas</h2><p>100% = <strong>10 🪙</strong> • 90% a 99% = <strong>5 🪙</strong> • até 80% = <strong>2 🪙</strong></p></div><strong>🪙 <b id="coinBalance">0</b></strong></div>
-      <div id="shopDashboardItems" class="shop-dashboard-items"></div>
-    </div>
-
-    <div class="character-store-panel">
-      <div class="character-store-head">
-        <div><span>PERSONAGENS E VISUAIS</span><h2>Loja de itens e personagens</h2><p>Escolha seu animal ou desbloqueie uma skin especial.</p></div>
-        <button id="openCharacterStoreButton" class="character-store-customize">🎨 Personalizar</button>
-      </div>
-      <div id="characterStoreDashboard" class="character-store-grid"></div>
-    </div>
-  </div>
-</section>
-<section id="gameScreen" class="screen game-screen">
-  <div class="game-container">
-    <header class="game-header">
-      <button id="exitGame" class="icon-button">←</button>
-      <div class="question-counter">Questão <strong id="questionNumber">1</strong><span> / 10</span></div>
-      <div class="lives"><span id="life1" class="life active"></span><span id="life2" class="life active"></span><span id="life3" class="life active"></span></div>
-    </header>
-
-    <div class="timer-container">
-      <div class="timer-label"><span>TEMPO</span><strong id="timerText">15.0</strong></div>
-      <div class="timer-track"><div id="timerBar" class="timer-bar"></div></div>
-    </div>
-
-    <main class="question-card">
-      <div id="questionType" class="question-type">ADIÇÃO</div>
-      <div id="questionText" class="question-text">15 + 7 = ?</div>
-      <p class="question-help">Escolha a resposta correta</p>
-      <div id="answers" class="answers"></div>
-      <div id="feedback" class="feedback"></div>
-    </main>
-
-    <div class="game-footer">
-      <div><span>Pontos</span><strong id="roundPoints">0</strong></div>
-      <div><span>Combo</span><strong id="combo" class="combo-value">x0</strong></div>
-      <div><span>Moedas</span><strong>🪙 <b id="gameCoins">0</b></strong></div>
-    </div>
-    <div class="game-shop"><div class="game-shop-title"><strong>Loja rápida</strong><span>Use suas moedas</span></div><div id="shopItems" class="shop-items"></div></div>
-  </div>
-</section>
-
-<section id="resultScreen" class="screen">
-  <div class="result-card">
-    <div id="resultCharacter" class="result-character"></div>
-    <div class="result-label">DESAFIO ENCERRADO</div>
-    <h1 id="resultTitle">Muito bem!</h1>
-    <p id="resultMessage">Você terminou a missão.</p>
-    <div class="final-points"><span>Pontuação</span><strong id="finalPoints">0</strong></div><div class="final-coins">🪙 <strong id="finalCoins">+0 🪙</strong> moedas da missão</div>
-    <div class="result-stats">
-      <div><strong id="correctCount">0</strong><span>Acertos</span></div>
-      <div><strong id="wrongCount">0</strong><span>Erros</span></div>
-      <div><strong id="accuracy">0%</strong><span>Precisão</span></div>
-      <div><strong id="bestCombo">0</strong><span>Melhor combo</span></div>
-    </div>
-    <button id="backMenu" class="primary-button">Voltar ao mapa <span>→</span></button>
-  </div>
-</section>
-
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js?v=5"></script>
-<script src="firebase-ranking.js?v=5"></script>
-<script src="script.js?v=5"></script>
+  <div id="printArea" class="print-area"></div>
+  <div id="toast" class="toast"></div>
 </body>
 </html>

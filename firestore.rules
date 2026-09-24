@@ -1,155 +1,33 @@
 rules_version = '2';
-
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ================================
-    // FUNÇÕES DE SEGURANÇA
-    // ================================
-
-    function signedIn() {
-      return request.auth != null;
+    // Perfil de cada conta. O próprio usuário pode ler seu perfil.
+    // A edição de permissões deve ser feita pelo administrador.
+    match /usuarios/{userId} {
+      allow read: if request.auth != null && (
+        request.auth.uid == userId ||
+        request.auth.token.email == "admin@planejaedu.com"
+      );
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update: if request.auth != null && (
+        request.auth.token.email == "admin@planejaedu.com"
+      );
     }
 
-    function isAdmin() {
-      return signedIn()
-        && exists(
-          /databases/$(database)/documents/admins/$(request.auth.uid)
-        )
-        && get(
-          /databases/$(database)/documents/admins/$(request.auth.uid)
-        ).data.role == "admin";
-    }
+    match /planos/{planId} {
+      allow read: if request.auth != null && (
+        resource.data.uid == request.auth.uid ||
+        request.auth.token.email == "admin@planejaedu.com"
+      );
 
+      allow create: if request.auth != null
+        && request.resource.data.uid == request.auth.uid;
 
-    // ================================
-    // ADMINISTRADORES
-    // ================================
-
-    match /admins/{uid} {
-
-      // Cada administrador pode consultar
-      // o próprio registro.
-      allow read: if signedIn()
-        && request.auth.uid == uid;
-
-      // Não permite criar/alterar administrador
-      // pelo aplicativo.
-      allow write: if false;
-    }
-
-
-    // ================================
-    // RANKING DO MATH QUEST
-    // ================================
-
-    match /mathQuestRanking/{grade}/players/{playerId} {
-
-      // -------------------------------
-      // LEITURA
-      // -------------------------------
-
-      // Alunos logados podem visualizar
-      // o ranking da turma.
-      //
-      // Administradores também podem visualizar
-      // todos os rankings.
-      allow read: if signedIn();
-
-
-      // -------------------------------
-      // CRIAÇÃO
-      // -------------------------------
-
-      // ADMIN:
-      // Pode criar registros para testes,
-      // correções ou gerenciamento.
-      allow create: if isAdmin();
-
-
-      // ALUNO:
-      // Só pode criar o próprio registro.
-      allow create: if signedIn()
-        && playerId == request.auth.uid
-        && request.resource.data.authUid == request.auth.uid
-        && request.resource.data.grade == grade;
-
-
-      // -------------------------------
-      // ATUALIZAÇÃO
-      // -------------------------------
-
-      // ADMIN:
-      // Pode atualizar qualquer jogador.
-      //
-      // Isso permite que a conta administradora
-      // tenha moedas infinitas no modo de teste,
-      // sem ficar limitada às regras dos alunos.
-      allow update: if isAdmin();
-
-
-      // ALUNO:
-      // Só pode atualizar o próprio registro.
-      allow update: if signedIn()
-        && playerId == request.auth.uid
-
-        // O documento antigo pertence ao próprio usuário.
-        && resource.data.authUid == request.auth.uid
-
-        // O novo documento continua pertencendo
-        // ao próprio usuário.
-        && request.resource.data.authUid == request.auth.uid
-
-        // Não pode trocar a turma pelo cliente.
-        && request.resource.data.grade == grade;
-
-
-      // -------------------------------
-      // EXCLUSÃO
-      // -------------------------------
-
-      // Somente administrador pode apagar
-      // jogadores do ranking.
-      allow delete: if isAdmin();
-    }
-
-
-    // ================================
-    // BLOQUEIO GERAL
-    // ================================
-
-    // Qualquer coleção que não tenha uma
-    // regra específica acima fica bloqueada.
-    match /{document=**} {
-      allow read, write: if false;
-
-
-}
-    // CONTAS DO MATH QUEST
-    // O ID do documento é o nome normalizado da conta.
-    // Isso permite recuperar a mesma conta em outro dispositivo
-    // digitando o mesmo nome.
-    match /mathQuestAccounts/{username} {
-      allow read, create, update: if signedIn();
-      allow delete: if false;
-    }
-
-    // RANKING / DADOS DE DESEMPENHO
-    // A interface do aluno não consulta esta coleção.
-    // O painel administrativo continua usando estes dados.
-    match /mathQuestRanking/{grade}/players/{playerId} {
-      allow read: if signedIn();
-
-      allow create, update: if signedIn();
-
-      allow delete: if false;
-    }
-
-    // Bloqueia qualquer outra coleção.
-    match /{document=**} {
-      allow read, write: if false;
+      allow update, delete: if request.auth != null && (
+        resource.data.uid == request.auth.uid ||
+        request.auth.token.email == "admin@planejaedu.com"
+      );
     }
   }
 }
-
-    
