@@ -425,13 +425,23 @@ function savePlayer(){
   localStorage.setItem(storageKey(),JSON.stringify(player));
 }
 
+async function syncAccountCloud(){
+  if(!(window.FirebaseRanking && FirebaseRanking.isConfigured()) || !player.name)return;
+  try{
+    applyTestAdminAccount();
+    await FirebaseRanking.saveAccount(player);
+  }catch(e){
+    console.warn('Não foi possível sincronizar a conta:',e);
+  }
+}
+
 function buildGradeOptions(){
   const box=document.getElementById("gradeOptions");box.innerHTML="";
   Object.entries(gradeProfiles).forEach(([id,p])=>{
     const b=document.createElement("button");
     b.className="grade-card"+(player.grade===id?" selected":"");
     b.innerHTML=`<div class="grade-number">${p.label}</div><strong>${p.title}</strong><span>${p.description}</span><b>→</b>`;
-    b.onclick=()=>{selectedGrade=id;player.grade=id;document.querySelectorAll(".grade-card").forEach(x=>x.classList.remove("selected"));b.classList.add("selected");setTimeout(openCharacterEditor,120);};
+    b.onclick=()=>{selectedGrade=id;player.grade=id;savePlayer();syncAccountCloud();document.querySelectorAll(".grade-card").forEach(x=>x.classList.remove("selected"));b.classList.add("selected");setTimeout(openCharacterEditor,120);};
     box.appendChild(b);
   });
 }
@@ -444,11 +454,29 @@ function openCharacterEditor(){
   document.getElementById("previewXpBar").style.width=(player.xp%100)+"%";
   showScreen("characterScreen");
 }
-function startLogin(){
+async function startLogin(){
   const input=document.getElementById("playerName"),name=input.value.trim();
   if(!name){input.focus();return;}
-  player.name=name;loadPlayer();applyTestAdminAccount();savePlayer();selectedGrade=player.grade||"g5";buildGradeOptions();showScreen("gradeScreen");
+  player.name=name;
+  loadPlayer();
+  if(window.FirebaseRanking && FirebaseRanking.isConfigured()) {
+    try{
+      const cloud=await FirebaseRanking.loadAccount(name);
+      if(cloud){
+        player={...player,...cloud,name:cloud.name||name};
+        if(cloud.customization) customization={...customization,...cloud.customization};
+        if(!Array.isArray(player.ownedSkins))player.ownedSkins=[];
+      }
+    }catch(e){ console.warn('Conta online indisponível; usando dados locais:',e); }
+  }
+  applyTestAdminAccount();
+  savePlayer();
+  selectedGrade=player.grade||"g5";
+  buildGradeOptions();
+  showScreen("gradeScreen");
+  syncAccountCloud();
 }
+
 document.getElementById("startButton").onclick=startLogin;
 document.getElementById("playerName").addEventListener("keydown",e=>{if(e.key==="Enter")startLogin();});
 document.getElementById("gradeBack").onclick=()=>showScreen("loginScreen");
@@ -464,28 +492,41 @@ document.getElementById("openCharacterStoreButton").onclick=openCharacterFromMen
 document.getElementById("enterGameButton").onclick=()=>{
   player.customization=JSON.parse(JSON.stringify(customization));
   savePlayer();
+  syncAccountCloud();
   updateDashboard();
   showScreen("menuScreen");
 };
-document.getElementById("editorBack").onclick=()=>{savePlayer();buildGradeOptions();showScreen("gradeScreen");};
+document.getElementById("editorBack").onclick=()=>{savePlayer();syncAccountCloud();buildGradeOptions();showScreen("gradeScreen");};
 
 
 async function updateDashboard(){
   applyTestAdminAccount();
-  const profile=gradeProfiles[player.grade]||gradeProfiles.g5;
   if(window.FirebaseRanking && FirebaseRanking.isConfigured()){
     try{
-      const cloud=await FirebaseRanking.loadScore(player.grade||'g5');
+      const account=await FirebaseRanking.loadAccount(player.name);
+      if(account){
+        player={...player,...account,name:account.name||player.name};
+        if(account.customization) customization={...customization,...account.customization};
+        if(!Array.isArray(player.ownedSkins))player.ownedSkins=[];
+      }
+      const cloud=await FirebaseRanking.loadScore(player.grade||'g5',player.name);
       if(cloud && Number.isFinite(Number(cloud.points))){
         player.points=Number(cloud.points);
         player.xp=player.points;
+        player.level=Math.max(Number(player.level)||1,Number(cloud.level)||1);
+        player.rank=cloud.rank||player.rank;
+        player.rankIndex=Number(cloud.rankIndex)||player.rankIndex;
+        player.rankIcon=cloud.rankIcon||player.rankIcon;
         syncLocalRank();
         savePlayer();
       }
     }catch(e){
-      console.warn('Não foi possível carregar o progresso do Firebase:', e); setRankingStatus('● Firebase: '+(e.message||'erro ao carregar'),'offline');
+      console.warn('Não foi possível carregar o progresso do Firebase:', e);
+      setRankingStatus('● Firebase: '+(e.message||'erro ao carregar'),'offline');
     }
   }
+  applyTestAdminAccount();
+  const profile=gradeProfiles[player.grade]||gradeProfiles.g5;
   document.getElementById("dashboardName").textContent=player.name;
   document.getElementById("dashboardGrade").textContent=profile.label;
   syncLocalRank();
@@ -507,6 +548,7 @@ async function updateDashboard(){
   renderShopDashboard();
   updateCoinUI();
 }
+
 function buildMissionGrid(){
   const profile=gradeProfiles[player.grade]||gradeProfiles.g5, ri=0;
   const box=document.getElementById("missionGrid");box.innerHTML="";
@@ -537,6 +579,7 @@ const ACHIEVEMENTS=[
 function renderAchievements(){const box=document.getElementById('achievementGrid');if(!box)return;box.innerHTML='';ACHIEVEMENTS.forEach(([id,icon,title,desc,check])=>{const unlocked=check(player);const el=document.createElement('div');el.className='achievement-card '+(unlocked?'unlocked':'locked-achievement');el.innerHTML=`<div class="achievement-icon">${unlocked?icon:'🔒'}</div><div><strong>${title}</strong><span>${desc}</span></div>`;box.appendChild(el)})}
 
 function updateRanking(){
+  if(!adminMode && !isJuliaAdminAccount()) return;
   if(window.FirebaseRanking && FirebaseRanking.isConfigured()){
     setRankingStatus('● Conectando ao ranking...','sync');
     FirebaseRanking.watchRanking(player.grade||'g5', players=>{
@@ -1295,7 +1338,7 @@ function answerQuestion(button,value){
    game.score+=gained;
    const questionCoins=awardQuestionCoins(reactionSeconds,true);
    if(window.FirebaseRanking && FirebaseRanking.isConfigured() && FirebaseRanking.saveLiveProgress){
-     FirebaseRanking.saveLiveProgress({grade:player.grade,points:(Number(player.points)||0)+game.score,coins:player.coins||0}).catch(()=>{});
+     FirebaseRanking.saveLiveProgress({name:player.name,grade:player.grade,points:(Number(player.points)||0)+game.score,coins:player.coins||0}).catch(()=>{});
    }
    document.getElementById("feedback").textContent=`Resposta correta! +${gained} pontos • +${questionCoins} 🪙`;
    document.getElementById("feedback").style.color="#20a875";
@@ -1415,6 +1458,7 @@ async function finishGame(reason){
    // Regrava depois da sincronização para garantir que o saldo local permaneça.
    savePlayer();
    updateCoinUI();
+   await syncAccountCloud();
  }
 
  document.getElementById("resultCharacter").innerHTML=createCharacterSVG(player.character);

@@ -418,3 +418,6 @@ body{background:radial-gradient(circle at 15% 0,#1b2450 0,transparent 34%),radia
 .store-skin-preview.skin-rainbow{animation:skinRgb 2s linear infinite}
 @media(max-width:1100px){.store-character-row,.store-skin-row{grid-template-columns:repeat(3,minmax(110px,1fr))}}
 @media(max-width:700px){.menu-character-actions,.character-store-head{align-items:stretch;flex-direction:column}.menu-character-button,.character-store-customize{width:100%}.store-character-row,.store-skin-row{grid-template-columns:repeat(2,minmax(110px,1fr))}}
+
+/* Alunos não exibem o ranking público. A análise permanece no painel administrativo. */
+.student-hidden-ranking{display:none!important}

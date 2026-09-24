@@ -15,7 +15,7 @@
     <div class="login-card">
       <div class="login-character" id="loginCharacter"></div>
       <div class="login-title">Vamos começar?</div>
-      <p class="login-description">Crie seu perfil para entrar na aventura matemática.</p>
+      <p class="login-description">Digite seu nome para entrar. Use o mesmo nome em outro dispositivo para recuperar sua conta.</p>
       <label for="playerName">Nome do aluno</label>
       <input id="playerName" type="text" maxlength="20" placeholder="Digite seu nome">
       <button id="startButton" class="primary-button">Continuar <span>→</span></button>
@@ -48,7 +48,7 @@
         <button class="editor-nav-item active">⌂ <span>Início</span></button>
         <button class="editor-nav-item active">● <span>Meu Personagem</span></button>
         <button class="editor-nav-item">◇ <span>Missões</span></button>
-        <button class="editor-nav-item">★ <span>Ranking</span></button>
+        <button class="editor-nav-item student-hidden-ranking" type="button" aria-hidden="true" tabindex="-1">★ <span>Meu progresso</span></button>
         <button class="editor-nav-item">✦ <span>Conquistas</span></button>
         <button class="editor-nav-item">⚙ <span>Configurações</span></button>
       </nav>
@@ -121,7 +121,7 @@
       </div>
 
       <div class="editor-bottom">
-        <div><h2>Prévia no Ranking</h2><div class="rank-preview"><div id="rankCharacter"></div><b id="rankName">Luna</b><span>✎</span></div></div>
+        <div><h2>Prévia do personagem</h2><div class="rank-preview"><div id="rankCharacter"></div><b id="rankName">Luna</b><span>✎</span></div></div>
         <div class="mini-stats"><div><b>8</b><span>Acertos</span></div><div><b>2</b><span>Erros</span></div><div><b>80%</b><span>Precisão</span></div><div><b>4</b><span>Melhor combo</span></div></div>
       </div>
     </main>
