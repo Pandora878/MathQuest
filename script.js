@@ -778,8 +778,45 @@ function startGame(mode,isAdmin=false){
   game={mode,grade:player.grade,question:0,totalQuestions:profile.questions,answer:0,lives:profile.lives,score:0,correct:0,wrong:0,combo:0,bestCombo:0,locked:false,timeLimit:profile.time,deadline:0,animationFrame:null,transitionTimer:null,phaseIndex,phaseBonus,adminMode:!!isAdmin,wrongStreak:0,hintUsed:false,changeUsed:false,lifeUsed:false,penaltyCount:0,timeoutCount:0,guessCount:0,rapidWrongStreak:0,suspiciousAnswers:0,questionStartedAt:0};
   showScreen("gameScreen");renderShop();updateGameHeader();nextQuestion();
 }
+function showContinueButton(label="Próxima questão →"){
+  const answers=document.getElementById("answers");
+  if(!answers)return;
+  let btn=document.getElementById("continueQuestionButton");
+  if(!btn){
+    btn=document.createElement("button");
+    btn.id="continueQuestionButton";
+    btn.className="continue-question-button";
+    btn.type="button";
+    answers.parentElement.appendChild(btn);
+  }
+  btn.textContent=label;
+  btn.style.display="flex";
+  btn.onclick=()=>{
+    btn.style.display="none";
+    advanceToNextQuestion();
+  };
+}
+function hideContinueButton(){
+  const btn=document.getElementById("continueQuestionButton");
+  if(btn)btn.style.display="none";
+}
+function advanceToNextQuestion(){
+  if(!game)return;
+  if(game.transitionTimer){clearTimeout(game.transitionTimer);game.transitionTimer=null;}
+  try{
+    if(game.lives<=0){finishGame("lives");return;}
+    nextQuestion();
+  }catch(error){
+    console.error("Falha ao avançar questão:",error);
+    // Último recurso: reinicia a mesma missão na próxima questão.
+    game.locked=false;
+    try{nextQuestion(true);}catch(e){console.error(e);}
+  }
+}
+
 function nextQuestion(replaceCurrent=false){
   cancelTimer();
+  hideContinueButton();
   if(game && game.transitionTimer){clearTimeout(game.transitionTimer);game.transitionTimer=null;}
   if(game.question>=game.totalQuestions){finishGame("complete");return;}
   if(game.lives<=0){finishGame("lives");return;}
@@ -810,7 +847,10 @@ function nextQuestion(replaceCurrent=false){
   document.getElementById("answers").innerHTML="";
   document.getElementById("timerText").textContent=game.timeLimit.toFixed(1);
   document.getElementById("timerBar").style.width="100%";
-  createAnswers(q.answer,q.options);updateGameHeader();game.questionStartedAt=performance.now();startTimer();
+  createAnswers(q.answer,q.options);
+  updateGameHeader();
+  game.questionStartedAt=performance.now();
+  startTimer();
 }
 function makeNear(answer,step=1,spread=10){
   const vals=[answer];let tries=0;
@@ -1044,7 +1084,8 @@ game.locked=true;game.wrong++;game.timeoutCount=(game.timeoutCount||0)+1;game.co
 document.getElementById("feedback").textContent="Tempo esgotado. O desafio terminou.";
 document.getElementById("feedback").style.color="#ff5b68";
 document.querySelectorAll(".answer-button").forEach(b=>{if(Number(b.textContent)===game.answer)b.classList.add("correct");});
-setTimeout(()=>finishGame("time"),900);
+showContinueButton("Ver resultado →");
+setTimeout(()=>{if(game && game.locked && game.wrong>0)finishGame("time");},900);
 }
 
 function answerQuestion(button,value){
@@ -1106,9 +1147,10 @@ function answerQuestion(button,value){
  updateGameHeader();
 
  const wait=(!game.adminMode && wasRapid && game.rapidWrongStreak>=2)?7000:850;
+ showContinueButton(game.lives<=0?"Ver resultado →":"Próxima questão →");
  game.transitionTimer=setTimeout(()=>{
    game.transitionTimer=null;
-   if(game.lives<=0)finishGame("lives");else nextQuestion();
+   advanceToNextQuestion();
  },wait);
 }
 function updateGameHeader(){
