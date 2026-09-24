@@ -158,22 +158,24 @@ buildAnimalOptions();buildFurOptions();buildStyles();refreshCharacter();
 
 
 
+let adminMode=false;
+
 const gradeProfiles={
-  pre1:{label:"Pré I",title:"Pequenos Exploradores",description:"12 fases bem leves para contar, reconhecer cores e formas e brincar com números de 1 a 5.",time:30,questions:5,lives:5,modes:[
+  pre1:{label:"Pré I",title:"Pequenos Exploradores",description:"12 fases bem leves para contar, reconhecer cores e formas e brincar com números de 1 a 5.",time:60,questions:5,lives:5,modes:[
     ["count","Fase 1 • Vamos Contar","Conte de 1 a 5","blue"],["sameDifferent","Fase 2 • Iguais ou Diferentes?","Observe as figuras","purple"],
     ["colorMatch","Fase 3 • Cores Divertidas","Encontre a cor","orange"],["shapes","Fase 4 • Mundo das Formas","Reconheça as formas","green"],
     ["sequenceEasy","Fase 5 • Trilha dos Números","Ordem de 1 a 5","gold"],["moreLess","Fase 6 • Quem Tem Mais?","Compare quantidades","blue"],
     ["beforeAfter","Fase 7 • Vizinho do Número","Antes e depois","purple"],["patterns","Fase 8 • Padrão Colorido","Complete o padrão","orange"],
     ["additionVisual","Fase 9 • Juntando Brinquedos","Junte até 5","green"],["count","Fase 10 • Jardim da Contagem","Conte os desenhos","gold"],
     ["shapes","Fase 11 • Caça às Formas","Encontre a forma","blue"],["sequenceEasy","Fase 12 • Festa dos Números","Sequência final","purple"]]},
-  pre2:{label:"Pré II",title:"Aventuras dos Números",description:"12 fases leves com números de 1 a 10, pequenas somas, formas, sequências e quantidades.",time:28,questions:6,lives:5,modes:[
+  pre2:{label:"Pré II",title:"Aventuras dos Números",description:"12 fases leves com números de 1 a 10, pequenas somas, formas, sequências e quantidades.",time:60,questions:6,lives:5,modes:[
     ["count","Fase 1 • Floresta da Contagem","Conte até 10","blue"],["sameDifferent","Fase 2 • Olho Vivo","Iguais ou diferentes","purple"],
     ["colorMatch","Fase 3 • Cores Mágicas","Encontre a cor","orange"],["additionVisual","Fase 4 • Vila da Soma","Junte até 5","green"],
     ["subtractionVisual","Fase 5 • Tirando Brinquedos","Tire até 5","gold"],["sequenceEasy","Fase 6 • Trilha Numérica","Sequências simples","blue"],
     ["beforeAfter","Fase 7 • Número Vizinho","Antes e depois","purple"],["missingEasy","Fase 8 • Número Perdido","Complete 1 a 10","orange"],
     ["shapes","Fase 9 • Cidade das Formas","Formas divertidas","green"],["moreLess","Fase 10 • Mais ou Menos","Compare quantidades","gold"],
     ["additionVisual","Fase 11 • Oficina da Soma","Soma com desenhos","blue"],["mixedEasy","Fase 12 • Desafio do Explorador","Revisão divertida","purple"]]},
-  g1:{label:"1º Ano",title:"Aventura dos Números",description:"Desafios de sequência, comparação, adição, subtração, dobro, metade e problemas simples.",time:30,questions:8,lives:4,modes:[
+  g1:{label:"1º Ano",title:"Aventura dos Números",description:"Desafios de sequência, comparação, adição, subtração, dobro, metade e problemas simples.",time:120,questions:8,lives:4,modes:[
     ["addition","Fase 1 • Soma até 20","Some e descubra","blue"],
     ["subtraction","Fase 2 • Subtração até 20","Resolva as contas","purple"],
     ["sequence","Fase 3 • Sequência Desafiadora","Complete sequências","orange"],
@@ -186,7 +188,7 @@ const gradeProfiles={
     ["compare","Fase 10 • Duelo dos Números","Qual é maior?","gold"],
     ["addition","Fase 11 • Desafio até 30","Somas maiores","blue"],
     ["mixedG1","Fase 12 • Mestre dos Problemas","Desafio final misto","purple"]]},
-  g2:{label:"2º Ano",title:"Missão Matemática",description:"Desafios com números maiores, sequências variadas, operações e problemas de raciocínio.",time:28,questions:8,lives:4,modes:[
+  g2:{label:"2º Ano",title:"Missão Matemática",description:"Desafios com números maiores, sequências variadas, operações e problemas de raciocínio.",time:120,questions:8,lives:4,modes:[
     ["addition","Fase 1 • Soma até 100","Resolva as somas","blue"],
     ["subtraction","Fase 2 • Subtração até 100","Resolva as subtrações","purple"],
     ["sequence","Fase 3 • Sequências Secretas","Descubra a regra","orange"],
@@ -199,18 +201,15 @@ const gradeProfiles={
     ["compare","Fase 10 • Desafio de Comparação","Compare números de 2 e 3 algarismos","gold"],
     ["mixedG2","Fase 11 • Desafio Turbo","Misture as habilidades","blue"],
     ["mixedG2","Fase 12 • Grande Desafio","Desafio final misto","purple"]]},
-  g3:{label:"3º ano",title:"Missões do 3º ano",description:"12 desafios variados, com contas mais fáceis, raciocínio e as quatro operações. Tempo: 30 segundos.",time:30,questions:12,lives:3,modes:[
-    ["addition","Cidade da Soma","Adição fácil","blue"],["subtraction","Vale da Subtração","Subtração fácil","purple"],
-    ["multiplication","Torre da Tabuada","Tabuada até 8","orange"],["division","Reino da Divisão","Divisões exatas","green"],
-    ["compare","Duelo dos Números","Maior, menor ou igual","gold"],["sequence","Trilha das Sequências","Descubra a sequência","blue"],
-    ["missingNumber","Número Perdido","Complete a sequência","purple"],["wordProblem","Probleminhas","Resolva situações simples","orange"],
-    ["addition","Desafio da Soma","Mais contas de adição","green"],["subtraction","Desafio da Subtração","Mais contas de subtração","gold"],
-    ["mixed","Templo Matemático","Misture as operações","blue"],["mixed","Grande Desafio","Desafio final do 3º ano","purple"]]},
-  g4:{label:"4º ano",title:"Missões do 4º ano",description:"Quatro operações, frações, medidas e problemas.",time:15,questions:10,lives:3,modes:[
+  g3:{label:"3º ano",title:"Missões do 3º ano",description:"As quatro operações e desafios de raciocínio.",time:60,questions:10,lives:3,modes:[
+    ["addition","Cidade dos Milhares","Adição","blue"],["subtraction","Vale dos Milhares","Subtração","purple"],
+    ["multiplication","Torre da Tabuada","Multiplicação","orange"],["division","Reino da Divisão","Divisão","green"],
+    ["mixed","Templo Matemático","Misto","gold"]]},
+  g4:{label:"4º ano",title:"Missões do 4º ano",description:"Quatro operações, frações, medidas e problemas.",time:40,questions:10,lives:3,modes:[
     ["addition","Cidade dos Grandes Números","Adição","blue"],["subtraction","Vale dos Desafios","Subtração","purple"],
     ["multiplication","Torre Multiplicadora","Multiplicação","orange"],["fraction","Ilha das Frações","Frações","green"],
     ["mixed","Templo Matemático","Misto","gold"]]},
-  g5:{label:"5º ano",title:"Missões do 5º ano",description:"Operações, frações, decimais, porcentagens e desafios.",time:15,questions:10,lives:3,modes:[
+  g5:{label:"5º ano",title:"Missões do 5º ano",description:"Operações, frações, decimais, porcentagens e desafios.",time:30,questions:10,lives:3,modes:[
     ["addition","Vila da Soma","Adição","blue"],["subtraction","Floresta dos Números","Subtração","purple"],
     ["multiplication","Torre da Tabuada","Multiplicação","orange"],["division","Reino da Divisão","Divisão","green"],
     ["mixed","Templo Matemático","Desafio misto","gold"],["boss","Desafio Final","Modo avançado","red"]]}
@@ -350,6 +349,8 @@ function startLogin(){
 document.getElementById("startButton").onclick=startLogin;
 document.getElementById("playerName").addEventListener("keydown",e=>{if(e.key==="Enter")startLogin();});
 document.getElementById("gradeBack").onclick=()=>showScreen("loginScreen");
+document.getElementById("adminAccessButton").onclick=openAdminArea;
+document.getElementById("adminBackButton").onclick=exitAdminArea;
 document.getElementById("enterGameButton").onclick=()=>{
   player.customization=JSON.parse(JSON.stringify(customization));
   savePlayer();
@@ -493,14 +494,7 @@ async function sendScoreOnline(){
       character:characterForRanking(),
       grade:player.grade||'g5',
       rank:player.rank,
-      rankIndex:player.rankIndex,
-      mode:game.mode||'mixed',
-      correct:game.correct,
-      wrong:game.wrong,
-      totalQuestions:game.totalQuestions,
-      accuracy:game.totalQuestions ? Math.round((game.correct/game.totalQuestions)*100) : 0,
-      bestCombo:game.bestCombo,
-      timeLimit:game.timeLimit
+      rankIndex:player.rankIndex
     });
     if(saved && Number.isFinite(Number(saved.points))){
       player.points=Number(saved.points);
@@ -522,13 +516,33 @@ async function sendScoreOnline(){
 
 function escapeHTML(text){const d=document.createElement("div");d.textContent=text;return d.innerHTML;}
 
-function startGame(mode){
+
+function openAdminArea(){
+  const password=prompt("Área do administrador\nDigite a senha:");
+  if(password!=="admin123"){ if(password!==null) alert("Senha incorreta."); return; }
+  adminMode=true; renderAdminArea(); showScreen("adminScreen");
+}
+function renderAdminArea(){
+  const box=document.getElementById("adminGradeGrid"); if(!box)return;
+  box.innerHTML="";
+  Object.entries(gradeProfiles).forEach(([id,p])=>{
+    const card=document.createElement("div"); card.className="admin-grade-card";
+    card.innerHTML=`<div class="admin-grade-head"><div><span>JOGOS DA TURMA</span><h2>${p.label}</h2><p>${p.description}</p></div><strong>${p.time}s</strong></div><div class="admin-missions">${p.modes.map(([mode,title])=>`<button class="admin-mission-btn" data-grade="${id}" data-mode="${mode}">▶ ${title}</button>`).join("")}</div>`;
+    box.appendChild(card);
+  });
+  box.querySelectorAll(".admin-mission-btn").forEach(btn=>btn.onclick=()=>{
+    player.grade=btn.dataset.grade; startGame(btn.dataset.mode,true);
+  });
+}
+function exitAdminArea(){adminMode=false;showScreen("gradeScreen");}
+
+function startGame(mode,isAdmin=false){
   cancelTimer();
   const profile=gradeProfiles[player.grade]||gradeProfiles.g5;
   const ri=difficultyLevel();
   const phaseIndex=Math.max(0,profile.modes.findIndex(m=>m[0]===mode));
   const phaseBonus=20+phaseIndex*5;
-  game={mode,grade:player.grade,question:0,totalQuestions:profile.questions,answer:0,lives:profile.lives,score:0,correct:0,wrong:0,combo:0,bestCombo:0,locked:false,timeLimit:(player.grade==="g3"?30:Math.max(8,profile.time-ri*1.2)),deadline:0,animationFrame:null,phaseIndex,phaseBonus};
+  game={mode,grade:player.grade,question:0,totalQuestions:profile.questions,answer:0,lives:profile.lives,score:0,correct:0,wrong:0,combo:0,bestCombo:0,locked:false,timeLimit:profile.time,deadline:0,animationFrame:null,phaseIndex,phaseBonus,adminMode:!!isAdmin,wrongStreak:0};
   showScreen("gameScreen");updateGameHeader();nextQuestion();
 }
 function nextQuestion(){
@@ -583,7 +597,7 @@ function generatePreQuestion(mode,grade){
   }
   if(mode==="sequenceEasy"){
     const start=grade==="pre1"?random(1,2):random(1,5),answer=start+3;
-    return {text:`Complete: ${start} • ${start+1} • ${start+2} • ?`,answer,type:"SEQUÊNCIA",options:easyOptions(answer,grade==="pre1"?5:10)};
+    return {text:`Complete: ${start} • ${start+1} • ${start+2} • ?`,answer,type:"SEQUÊNCIA",options:easyOptions(answer,max)};
   }
   if(mode==="missingEasy"){
     const start=random(1,6),answer=start+1;
@@ -600,8 +614,6 @@ function generatePreQuestion(mode,grade){
   if(mode==="mixedEasy"){
     return generatePreQuestion(["count","colorMatch","sequenceEasy","additionVisual"][random(0,3)],grade);
   }
-  // Fallback seguro para turmas da Educação Infantil: nunca deixar uma fase sem questão.
-  if(grade==="pre1"||grade==="pre2") return generatePreQuestion("count",grade);
   return null;
 }
 
@@ -669,7 +681,7 @@ function generateGrade12Question(mode,grade){
 }
 
 function generateQuestion(mode,grade){
-  if((grade==="g1"||grade==="g2"||grade==="g3")){
+  if((grade==="g1"||grade==="g2")){
     const special=generateGrade12Question(mode,grade);
     if(special) return special;
   }
@@ -682,7 +694,7 @@ function generateQuestion(mode,grade){
     const ops={
       pre1:["count","compare","sequence","shapes","beforeAfter","missing","moreLess","patterns","additionVisual"],pre2:["count","addition","subtraction","sequence","compare","beforeAfter","missing","shapes","additionVisual"],
       g1:["addition","subtraction","sequence","compare"],g2:["addition","subtraction","multiplication","division"],
-      g3:["addition","subtraction","multiplication","division","compare","sequence","missingNumber","wordProblem"],g4:["addition","subtraction","multiplication","fraction"],
+      g3:["addition","subtraction","multiplication","division"],g4:["addition","subtraction","multiplication","fraction"],
       g5:["addition","subtraction","multiplication","division","fraction","decimal","percent"]
     };
     const list=ops[grade]||ops.g5;op=list[r(0,list.length-1)];
@@ -713,15 +725,15 @@ function generateQuestion(mode,grade){
   }else if(op==="additionVisual"){
     const a=r(1,grade==="pre1"?2:4), b=r(1,grade==="pre1"?2:4); answer=a+b; text=`Junte ${"🍎 ".repeat(a)} + ${"🍎 ".repeat(b)} = ?`; type="SOMA VISUAL"; options=makeNear(answer,1,3);
   }else if(op==="addition"){
-    const baseMax=grade==="pre2"?20:grade==="g1"?50:grade==="g2"?100:grade==="g3"?500:grade==="g4"?5000:5000; const max=grade==="g3"?500:baseMax*(1+ri*.15);
+    const baseMax=grade==="pre2"?20:grade==="g1"?50:grade==="g2"?100:grade==="g3"?1000:grade==="g4"?5000:5000; const max=baseMax*(1+ri*.15);
     a=r(1,Math.floor(max*.6));b=r(1,Math.floor(max*.4));answer=a+b;text=`${a} + ${b} = ?`;type="ADIÇÃO";options=makeNear(answer,2,Math.max(5,Math.floor(max*.05)));
   }else if(op==="subtraction"){
-    const baseMax=grade==="pre2"?20:grade==="g1"?50:grade==="g2"?100:grade==="g3"?500:grade==="g4"?5000:8000; const max=grade==="g3"?500:baseMax*(1+ri*.15);
+    const baseMax=grade==="pre2"?20:grade==="g1"?50:grade==="g2"?100:grade==="g3"?1000:grade==="g4"?5000:8000; const max=baseMax*(1+ri*.15);
     a=r(Math.ceil(max*.4),max);b=r(1,Math.floor(max*.35));if(b>a)b=a;answer=a-b;text=`${a} − ${b} = ?`;type="SUBTRAÇÃO";options=makeNear(answer,2,Math.max(5,Math.floor(max*.04)));
   }else if(op==="multiplication"){
-    const maxA=grade==="g3"?8:Math.min(20,(grade==="g2"?5:12)+ri*2);a=r(2,maxA);b=grade==="g3"?r(2,8):r(2,12+ri*2);answer=a*b;text=`${a} × ${b} = ?`;type="MULTIPLICAÇÃO";options=makeNear(answer,5,20);
+    const maxA=Math.min(20,(grade==="g2"?5:grade==="g3"?10:12)+ri*2);a=r(2,maxA);b=r(2,12+ri*2);answer=a*b;text=`${a} × ${b} = ?`;type="MULTIPLICAÇÃO";options=makeNear(answer,5,20);
   }else if(op==="division"){
-    const divisor=grade==="g3"?r(2,8):r(2,Math.min(18,(grade==="g2"?5:12)+ri*2)),quotient=grade==="g3"?r(2,10):r(2,Math.min(30,(grade==="g2"?10:20)+ri*3));a=divisor*quotient;answer=quotient;text=`${a} ÷ ${divisor} = ?`;type="DIVISÃO";options=makeNear(answer,1,10);
+    const divisor=r(2,Math.min(18,(grade==="g2"?5:12)+ri*2)),quotient=r(2,Math.min(30,(grade==="g2"?10:20)+ri*3));a=divisor*quotient;answer=quotient;text=`${a} ÷ ${divisor} = ?`;type="DIVISÃO";options=makeNear(answer,1,10);
   }else if(op==="fraction"){
     const den=r(2,Math.min(12,8+ri)),num=r(1,den-1);answer=num;text=`Quanto é ${num}/${den} de ${den}?`;type="FRAÇÃO";options=makeNear(answer,1,den+2);
   }else if(op==="decimal"){
@@ -778,24 +790,31 @@ setTimeout(()=>finishGame("time"),900);
 }
 
 function answerQuestion(button,value){
-if(game.locked)return;
-game.locked=true;cancelTimer();
-if(value===game.answer){
-button.classList.add("correct");game.correct++;game.combo++;game.bestCombo=Math.max(game.bestCombo,game.combo);
-const remaining=Math.max(0,game.deadline-performance.now())/1000;
-const gained=10+Math.floor(remaining)+Math.min(game.combo*2,20);
-game.score+=gained;
-document.getElementById("feedback").textContent=`Resposta correta! +${gained} pontos`;
-document.getElementById("feedback").style.color="#20a875";
-document.getElementById("questionText").classList.add("pop");
-}else{
-button.classList.add("wrong");game.wrong++;game.lives--;game.combo=0;
-document.getElementById("feedback").textContent=`Resposta correta: ${game.answer}`;
-document.getElementById("feedback").style.color="#ff5b68";
-document.querySelectorAll(".answer-button").forEach(b=>{if(Number(b.textContent)===game.answer)b.classList.add("correct");});
-}
-updateGameHeader();
-setTimeout(()=>{if(game.lives<=0)finishGame("lives");else nextQuestion();},850);
+ if(game.locked)return;
+ game.locked=true;cancelTimer();
+ if(value===game.answer){
+   button.classList.add("correct");game.correct++;game.combo++;game.bestCombo=Math.max(game.bestCombo,game.combo);game.wrongStreak=0;
+   const remaining=Math.max(0,game.deadline-performance.now())/1000;
+   const gained=10+Math.floor(remaining)+Math.min(game.combo*2,20);
+   game.score+=gained;
+   document.getElementById("feedback").textContent=`Resposta correta! +${gained} pontos`;
+   document.getElementById("feedback").style.color="#20a875";
+   document.getElementById("questionText").classList.add("pop");
+ }else{
+   button.classList.add("wrong");game.wrong++;game.lives--;game.combo=0;game.wrongStreak=(game.wrongStreak||0)+1;
+   const penalty=(game.wrongStreak>=3)?7:((game.wrongStreak>=2)?4:0);
+   if(penalty && !game.adminMode){
+     game.score=Math.max(0,game.score-5);
+     document.getElementById("feedback").textContent=`Resposta errada. Penalidade: -5 pontos e ${penalty}s de espera. Evite chutar!`;
+   }else{
+     document.getElementById("feedback").textContent=`Resposta correta: ${game.answer}`;
+   }
+   document.getElementById("feedback").style.color="#ff5b68";
+   document.querySelectorAll(".answer-button").forEach(b=>{if(Number(b.textContent)===game.answer)b.classList.add("correct");});
+ }
+ updateGameHeader();
+ const wait=(!game.adminMode && game.wrongStreak>=3)?7000:((!game.adminMode && game.wrongStreak>=2)?4000:850);
+ setTimeout(()=>{if(game.lives<=0)finishGame("lives");else nextQuestion();},wait);
 }
 
 function updateGameHeader(){
@@ -807,7 +826,9 @@ document.getElementById("combo").textContent="x"+game.combo;
 async function finishGame(reason){
 cancelTimer();
 game.score+=game.phaseBonus||0;
-player.points+=game.score;player.xp=player.points;player.record=Math.max(player.record,game.score);player.correctTotal=(player.correctTotal||0)+game.correct;player.missionsCompleted=(player.missionsCompleted||0)+1;player.completedMissions=Array.from(new Set([...(player.completedMissions||[]),game.mode]));player.bestCombo=Math.max(player.bestCombo||0,game.bestCombo);const missionTotal=game.correct+game.wrong;const acc=missionTotal?Math.round(game.correct/missionTotal*100):0;player.bestAccuracy=Math.max(player.bestAccuracy||0,acc);syncLocalRank();savePlayer();await sendScoreOnline();
+if(!game.adminMode){
+ player.points+=game.score;player.xp=player.points;player.record=Math.max(player.record,game.score);player.correctTotal=(player.correctTotal||0)+game.correct;player.missionsCompleted=(player.missionsCompleted||0)+1;player.completedMissions=Array.from(new Set([...(player.completedMissions||[]),game.mode]));player.bestCombo=Math.max(player.bestCombo||0,game.bestCombo);const missionTotal=game.correct+game.wrong;const acc=missionTotal?Math.round(game.correct/missionTotal*100):0;player.bestAccuracy=Math.max(player.bestAccuracy||0,acc);syncLocalRank();savePlayer();await sendScoreOnline();
+}
 document.getElementById("resultCharacter").innerHTML=createCharacterSVG(player.character);
 document.getElementById("finalPoints").textContent=game.score;
 document.getElementById("correctCount").textContent=game.correct;
@@ -816,7 +837,7 @@ const total=game.correct+game.wrong;
 document.getElementById("accuracy").textContent=(total?Math.round(game.correct/total*100):0)+"%";
 document.getElementById("bestCombo").textContent=game.bestCombo;
 const title=document.getElementById("resultTitle"),message=document.getElementById("resultMessage");
-if(reason==="time"){title.textContent="Tempo encerrado!";message.textContent="O tempo acabou e a missão foi finalizada."}
+if(game.adminMode){title.textContent="Modo administrador";message.textContent="Teste concluído. Nenhum ponto foi enviado ao ranking dos alunos."} else if(reason==="time"){title.textContent="Tempo encerrado!";message.textContent="O tempo acabou e a missão foi finalizada."}
 else if(reason==="lives"){title.textContent="Suas vidas acabaram";message.textContent="Continue praticando e tente novamente."}
 else if(game.correct>=8){title.textContent="Excelente!";message.textContent="Você teve um ótimo desempenho!"}
 else if(game.correct>=5){title.textContent="Muito bem!";message.textContent="Você está evoluindo."}
@@ -824,8 +845,8 @@ else{title.textContent="Boa tentativa!";message.textContent="Pratique mais uma v
 showScreen("resultScreen");
 }
 
-document.getElementById("backMenu").onclick=()=>{updateDashboard();showScreen("menuScreen");};
-document.getElementById("exitGame").onclick=()=>{cancelTimer();showScreen("menuScreen");};
+document.getElementById("backMenu").onclick=()=>{if(game.adminMode){renderAdminArea();showScreen("adminScreen");}else{updateDashboard();showScreen("menuScreen");}};
+document.getElementById("exitGame").onclick=()=>{cancelTimer();if(game.adminMode){renderAdminArea();showScreen("adminScreen");}else{showScreen("menuScreen");}};
 
 function random(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}}

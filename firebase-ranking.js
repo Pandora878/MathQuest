@@ -83,29 +83,8 @@ async function saveScore(data){
   saved={
    name:name(data.name),points,level,rank:r.name,rankIndex:r.index,rankIcon:r.icon,
    character:character(data.character),grade:g,authUid:user.uid,
-   lastMode:String(data.mode||'mixed'),
-   lastCorrect:Math.max(0,Number(data.correct)||0),
-   lastWrong:Math.max(0,Number(data.wrong)||0),
-   lastTotalQuestions:Math.max(0,Number(data.totalQuestions)||0),
-   lastAccuracy:Math.max(0,Math.min(100,Number(data.accuracy)||0)),
-   lastBestCombo:Math.max(0,Number(data.bestCombo)||0),
-   lastTimeLimit:Math.max(0,Number(data.timeLimit)||0),
    updatedAt:firebase.firestore.FieldValue.serverTimestamp()
   };
-  const mode=String(data.mode||'mixed');
-  const prevStats=old.statsByMode&&typeof old.statsByMode==='object'?old.statsByMode:{};
-  const prev=prevStats[mode]||{};
-  const q=Math.max(0,Number(data.totalQuestions)||0);
-  const c=Math.max(0,Number(data.correct)||0);
-  const w=Math.max(0,Number(data.wrong)||0);
-  saved.statsByMode={...prevStats,[mode]:{
-    attempts:(Number(prev.attempts)||0)+1,
-    questions:(Number(prev.questions)||0)+q,
-    correct:(Number(prev.correct)||0)+c,
-    wrong:(Number(prev.wrong)||0)+w,
-    accuracy:((Number(prev.correct)||0)+c)/Math.max(1,(Number(prev.questions)||0)+q)*100,
-    bestCombo:Math.max(Number(prev.bestCombo)||0,Number(data.bestCombo)||0)
-  }};
   tx.set(ref,saved,{merge:true});
  });
  return saved;

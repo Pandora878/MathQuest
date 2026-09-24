@@ -19,7 +19,6 @@
       <label for="playerName">Nome do aluno</label>
       <input id="playerName" type="text" maxlength="20" placeholder="Digite seu nome">
       <button id="startButton" class="primary-button">Continuar <span>→</span></button>
-      <a class="admin-access" href="admin.html">🔐 Área do administrador</a>
     </div>
     <div class="copyright">Math Quest • Educação Matemática</div>
   </div>
@@ -34,7 +33,7 @@
       <p>Escolha o nível para receber desafios adequados à idade.</p>
     </div>
     <div id="gradeOptions" class="grade-grid"></div>
-    <button id="gradeBack" class="secondary-button">← Voltar</button>
+    <div class="grade-actions"><button id="gradeBack" class="secondary-button">← Voltar</button><button id="adminAccessButton" class="admin-access-button">⚙ Área do Administrador</button></div>
   </div>
 </section>
 
@@ -118,6 +117,13 @@
   </div>
 </section>
 
+<section id="adminScreen" class="screen admin-screen">
+<div class="admin-page">
+<header class="admin-header"><div><span>ÁREA RESTRITA</span><h1>Painel do Administrador</h1><p>Veja todas as turmas, todas as fases e entre em qualquer jogo para testar.</p></div><button id="adminBackButton" class="secondary-button">← Voltar</button></header>
+<div class="admin-info"><div>🎮 <strong>Modo de teste</strong><span>Jogar aqui não altera o ranking dos alunos.</span></div><div>⏱️ <strong>Tempos</strong><span>Pré I/II 60s • 1º/2º 120s • 3º 60s • 4º 40s • 5º 30s</span></div><div>🚫 <strong>Anti-chute</strong><span>Erros consecutivos geram espera e perda de pontos.</span></div></div>
+<div id="adminGradeGrid" class="admin-grade-grid"></div>
+</div></section>
+
 <section id="menuScreen" class="screen dashboard-screen">
   <div class="dashboard">
     <header class="dashboard-header">
@@ -161,7 +167,7 @@
   <div class="game-container">
     <header class="game-header">
       <button id="exitGame" class="icon-button">←</button>
-      <div class="question-counter">Questão <strong id="questionNumber">1</strong><span> / 12</span></div>
+      <div class="question-counter">Questão <strong id="questionNumber">1</strong><span> / 10</span></div>
       <div class="lives"><span id="life1" class="life active"></span><span id="life2" class="life active"></span><span id="life3" class="life active"></span></div>
     </header>
 
@@ -208,34 +214,5 @@
 <script src="firebase-config.js?v=5"></script>
 <script src="firebase-ranking.js?v=5"></script>
 <script src="script.js?v=5"></script>
-
-<a href="admin.html" class="admin-access-btn" aria-label="Área do administrador">
-  <span>⚙️</span> Área do Admin
-</a>
-<style>
-.admin-access-btn{
-  position:fixed;
-  right:18px;
-  bottom:18px;
-  z-index:9999;
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:11px 16px;
-  border-radius:999px;
-  background:#29231f;
-  color:#fff;
-  text-decoration:none;
-  font:600 14px/1.1 Arial,sans-serif;
-  box-shadow:0 6px 18px rgba(0,0,0,.18);
-  transition:transform .2s ease,opacity .2s ease;
-}
-.admin-access-btn:hover{transform:translateY(-2px);opacity:.94}
-.admin-access-btn span{font-size:15px}
-@media(max-width:600px){
-  .admin-access-btn{right:12px;bottom:12px;padding:10px 13px;font-size:13px}
-}
-</style>
-
 </body>
 </html>

@@ -1,16 +1,14 @@
-PAINEL DO ADMINISTRADOR — MATH QUEST
+MATH QUEST - ATUALIZAÇÃO
 
-1. No Firebase Console, abra Authentication > Sign-in method.
-2. Ative Google.
-3. Publique o novo firestore.rules deste ZIP.
-4. Faça login uma vez em admin.html com a conta Google que será administradora.
-5. No Firebase Console > Firestore Database, crie a coleção: admins
-6. Crie um documento com o ID igual ao UID da conta Google.
-7. Dentro do documento, crie:
-   role: admin
+ADMIN:
+Senha inicial: admin123
+O administrador pode ver todas as turmas e todas as fases, entrar e jogar.
+O modo administrador não envia pontuação para o ranking dos alunos.
 
-Depois disso, abra admin.html novamente. O painel mostrará todas as turmas, ranking, pontos, níveis, precisão, desafios com menor precisão e detalhes individuais.
+TEMPOS:
+Pré I 60s | Pré II 60s | 1º 120s | 2º 120s | 3º 60s | 4º 40s | 5º 30s
 
-IMPORTANTE: não coloque a senha do Google no código. O login é feito pelo Firebase Authentication.
-
-O painel considera como "dificuldade" o tipo de desafio em que o aluno/turma apresenta menor precisão. Os dados detalhados começam a aparecer nas partidas feitas depois desta atualização; pontuações antigas continuam no ranking, mas podem não ter métricas detalhadas.
+ANTI-CHUTE:
+2 erros consecutivos: -5 pontos e 4 segundos de espera.
+3 ou mais erros consecutivos: -5 pontos e 7 segundos de espera.
+Um acerto zera a sequência de erros.
