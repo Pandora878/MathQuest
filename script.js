@@ -775,7 +775,7 @@ function startGame(mode,isAdmin=false){
   const ri=difficultyLevel();
   const phaseIndex=Math.max(0,profile.modes.findIndex(m=>m[0]===mode));
   const phaseBonus=20+phaseIndex*5;
-  game={mode,grade:player.grade,question:0,totalQuestions:profile.questions,answer:0,lives:profile.lives,score:0,correct:0,wrong:0,combo:0,bestCombo:0,locked:false,timeLimit:profile.time,deadline:0,animationFrame:null,transitionTimer:null,phaseIndex,phaseBonus,adminMode:!!isAdmin,wrongStreak:0,hintUsed:false,changeUsed:false,lifeUsed:false,penaltyCount:0,timeoutCount:0,guessCount:0,rapidWrongStreak:0,suspiciousAnswers:0,questionStartedAt:0};
+  game={mode,grade:player.grade,question:0,totalQuestions:profile.questions,answer:0,lives:profile.lives,score:0,correct:0,wrong:0,combo:0,bestCombo:0,locked:false,finished:false,timeLimit:profile.time,deadline:0,animationFrame:null,transitionTimer:null,phaseIndex,phaseBonus,adminMode:!!isAdmin,wrongStreak:0,hintUsed:false,changeUsed:false,lifeUsed:false,penaltyCount:0,timeoutCount:0,guessCount:0,rapidWrongStreak:0,suspiciousAnswers:0,questionStartedAt:0};
   showScreen("gameScreen");renderShop();updateGameHeader();nextQuestion();
 }
 function showContinueButton(label="Próxima questão →"){
@@ -1161,40 +1161,108 @@ document.getElementById("combo").textContent="x"+game.combo;
 }
 
 async function finishGame(reason){
-cancelTimer();
-if(game.wrong===0) game.score+=game.phaseBonus||0;
-const missionTotal=game.correct+game.wrong;
-const missionAccuracy=missionTotal?Math.round(game.correct/missionTotal*100):0;
-const missionCoins=(!game.adminMode && reason==="complete")
-  ? (missionAccuracy===100 ? 10 : (missionAccuracy>=90 ? 5 : (missionAccuracy<=80 ? 2 : 0)))
-  : 0;
-if(!game.adminMode){
- player.coins=(player.coins||0)+missionCoins;
- player.totalQuestions=(player.totalQuestions||0)+game.correct+game.wrong;
- player.totalCorrect=(player.totalCorrect||0)+game.correct;
- player.totalWrong=(player.totalWrong||0)+game.wrong;
- player.totalTimeouts=(player.totalTimeouts||0)+(game.timeoutCount||0);
- player.totalChutes=(player.totalChutes||0)+(game.guessCount||0);
- player.totalPenalties=(player.totalPenalties||0)+(game.penaltyCount||0);
- player.maxWrongStreak=Math.max(player.maxWrongStreak||0,game.wrongStreak||0);
- player.points+=game.score;player.xp=player.points;player.record=Math.max(player.record,game.score);player.correctTotal=(player.correctTotal||0)+game.correct;player.missionsCompleted=(player.missionsCompleted||0)+(reason==="complete"?1:0);player.completedMissions=Array.from(new Set([...(player.completedMissions||[]),game.mode]));player.bestCombo=Math.max(player.bestCombo||0,game.bestCombo);const acc=missionAccuracy;player.bestAccuracy=Math.max(player.bestAccuracy||0,acc);syncLocalRank();savePlayer();await sendScoreOnline();
-}
-document.getElementById("resultCharacter").innerHTML=createCharacterSVG(player.character);
-document.getElementById("finalPoints").textContent=game.score;
- document.getElementById("finalCoins").textContent=game.adminMode?"—":
-   (missionCoins===10?"+10 🪙 • missão perfeita":missionCoins===5?"+5 🪙 • 90% ou mais":missionCoins===2?"+2 🪙 • até 80%":" +0 🪙 • 81% a 89%");
-document.getElementById("correctCount").textContent=game.correct;
-document.getElementById("wrongCount").textContent=game.wrong;
-const total=game.correct+game.wrong;
-document.getElementById("accuracy").textContent=(total?Math.round(game.correct/total*100):0)+"%";
-document.getElementById("bestCombo").textContent=game.bestCombo;
-const title=document.getElementById("resultTitle"),message=document.getElementById("resultMessage");
-if(game.adminMode){title.textContent="Modo administrador";message.textContent="Teste concluído. Nenhum ponto foi enviado ao ranking dos alunos."} else if(reason==="time"){title.textContent="Tempo encerrado!";message.textContent="O tempo acabou e a missão foi finalizada."}
-else if(reason==="lives"){title.textContent="Suas vidas acabaram";message.textContent="Continue praticando e tente novamente."}
-else if(game.correct>=8){title.textContent="Excelente!";message.textContent="Você teve um ótimo desempenho!"}
-else if(game.correct>=5){title.textContent="Muito bem!";message.textContent="Você está evoluindo."}
-else{title.textContent="Boa tentativa!";message.textContent="Pratique mais uma vez para melhorar."}
-showScreen("resultScreen");
+ if(game.finished)return;
+ game.finished=true;
+ cancelTimer();
+
+ // A recompensa só é dada quando a missão inteira foi concluída.
+ const missionTotal=game.correct+game.wrong;
+ const missionAccuracy=missionTotal?Math.round(game.correct/missionTotal*100):0;
+
+ let missionCoins=0;
+ if(!game.adminMode && reason==="complete"){
+   if(missionAccuracy===100) missionCoins=10;
+   else if(missionAccuracy>=90) missionCoins=5;
+   else if(missionAccuracy<=80) missionCoins=2;
+ }
+
+ if(game.wrong===0) game.score+=game.phaseBonus||0;
+
+ if(!game.adminMode){
+   // Atualiza primeiro o saldo local. Assim a moeda não depende do Firebase.
+   const oldCoins=Number(player.coins)||0;
+   player.coins=oldCoins+missionCoins;
+
+   player.totalQuestions=(player.totalQuestions||0)+missionTotal;
+   player.totalCorrect=(player.totalCorrect||0)+game.correct;
+   player.totalWrong=(player.totalWrong||0)+game.wrong;
+   player.totalTimeouts=(player.totalTimeouts||0)+(game.timeoutCount||0);
+   player.totalChutes=(player.totalChutes||0)+(game.guessCount||0);
+   player.totalPenalties=(player.totalPenalties||0)+(game.penaltyCount||0);
+   player.maxWrongStreak=Math.max(player.maxWrongStreak||0,game.wrongStreak||0);
+   player.points=(Number(player.points)||0)+game.score;
+   player.xp=player.points;
+   player.record=Math.max(Number(player.record)||0,game.score);
+   player.correctTotal=(player.correctTotal||0)+game.correct;
+   player.missionsCompleted=(player.missionsCompleted||0)+(reason==="complete"?1:0);
+
+   if(reason==="complete"){
+     player.completedMissions=Array.from(new Set([...(player.completedMissions||[]),game.mode]));
+   }
+
+   player.bestCombo=Math.max(player.bestCombo||0,game.bestCombo);
+   player.bestAccuracy=Math.max(player.bestAccuracy||0,missionAccuracy);
+   syncLocalRank();
+
+   // Salva imediatamente, antes de qualquer operação online.
+   savePlayer();
+   updateCoinUI();
+
+   // O Firebase é complementar: se falhar, as moedas locais continuam.
+   try{
+     await sendScoreOnline();
+   }catch(e){
+     console.error("Não foi possível sincronizar o resultado online:",e);
+   }
+
+   // Regrava depois da sincronização para garantir que o saldo local permaneça.
+   savePlayer();
+   updateCoinUI();
+ }
+
+ document.getElementById("resultCharacter").innerHTML=createCharacterSVG(player.character);
+ document.getElementById("finalPoints").textContent=game.score;
+
+ if(game.adminMode){
+   document.getElementById("finalCoins").textContent="—";
+ }else if(missionCoins===10){
+   document.getElementById("finalCoins").textContent="+10 🪙 • missão perfeita";
+ }else if(missionCoins===5){
+   document.getElementById("finalCoins").textContent="+5 🪙 • 90% ou mais";
+ }else if(missionCoins===2){
+   document.getElementById("finalCoins").textContent="+2 🪙 • até 80%";
+ }else{
+   document.getElementById("finalCoins").textContent="0 🪙 • 81% a 89%";
+ }
+
+ document.getElementById("correctCount").textContent=game.correct;
+ document.getElementById("wrongCount").textContent=game.wrong;
+ document.getElementById("accuracy").textContent=missionAccuracy+"%";
+ document.getElementById("bestCombo").textContent=game.bestCombo;
+
+ const title=document.getElementById("resultTitle"),message=document.getElementById("resultMessage");
+ if(game.adminMode){
+   title.textContent="Modo administrador";
+   message.textContent="Teste concluído. Nenhum ponto foi enviado ao ranking dos alunos.";
+ }else if(reason==="time"){
+   title.textContent="Tempo encerrado!";
+   message.textContent="O tempo acabou e a missão foi finalizada.";
+ }else if(reason==="lives"){
+   title.textContent="Suas vidas acabaram";
+   message.textContent="Continue praticando e tente novamente.";
+ }else if(game.correct>=8){
+   title.textContent="Excelente!";
+   message.textContent=missionCoins>0?`Missão concluída! Você ganhou ${missionCoins} moedas. 🪙`:"Você teve um ótimo desempenho!";
+ }else if(game.correct>=5){
+   title.textContent="Muito bem!";
+   message.textContent=missionCoins>0?`Missão concluída! Você ganhou ${missionCoins} moedas. 🪙`:"Você está evoluindo.";
+ }else{
+   title.textContent="Boa tentativa!";
+   message.textContent=missionCoins>0?`Missão concluída! Você ganhou ${missionCoins} moedas. 🪙`:"Pratique mais uma vez para melhorar.";
+ }
+
+ updateCoinUI();
+ showScreen("resultScreen");
 }
 
 document.getElementById("backMenu").onclick=()=>{if(game.adminMode){renderAdminGames();showScreen("adminGamesScreen");}else{updateDashboard();showScreen("menuScreen");}};

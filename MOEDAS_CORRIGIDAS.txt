@@ -1,0 +1,9 @@
+RECOMPENSA DE MOEDAS
+
+100% = 10 moedas
+90% a 99% = 5 moedas
+Até 80% = 2 moedas
+81% a 89% = 0 moedas
+
+O saldo é salvo no localStorage imediatamente ao finalizar a missão e novamente após a tentativa de sincronização com o Firebase. O Firebase não pode apagar o saldo local.
+A moeda é concedida somente quando a missão inteira é concluída.
