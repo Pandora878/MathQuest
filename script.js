@@ -1,10 +1,18 @@
 const animals={
-fox:{name:"Raposa",role:"Exploradora",base:"#e9782d",light:"#ffe2c9",accent:"#5b2d1d"},
-panda:{name:"Panda",role:"Aventureiro",base:"#202637",light:"#f4f5fa",accent:"#8fd3ff"},
-cat:{name:"Gato",role:"Cientista",base:"#89909e",light:"#e9edf5",accent:"#ff9bc1"},
-rabbit:{name:"Coelho",role:"Inventora",base:"#eee7e1",light:"#fff8f3",accent:"#f59bb5"},
-dog:{name:"Cachorro",role:"Explorador",base:"#9b633f",light:"#f3cda7",accent:"#79c8ff"},
-tiger:{name:"Tigre",role:"Desafiante",base:"#f08a22",light:"#ffe0a8",accent:"#241d18"}
+fox:{name:"Raposa",role:"Exploradora",base:"#e9782d",light:"#ffe2c9",accent:"#5b2d1d",cost:120},
+panda:{name:"Panda",role:"Aventureiro",base:"#202637",light:"#f4f5fa",accent:"#8fd3ff",cost:150},
+cat:{name:"Gato",role:"Cientista",base:"#89909e",light:"#e9edf5",accent:"#ff9bc1",cost:180},
+rabbit:{name:"Coelho",role:"Inventora",base:"#eee7e1",light:"#fff8f3",accent:"#f59bb5",cost:200},
+dog:{name:"Cachorro",role:"Explorador",base:"#9b633f",light:"#f3cda7",accent:"#79c8ff",cost:220},
+tiger:{name:"Tigre",role:"Desafiante",base:"#f08a22",light:"#ffe0a8",accent:"#241d18",cost:260},
+lion:{name:"Leão",role:"Líder",base:"#d99a35",light:"#ffe7a8",accent:"#8a5316",cost:300},
+wolf:{name:"Lobo",role:"Estrategista",base:"#687386",light:"#eef2f7",accent:"#3d4657",cost:340},
+bear:{name:"Urso",role:"Corajoso",base:"#8a5a3b",light:"#e8c29e",accent:"#5b3928",cost:380},
+monkey:{name:"Macaco",role:"Aventureiro",base:"#9a633f",light:"#f0c29c",accent:"#6d3e28",cost:420},
+owl:{name:"Coruja",role:"Sábia",base:"#6b5b7a",light:"#f1e9f8",accent:"#b79ad3",cost:460},
+penguin:{name:"Pinguim",role:"Veloz",base:"#202b3c",light:"#f8fbff",accent:"#ffb52e",cost:500},
+capybara:{name:"Capivara",role:"Tranquila",base:"#9b7558",light:"#ead4bd",accent:"#6f4e39",cost:550},
+shark:{name:"Tubarão",role:"Nadador",base:"#6386a8",light:"#e8f3fb",accent:"#36556f",cost:600}
 };
 const furPalettes={
 fox:["#e9782d","#f3a24b","#ffe1c7","#9b4d24","#4b2d24","#202637"],
@@ -12,7 +20,15 @@ panda:["#202637","#6b7280","#f4f5fa","#d8dee9","#b9c3d4","#111827"],
 cat:["#89909e","#596273","#d7dbe3","#f0b7b7","#8d6e63","#303746"],
 rabbit:["#eee7e1","#f5cdbd","#d9b6d0","#c7d5e7","#b98c76","#8b6b7d"],
 dog:["#9b633f","#d4935d","#f1c7a0","#6f442d","#f1e7d7","#4d596a"],
-tiger:["#f08a22","#ffb13b","#ffd99a","#d75a20","#fff0cc","#352319"]
+tiger:["#f08a22","#ffb13b","#ffd99a","#d75a20","#fff0cc","#352319"],
+lion:["#d99a35","#f0b84f","#ffe0a0","#b87820","#fff1c9","#704313"],
+wolf:["#687386","#8e99aa","#dbe2ea","#4f5b6d","#f1f4f7","#313a48"],
+bear:["#8a5a3b","#a9744d","#d7ab82","#6d442f","#f0d2b3","#4b3024"],
+monkey:["#9a633f","#bd8053","#e8b993","#74462f","#f2d0ad","#4c3024"],
+owl:["#6b5b7a","#8b789c","#cbb9d8","#51425f","#f5edf9","#34283e"],
+penguin:["#202b3c","#35465d","#6a8098","#111827","#eaf4fb","#0b1220"],
+capybara:["#9b7558","#b18a6b","#d6b99b","#79563f","#f0d8bd","#513a2c"],
+shark:["#6386a8","#7fa2c0","#a9c5d9","#4b6c89","#eef7fc","#29465f"]
 };
 const shirtColors=["#2674ff","#e23d4f","#1fa86b","#252b3a","#f4b82f","#7d42d8","#ff6fae","#00b8a9","#ff7a45","#7c5cff","#f6f7fb","#8b5e3c"];
 const headStyles=[
@@ -63,7 +79,19 @@ if(customization.animal==="cat") ears=`<path d="M55 72L54 19L96 51Z" fill="${bas
 if(customization.animal==="rabbit") ears=`<rect x="62" y="5" width="35" height="85" rx="18" fill="${base}"/><rect x="123" y="5" width="35" height="85" rx="18" fill="${base}"/><rect x="72" y="15" width="15" height="65" rx="8" fill="${accent}"/><rect x="133" y="15" width="15" height="65" rx="8" fill="${accent}"/>`;
 if(customization.animal==="dog") ears=`<path d="M55 54Q26 65 42 119L72 92Z" fill="${base}"/><path d="M165 54Q194 65 178 119L148 92Z" fill="${base}"/>`;
 if(customization.animal==="tiger") ears=`<path d="M54 74L48 15L91 48Z" fill="${base}"/><path d="M166 74L172 15L129 48Z" fill="${base}"/><path d="M59 57L54 30L77 49Z" fill="#ffd4b5"/><path d="M161 57L166 30L143 49Z" fill="#ffd4b5"/>`;
+if(customization.animal==="lion") ears=`<circle cx="110" cy="83" r="76" fill="${accent}"/><circle cx="63" cy="61" r="24" fill="${base}"/><circle cx="157" cy="61" r="24" fill="${base}"/>`;
+if(customization.animal==="wolf") ears=`<path d="M54 78L48 15L94 49Z" fill="${base}"/><path d="M166 78L172 15L126 49Z" fill="${base}"/><path d="M61 61L58 31L79 51Z" fill="${accent}"/><path d="M159 61L162 31L141 51Z" fill="${accent}"/>`;
+if(customization.animal==="bear") ears=`<circle cx="62" cy="63" r="27" fill="${base}"/><circle cx="158" cy="63" r="27" fill="${base}"/><circle cx="62" cy="63" r="13" fill="${accent}"/><circle cx="158" cy="63" r="13" fill="${accent}"/>`;
+if(customization.animal==="monkey") ears=`<circle cx="50" cy="94" r="28" fill="${base}"/><circle cx="170" cy="94" r="28" fill="${base}"/><circle cx="50" cy="94" r="16" fill="${accent}"/><circle cx="170" cy="94" r="16" fill="${accent}"/>`;
+if(customization.animal==="owl") ears=`<path d="M48 69L56 18L92 50Z" fill="${base}"/><path d="M172 69L164 18L128 50Z" fill="${base}"/>`;
+if(customization.animal==="penguin") ears=`<path d="M53 112Q18 120 31 174L69 143Z" fill="${base}"/><path d="M167 112Q202 120 189 174L151 143Z" fill="${base}"/>`;
+if(customization.animal==="capybara") ears=`<circle cx="66" cy="67" r="20" fill="${base}"/><circle cx="154" cy="67" r="20" fill="${base}"/>`;
+if(customization.animal==="shark") ears=`<path d="M63 72L83 17L111 69Z" fill="${accent}"/><path d="M157 72L137 17L109 69Z" fill="${accent}"/>`;
 if(customization.animal==="tiger") stripes=`<path d="M62 75l18 13M158 75l-18 13M73 48l17 10M147 48l-17 10" stroke="#39251b" stroke-width="7" stroke-linecap="round"/>`;
+if(customization.animal==="lion") stripes=`<path d="M72 84L88 93M148 84L132 93" stroke="#9c681d" stroke-width="7" stroke-linecap="round"/>`;
+if(customization.animal==="wolf") stripes=`<path d="M71 83L84 91M149 83L136 91" stroke="#374151" stroke-width="6" stroke-linecap="round"/>`;
+if(customization.animal==="owl") stripes=`<circle cx="86" cy="104" r="25" fill="${accent}" opacity=".55"/><circle cx="134" cy="104" r="25" fill="${accent}" opacity=".55"/>`;
+if(customization.animal==="penguin") stripes=`<path d="M78 104Q110 86 142 104Q150 132 110 155Q70 132 78 104Z" fill="${light}"/>`;
 return `${ears}<circle cx="110" cy="105" r="65" fill="${base}"/><ellipse cx="110" cy="128" rx="39" ry="31" fill="${light}"/>${stripes}
 <ellipse cx="86" cy="104" rx="12" ry="15" fill="#fff"/><ellipse cx="134" cy="104" rx="12" ry="15" fill="#fff"/>
 <circle cx="88" cy="106" r="6" fill="${customization.eyeColor||"#182033"}"/><circle cx="132" cy="106" r="6" fill="${customization.eyeColor||"#182033"}"/>
@@ -314,7 +342,7 @@ function syncLocalRank(){const r=getRankInfo(player.points);player.rank=r.name;p
 function difficultyLevel(){return (player.grade==="pre1"||player.grade==="pre2")?0:getRankInfo(player.points).index;}
 
 let selectedGrade=null;
-let player={name:"",character:"fox",points:0,record:0,level:1,xp:0,grade:"g5",rank:"Bronze",rankIndex:0,rankIcon:"🥉",correctTotal:0,missionsCompleted:0,completedMissions:[],coins:0,questionCoins:0,totalQuestions:0,totalCorrect:0,totalWrong:0,totalTimeouts:0,totalChutes:0,totalPenalties:0,maxWrongStreak:0,modeStats:{}};
+let player={name:"",character:"fox",ownedAnimals:["fox"],points:0,record:0,level:1,xp:0,grade:"g5",rank:"Bronze",rankIndex:0,rankIcon:"🥉",correctTotal:0,missionsCompleted:0,completedMissions:[],coins:0,questionCoins:0,totalQuestions:0,totalCorrect:0,totalWrong:0,totalTimeouts:0,totalChutes:0,totalPenalties:0,maxWrongStreak:0,modeStats:{}};
 
 let game={
 mode:"",question:0,totalQuestions:10,answer:0,lives:3,score:0,correct:0,wrong:0,combo:0,bestCombo:0,
@@ -339,6 +367,7 @@ if(saved){
     player={...player,...JSON.parse(saved)};
     if(player.customization) customization={...customization,...player.customization};
     if(!Array.isArray(player.ownedSkins))player.ownedSkins=[];
+    if(!Array.isArray(player.ownedAnimals))player.ownedAnimals=["fox"];
     syncLocalRank();
   }catch(e){}
 }
@@ -397,6 +426,7 @@ if(saved){
     player={...player,...JSON.parse(saved)};
     if(player.customization) customization={...customization,...player.customization};
     if(!Array.isArray(player.ownedSkins))player.ownedSkins=[];
+    if(!Array.isArray(player.ownedAnimals))player.ownedAnimals=["fox"];
     syncLocalRank();
   }catch(e){}
 }
@@ -462,10 +492,38 @@ async function startLogin(){
   if(window.FirebaseRanking && FirebaseRanking.isConfigured()) {
     try{
       const cloud=await FirebaseRanking.loadAccount(name);
+      const legacy=await FirebaseRanking.loadScore(player.grade||"g5",name);
       if(cloud){
         player={...player,...cloud,name:cloud.name||name};
-        if(cloud.customization) customization={...customization,...cloud.customization};
+        // Se a conta e o ranking tiverem dados, preserva o maior progresso
+        // e usa a personalização mais recente disponível.
+        if(legacy){
+          player.points=Math.max(Number(player.points)||0,Number(legacy.points)||0);
+          player.xp=Math.max(Number(player.xp)||0,Number(legacy.xp)||Number(legacy.points)||0);
+          player.level=Math.max(Number(player.level)||1,Number(legacy.level)||1);
+          player.record=Math.max(Number(player.record)||0,Number(legacy.record)||0);
+          player.totalQuestions=Math.max(Number(player.totalQuestions)||0,Number(legacy.totalQuestions)||0);
+          player.totalCorrect=Math.max(Number(player.totalCorrect)||0,Number(legacy.totalCorrect)||0);
+          player.totalWrong=Math.max(Number(player.totalWrong)||0,Number(legacy.totalWrong)||0);
+          player.totalTimeouts=Math.max(Number(player.totalTimeouts)||0,Number(legacy.totalTimeouts)||0);
+          player.totalChutes=Math.max(Number(player.totalChutes)||0,Number(legacy.totalChutes)||0);
+          player.totalPenalties=Math.max(Number(player.totalPenalties)||0,Number(legacy.totalPenalties)||0);
+          player.missionsCompleted=Math.max(Number(player.missionsCompleted)||0,Number(legacy.missionsCompleted)||0);
+          if((!player.customization || !player.customization.animal) && legacy.customization) player.customization=legacy.customization;
+          if((!player.customization || !player.customization.skin) && legacy.skin) player.customization={...(player.customization||{}),skin:legacy.skin};
+          if(!player.customization?.animal && legacy.character) player.customization={...(player.customization||{}),animal:legacy.character};
+        }
+        if(player.customization) customization={...customization,...player.customization};
         if(!Array.isArray(player.ownedSkins))player.ownedSkins=[];
+        if(!Array.isArray(player.ownedAnimals))player.ownedAnimals=["fox"];
+      } else if(legacy){
+        // Conta antiga: recupera o progresso que já estava salvo no ranking.
+        player={...player,...legacy,name:legacy.name||name};
+        if(legacy.customization) customization={...customization,...legacy.customization};
+        if(legacy.character) customization.animal=legacy.character;
+        if(legacy.skin) customization.skin=legacy.skin;
+        if(!Array.isArray(player.ownedSkins))player.ownedSkins=[];
+        if(!Array.isArray(player.ownedAnimals))player.ownedAnimals=["fox", ...(legacy.character?[legacy.character]:[])];
       }
     }catch(e){ console.warn('Conta online indisponível; usando dados locais:',e); }
   }
@@ -508,7 +566,9 @@ async function updateDashboard(){
         player={...player,...account,name:account.name||player.name};
         if(account.customization) customization={...customization,...account.customization};
         if(!Array.isArray(player.ownedSkins))player.ownedSkins=[];
+        if(!Array.isArray(player.ownedAnimals))player.ownedAnimals=["fox"];
       }
+      // Compatibilidade: contas antigas podem ter o progresso apenas no ranking.
       const cloud=await FirebaseRanking.loadScore(player.grade||'g5',player.name);
       if(cloud && Number.isFinite(Number(cloud.points))){
         player.points=Number(cloud.points);
@@ -600,6 +660,13 @@ function setRankingStatus(text,kind=''){
   if(el){el.textContent=text;el.className='ranking-status '+kind;}
 }
 function characterForRanking(){return customization.animal||'fox';}
+function customizationForRecord(record){
+  const base={...customization};
+  const saved=record&&record.customization;
+  if(saved&&typeof saved==="object") return {...base,...saved};
+  if(record&&record.character) return {...base,animal:record.character};
+  return base;
+}
 function localRankingFallback(){
   const players=[];
   for(let i=0;i<localStorage.length;i++){
@@ -614,9 +681,9 @@ function localRankingFallback(){
   if(!players.some(p=>p.name===player.name)) players.push(player);
   return players.sort((a,b)=>(b.points||0)-(a.points||0)).slice(0,50);
 }
-function createRankingCharacter(animal){
+function createRankingCharacter(record){
   const saved=JSON.parse(JSON.stringify(customization));
-  customization={...saved,animal:['fox','panda','cat','rabbit','dog','tiger'].includes(animal)?animal:'fox'};
+  customization=customizationForRecord(record);
   const svg=createCharacterSVG();
   customization=saved;
   return svg;
@@ -629,7 +696,7 @@ function renderRanking(players){
     const row=document.createElement('div');
     row.className='ranking-row';
     const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1);
-    row.innerHTML=`<strong>${medal}</strong><div class="ranking-player"><div class="rank-avatar">${createRankingCharacter(p.character)}</div><strong>${escapeHTML(p.name||'Jogador')}</strong></div><div class="rank-points">${Number(p.points)||0}</div><div class="rank-level">Nível ${Number(p.level)||1}</div>`;
+    row.innerHTML=`<strong>${medal}</strong><div class="ranking-player"><div class="rank-avatar">${createRankingCharacter(p)}</div><strong>${escapeHTML(p.name||'Jogador')}</strong></div><div class="rank-points">${Number(p.points)||0}</div><div class="rank-level">Nível ${Number(p.level)||1}</div>`;
     box.appendChild(row);
   });
 }
@@ -645,6 +712,7 @@ async function sendScoreOnline(){
       score:game.score,
       level:player.level,
       character:characterForRanking(),
+      customization:JSON.parse(JSON.stringify(customization)),
       grade:player.grade||'g5',
       rank:player.rank,
       rankIndex:player.rankIndex,
@@ -798,18 +866,20 @@ function renderAdminAnalytics(players){
          <div class="analytics-title"><span>RANK — ${names[g]}</span><h3>Desempenho dos alunos</h3></div>
          <div class="analytics-table-wrap">
            <table>
-             <thead><tr><th>#</th><th>Aluno</th><th>Pontos</th><th>Rank</th><th>Acertos</th><th>Erros/chutes</th><th>Penal.</th></tr></thead>
+             <thead><tr><th>#</th><th>Aluno</th><th>Personagem</th><th>Skin</th><th>Pontos</th><th>Rank</th><th>Acertos</th><th>Erros/chutes</th><th>Penal.</th></tr></thead>
              <tbody>
              ${sorted.map((p,i)=>`
                <tr>
                  <td>${i+1}</td>
                  <td><strong>${escapeHTML(p.name||"Aluno")}</strong></td>
+                 <td><div class="admin-student-avatar">${createRankingCharacter(p)}</div></td>
+                 <td>${escapeHTML((p.customization&&p.customization.skin&&SKINS[p.customization.skin])?SKINS[p.customization.skin].name:(p.skin&&SKINS[p.skin]?SKINS[p.skin].name:"Original"))}</td>
                  <td>${Number(p.points)||0}</td>
                  <td>${p.rank||"—"}</td>
                  <td>${Number(p.totalCorrect)||0}</td>
                  <td>${Number(p.totalChutes)||0}</td>
                  <td>${Number(p.totalPenalties)||0}</td>
-               </tr>`).join("") || '<tr><td colspan="7">Nenhum aluno registrado nesta turma.</td></tr>'}
+               </tr>`).join("") || '<tr><td colspan="9">Nenhum aluno registrado nesta turma.</td></tr>'}
              </tbody>
            </table>
          </div>
@@ -923,31 +993,50 @@ function extraLife(){
 function renderCharacterStoreDashboard(){
   const box=document.getElementById("characterStoreDashboard");
   if(!box)return;
-  const owned=new Set(player.ownedSkins||[]);
+  if(!Array.isArray(player.ownedAnimals))player.ownedAnimals=["fox"];
+  if(isJuliaAdminAccount()) player.ownedAnimals=Object.keys(animals);
+  const ownedAnimals=new Set(player.ownedAnimals||[]);
+  const ownedSkins=new Set(player.ownedSkins||[]);
   const animalCards=Object.entries(animals).map(([id,a])=>{
+    const isOwned=isJuliaAdminAccount()||ownedAnimals.has(id);
     const active=customization.animal===id;
+    const priceText=`${a.cost} 🪙`;
+    const actionText=active?"✓ Em uso":(isOwned?"Usar personagem":"Comprar");
     return `<div class="store-character-card ${active?"active":""}">
       <div class="store-character-preview">${animalThumb(id)}</div>
       <strong>${a.name}</strong><small>${a.role}</small>
-      <button type="button" data-store-animal="${id}">${active?"✓ Em uso":"Usar personagem"}</button>
+      <div class="store-character-price">${priceText}</div>
+      <button type="button" data-store-animal="${id}">${actionText}</button>
     </div>`;
   }).join("");
   const skinCards=Object.values(SKINS).map(item=>{
-    const isOwned=isJuliaAdminAccount()||owned.has(item.key);
+    const isOwned=isJuliaAdminAccount()||ownedSkins.has(item.key);
     const active=customization.skin===item.key;
+    const priceText=`${item.cost} 🪙`;
     return `<div class="store-skin-card ${active?"active":""}">
       <div class="store-skin-preview skin-${item.key}"></div>
-      <strong>${item.name}</strong><small>${active?"Equipado":isOwned?"Desbloqueado":item.cost+" 🪙"}</small>
+      <strong>${item.name}</strong><small>${active?"Equipado":isOwned?"Desbloqueado":"À venda"}</small>
+      <div class="store-skin-price">${priceText}</div>
       <button type="button" data-store-skin="${item.key}">${active?"✓ Em uso":isOwned?"Usar":"Comprar"}</button>
     </div>`;
   }).join("");
-  box.innerHTML=`<div class="store-subtitle"><span>🐾 Personagens</span><small>Escolha seu companheiro</small></div><div class="store-character-row">${animalCards}</div><div class="store-subtitle skins-subtitle"><span>✨ Skins</span><small>${isJuliaAdminAccount()?"Conta Júlia • moedas infinitas":"Desbloqueie com moedas"}</small></div><div class="store-skin-row">${skinCards}</div>`;
+  box.innerHTML=`<div class="store-subtitle"><span>🐾 Animais à venda</span><small>Todos os personagens têm preço</small></div><div class="store-character-row">${animalCards}</div><div class="store-subtitle skins-subtitle"><span>✨ Skins</span><small>${isJuliaAdminAccount()?"Conta Júlia • moedas infinitas":"Desbloqueie com moedas"}</small></div><div class="store-skin-row">${skinCards}</div>`;
   box.querySelectorAll("[data-store-animal]").forEach(btn=>btn.onclick=()=>{
-    customization.animal=btn.dataset.storeAnimal;
+    const id=btn.dataset.storeAnimal, animal=animals[id];
+    if(!animal)return;
+    const ownedNow=isJuliaAdminAccount()||ownedAnimals.has(id);
+    if(!ownedNow){
+      const balance=Number(player.coins)||0;
+      if(balance<animal.cost){alert(`Você precisa de ${animal.cost} moedas para desbloquear o personagem ${animal.name}.`);return;}
+      player.coins=balance-animal.cost;
+      player.ownedAnimals=Array.from(new Set([...(player.ownedAnimals||[]),id]));
+    }
+    customization.animal=id;
     customization.fur=null;
-    player.character=customization.animal;
+    player.character=id;
     player.customization=customization;
     savePlayer();
+    syncAccountCloud();
     refreshCharacter();
     renderCharacterStoreDashboard();
     updateCoinUI();
@@ -955,7 +1044,7 @@ function renderCharacterStoreDashboard(){
   box.querySelectorAll("[data-store-skin]").forEach(btn=>btn.onclick=()=>{
     const key=btn.dataset.storeSkin, item=SKINS[key];
     if(!item)return;
-    const ownedNow=isJuliaAdminAccount()||owned.has(key);
+    const ownedNow=isJuliaAdminAccount()||ownedSkins.has(key);
     if(!ownedNow){
       const balance=Number(player.coins)||0;
       if(balance<item.cost){alert(`Você precisa de ${item.cost} moedas para desbloquear a skin ${item.name}.`);return;}
@@ -965,12 +1054,12 @@ function renderCharacterStoreDashboard(){
     customization.skin=key;
     player.customization=customization;
     savePlayer();
+    syncAccountCloud();
     refreshCharacter();
     renderCharacterStoreDashboard();
     updateCoinUI();
   });
 }
-
 function renderShopDashboard(){
  const box=document.getElementById("shopDashboardItems");if(!box)return;
  box.innerHTML=Object.values(SHOP_ITEMS).map(it=>`<div class="shop-dashboard-card"><strong>${it.icon} ${it.name}</strong><small>${it.desc}</small><b>${it.cost} 🪙</b></div>`).join("");

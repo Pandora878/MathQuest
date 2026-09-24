@@ -402,13 +402,14 @@ body{background:radial-gradient(circle at 15% 0,#1b2450 0,transparent 34%),radia
 .store-subtitle{display:flex;align-items:end;justify-content:space-between;gap:10px;margin:12px 0 9px}
 .store-subtitle span{font-weight:900;color:#eef4ff;font-size:14px}
 .store-subtitle small{color:#8296b6;font-size:11px}
-.store-character-row{display:grid;grid-template-columns:repeat(6,minmax(110px,1fr));gap:10px}
+.store-character-row{display:grid;grid-template-columns:repeat(6,minmax(120px,1fr));gap:10px}
 .store-character-card,.store-skin-card{border:1px solid #29415f;background:#0d1a30;border-radius:15px;padding:10px;text-align:center;transition:.16s}
 .store-character-card:hover,.store-skin-card:hover{transform:translateY(-2px);border-color:#4b79ba}
 .store-character-card.active,.store-skin-card.active{border-color:#36c8ff;box-shadow:0 0 0 2px rgba(54,200,255,.14)}
 .store-character-preview{height:88px;display:grid;place-items:center;overflow:hidden}
 .store-character-preview svg{width:86px;height:86px}
 .store-character-card strong,.store-skin-card strong{display:block;color:#eef4ff;font-size:13px}
+.store-character-price,.store-skin-price{display:block;margin-top:4px;color:#ffd15c;font-weight:900;font-size:12px}
 .store-character-card small,.store-skin-card small{display:block;color:#91a3c0;font-size:10px;min-height:25px;margin-top:3px}
 .store-character-card button,.store-skin-card button{width:100%;margin-top:7px;border:1px solid #38567d;border-radius:9px;padding:7px 6px;background:#183052;color:#fff;font-size:10px;font-weight:900;cursor:pointer}
 .store-character-card button:hover,.store-skin-card button:hover{background:#24518a}
@@ -416,8 +417,72 @@ body{background:radial-gradient(circle at 15% 0,#1b2450 0,transparent 34%),radia
 .store-skin-row{display:grid;grid-template-columns:repeat(6,minmax(110px,1fr));gap:10px}
 .store-skin-preview{height:58px;border-radius:11px;border:1px solid rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.16);margin-bottom:7px}
 .store-skin-preview.skin-rainbow{animation:skinRgb 2s linear infinite}
-@media(max-width:1100px){.store-character-row,.store-skin-row{grid-template-columns:repeat(3,minmax(110px,1fr))}}
+@media(max-width:1100px){.store-character-row,.store-skin-row{grid-template-columns:repeat(4,minmax(110px,1fr))}}
 @media(max-width:700px){.menu-character-actions,.character-store-head{align-items:stretch;flex-direction:column}.menu-character-button,.character-store-customize{width:100%}.store-character-row,.store-skin-row{grid-template-columns:repeat(2,minmax(110px,1fr))}}
 
 /* Alunos não exibem o ranking público. A análise permanece no painel administrativo. */
 .student-hidden-ranking{display:none!important}
+
+/* ===== CORREÇÃO DO EDITOR DE PERSONAGEM ===== */
+.editor-workspace,
+.editor-controls,
+.editor-panel,
+.animal-options,
+.style-options{min-width:0;max-width:100%;box-sizing:border-box;}
+
+.animal-options,.style-options{
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  width:100%;
+  overflow:visible;
+}
+
+.animal-card,.style-choice{
+  min-width:0 !important;
+  width:100%;
+  max-width:100%;
+  box-sizing:border-box;
+  overflow:hidden;
+}
+
+.animal-card-image{
+  width:100%;
+  min-width:0;
+}
+
+.animal-card-image svg{
+  max-width:84px;
+  max-height:84px;
+}
+
+/* Impede o painel de pré-visualização de invadir a grade. */
+.editor-controls{
+  overflow:hidden;
+}
+
+@media (max-width:1200px) and (min-width:701px){
+  .editor-workspace{
+    grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr);
+  }
+  .editor-topbar{
+    grid-template-columns:110px minmax(0,1fr) 125px;
+  }
+  .animal-options,.style-options{
+    grid-template-columns:repeat(6,minmax(0,1fr));
+    gap:7px;
+  }
+  .animal-card{
+    padding:7px 3px;
+  }
+}
+
+@media (max-width:900px) and (min-width:701px){
+  .animal-options,.style-options{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+}
+
+
+/* Avatar do aluno no painel administrativo */
+.admin-student-avatar{width:54px;height:54px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:12px;background:#0f1b31;border:1px solid #29456e}
+.admin-student-avatar svg{width:52px;height:52px;display:block}
+.analytics-table-wrap table td{vertical-align:middle}

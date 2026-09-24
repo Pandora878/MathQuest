@@ -1,0 +1,11 @@
+CORREÇÕES
+
+1. O login pelo mesmo nome recupera a conta em outro dispositivo pelo Firebase.
+2. Foi adicionada a coleção mathQuestAccounts às regras do Firestore.
+3. Se uma conta antiga ainda não tiver documento em mathQuestAccounts, o jogo tenta recuperar o progresso de mathQuestRanking.
+4. A personalização completa (animal, fur, roupa, cabeça, acessório, cores e skin) é salva no ranking.
+5. A skin escolhida passa a aparecer no personagem dos quadros/ranking.
+6. O painel administrativo mostra o avatar personalizado e o nome da skin do aluno.
+7. Todos os 14 animais são aceitos pelo Firebase, não apenas os seis iniciais.
+
+IMPORTANTE: o acesso por nome, sem PIN/senha, permite que outra pessoa que saiba o nome entre na mesma conta.

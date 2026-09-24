@@ -58,7 +58,7 @@ async function init(opts){
 }
 async function ensureAuth(){await init({requireAuth:true});return auth.currentUser;}
 function grade(v){return ['pre1','pre2','g1','g2','g3','g4','g5'].includes(v)?v:'g5';}
-function character(v){return ['fox','panda','cat','rabbit','dog','tiger'].includes(v)?v:'fox';}
+function character(v){return ['fox','panda','cat','rabbit','dog','tiger','lion','wolf','bear','monkey','owl','penguin','capybara','shark'].includes(v)?v:'fox';}
 function normalizeName(v){return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'').slice(0,40)||'jogador';}
 function name(v){return String(v||'').trim().slice(0,30)||'Jogador';}
 
@@ -80,7 +80,9 @@ async function saveAccount(data){
   grade:grade(data.grade),
   character:character(data.character),
   customization:data.customization||null,
+  skin:(data.customization&&data.customization.skin)||data.skin||null,
   ownedSkins:Array.isArray(data.ownedSkins)?data.ownedSkins:[],
+  ownedAnimals:Array.isArray(data.ownedAnimals)?data.ownedAnimals:[],
   points:Number(data.points)||0,
   record:Number(data.record)||0,
   level:Number(data.level)||1,
@@ -133,7 +135,7 @@ async function saveScore(data){
   const coins=Math.max(0,Number(data.coins ?? old.coins ?? 0));
   saved={
    name:name(data.name),points,level,rank:r.name,rankIndex:r.index,rankIcon:r.icon,
-   character:character(data.character),grade:g,authUid:user.uid,coins,
+   character:character(data.character),customization:data.customization||null,skin:(data.customization&&data.customization.skin)||data.skin||null,grade:g,authUid:user.uid,coins,
    missionsCompleted:(Number(old.missionsCompleted)||0)+(Number(inc.missionCompleted)||0),
    totalQuestions:(Number(old.totalQuestions)||0)+(Number(inc.attempts)||0),
    totalCorrect:(Number(old.totalCorrect)||0)+(Number(inc.correct)||0),
