@@ -1,0 +1,13 @@
+ÁREA JOGOS DO ADMINISTRADOR
+
+No Painel do Administrador foi adicionado o botão "🎮 Jogos".
+
+Ao clicar:
+- abre uma área exclusiva para o administrador;
+- mostra Pré I, Pré II, 1º, 2º, 3º, 4º e 5º ano;
+- mostra todas as fases de cada turma;
+- TODAS as fases ficam desbloqueadas;
+- o administrador pode clicar em JOGAR em qualquer fase;
+- o teste não envia pontos para o ranking dos alunos.
+
+Ao sair da partida no modo administrador, o sistema retorna para a área Jogos.

@@ -119,10 +119,21 @@
 
 <section id="adminScreen" class="screen admin-screen">
 <div class="admin-page">
-<header class="admin-header"><div><span>ÁREA RESTRITA</span><h1>Painel do Administrador</h1><p>Veja todas as turmas, todas as fases e entre em qualquer jogo para testar.</p></div><button id="adminBackButton" class="secondary-button">← Voltar</button></header>
+<header class="admin-header"><div><span>ÁREA RESTRITA</span><h1>Painel do Administrador</h1><p>Veja todas as turmas, todas as fases e entre em qualquer jogo para testar.</p></div><div class="admin-header-actions"><button id="adminGamesButton" class="admin-games-button">🎮 Jogos</button><button id="adminBackButton" class="secondary-button">← Voltar</button></div></header>
 <div class="admin-info"><div>🎮 <strong>Modo de teste</strong><span>Jogar aqui não altera o ranking dos alunos.</span></div><div>⏱️ <strong>Tempos</strong><span>Pré I/II 60s • 1º/2º 120s • 3º 60s • 4º 40s • 5º 30s</span></div><div>🚫 <strong>Anti-chute</strong><span>Erros consecutivos geram espera e perda de pontos.</span></div></div>
 <div id="adminGradeGrid" class="admin-grade-grid"></div>
 </div></section>
+
+<section id="adminGamesScreen" class="screen admin-games-screen">
+<div class="admin-page">
+<header class="admin-header">
+  <div><span>ÁREA RESTRITA • ADMIN</span><h1>Jogos</h1><p>Todas as turmas e todas as fases estão desbloqueadas para teste.</p></div>
+  <button id="adminGamesBackButton" class="secondary-button">← Voltar ao painel</button>
+</header>
+<div class="admin-unlocked-banner">🔓 <strong>Modo administrador:</strong> todas as fases estão liberadas. Jogar aqui não altera o ranking dos alunos.</div>
+<div id="adminGamesGrid" class="admin-games-grid"></div>
+</div>
+</section>
 
 <section id="menuScreen" class="screen dashboard-screen">
   <div class="dashboard">

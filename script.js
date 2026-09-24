@@ -351,6 +351,8 @@ document.getElementById("playerName").addEventListener("keydown",e=>{if(e.key===
 document.getElementById("gradeBack").onclick=()=>showScreen("loginScreen");
 document.getElementById("adminAccessButton").onclick=openAdminArea;
 document.getElementById("adminBackButton").onclick=exitAdminArea;
+document.getElementById("adminGamesButton").onclick=openAdminGames;
+document.getElementById("adminGamesBackButton").onclick=()=>{renderAdminArea();showScreen("adminScreen");};
 document.getElementById("enterGameButton").onclick=()=>{
   player.customization=JSON.parse(JSON.stringify(customization));
   savePlayer();
@@ -534,6 +536,37 @@ function renderAdminArea(){
     player.grade=btn.dataset.grade; startGame(btn.dataset.mode,true);
   });
 }
+
+function openAdminGames(){
+  adminMode=true;
+  renderAdminGames();
+  showScreen("adminGamesScreen");
+}
+function renderAdminGames(){
+  const box=document.getElementById("adminGamesGrid");
+  if(!box)return;
+  box.innerHTML="";
+  Object.entries(gradeProfiles).forEach(([id,p])=>{
+    const card=document.createElement("div");
+    card.className="admin-grade-card admin-games-grade";
+    const missions=p.modes.map(([mode,title,subtitle,color],i)=>
+      `<button class="admin-game-launch" data-grade="${id}" data-mode="${mode}">
+        <span class="admin-game-icon">${i+1}</span>
+        <span><strong>${title}</strong><small>${subtitle||"Jogar fase"}</small></span>
+        <b>JOGAR →</b>
+      </button>`
+    ).join("");
+    card.innerHTML=`<div class="admin-grade-head"><div><span>TURMA</span><h2>${p.label}</h2><p>${p.description}</p></div><strong>${p.time}s</strong></div><div class="admin-missions">${missions}</div>`;
+    box.appendChild(card);
+  });
+  box.querySelectorAll(".admin-game-launch").forEach(btn=>{
+    btn.onclick=()=>{
+      player.grade=btn.dataset.grade;
+      startGame(btn.dataset.mode,true);
+    };
+  });
+}
+
 function exitAdminArea(){adminMode=false;showScreen("gradeScreen");}
 
 function startGame(mode,isAdmin=false){
@@ -845,8 +878,8 @@ else{title.textContent="Boa tentativa!";message.textContent="Pratique mais uma v
 showScreen("resultScreen");
 }
 
-document.getElementById("backMenu").onclick=()=>{if(game.adminMode){renderAdminArea();showScreen("adminScreen");}else{updateDashboard();showScreen("menuScreen");}};
-document.getElementById("exitGame").onclick=()=>{cancelTimer();if(game.adminMode){renderAdminArea();showScreen("adminScreen");}else{showScreen("menuScreen");}};
+document.getElementById("backMenu").onclick=()=>{if(game.adminMode){renderAdminGames();showScreen("adminGamesScreen");}else{updateDashboard();showScreen("menuScreen");}};
+document.getElementById("exitGame").onclick=()=>{cancelTimer();if(game.adminMode){renderAdminGames();showScreen("adminGamesScreen");}else{showScreen("menuScreen");}};
 
 function random(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}}

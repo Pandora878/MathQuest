@@ -147,3 +147,18 @@ body{background:radial-gradient(circle at 15% 0,#1b2450 0,transparent 34%),radia
 .admin-missions{display:grid;grid-template-columns:1fr;gap:8px}
 .admin-mission-btn{border:1px solid #e2e7ef;background:#f8faff;color:#1c3150;border-radius:12px;padding:11px 13px;text-align:left;font-weight:750;cursor:pointer}
 @media(max-width:850px){.admin-info{grid-template-columns:1fr}.admin-grade-grid{grid-template-columns:1fr}.admin-header{align-items:flex-start;flex-direction:column}}
+
+.admin-header-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.admin-games-button{border:1px solid #4e79c8;background:#2454a3;color:#fff;border-radius:14px;padding:13px 20px;font-weight:900;cursor:pointer;box-shadow:0 8px 22px rgba(25,72,150,.22)}
+.admin-games-button:hover{background:#2d65bd;transform:translateY(-1px)}
+.admin-games-screen{overflow:auto;background:#f5f7fb}
+.admin-unlocked-banner{background:#eaf4ff;border:1px solid #bcd8f5;color:#214b78;border-radius:16px;padding:15px 18px;margin:0 0 22px;font-size:14px}
+.admin-games-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.admin-games-grade .admin-missions{gap:10px}
+.admin-game-launch{display:grid;grid-template-columns:42px 1fr auto;align-items:center;gap:12px;width:100%;border:1px solid #dce5f1;background:#f9fbff;color:#1b3150;border-radius:14px;padding:11px 12px;text-align:left;cursor:pointer}
+.admin-game-launch:hover{border-color:#91b7ea;background:#eef5ff;transform:translateX(2px)}
+.admin-game-icon{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:#e5efff;color:#2454a3;font-weight:900}
+.admin-game-launch strong{display:block;font-size:14px}
+.admin-game-launch small{display:block;color:#758397;margin-top:3px;font-size:12px}
+.admin-game-launch>b{font-size:11px;color:#2865c7;white-space:nowrap}
+@media(max-width:850px){.admin-games-grid{grid-template-columns:1fr}.admin-header-actions{width:100%}}
