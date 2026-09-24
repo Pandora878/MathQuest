@@ -205,11 +205,11 @@ const gradeProfiles={
     ["addition","Cidade dos Milhares","Adição","blue"],["subtraction","Vale dos Milhares","Subtração","purple"],
     ["multiplication","Torre da Tabuada","Multiplicação","orange"],["division","Reino da Divisão","Divisão","green"],
     ["mixed","Templo Matemático","Misto","gold"]]},
-  g4:{label:"4º ano",title:"Missões do 4º ano",description:"Quatro operações, frações, medidas e problemas.",time:40,questions:10,lives:3,modes:[
+  g4:{label:"4º ano",title:"Missões do 4º ano",description:"Quatro operações, frações, medidas, decimais e desafios.",time:40,questions:15,lives:3,modes:[
     ["addition","Cidade dos Grandes Números","Adição","blue"],["subtraction","Vale dos Desafios","Subtração","purple"],
     ["multiplication","Torre Multiplicadora","Multiplicação","orange"],["fraction","Ilha das Frações","Frações","green"],
     ["mixed","Templo Matemático","Misto","gold"]]},
-  g5:{label:"5º ano",title:"Missões do 5º ano",description:"Operações, frações, decimais, porcentagens e desafios.",time:30,questions:10,lives:3,modes:[
+  g5:{label:"5º ano",title:"Missões do 5º ano",description:"Operações, frações, decimais, porcentagens e desafios.",time:30,questions:15,lives:3,modes:[
     ["addition","Vila da Soma","Adição","blue"],["subtraction","Floresta dos Números","Subtração","purple"],
     ["multiplication","Torre da Tabuada","Multiplicação","orange"],["division","Reino da Divisão","Divisão","green"],
     ["mixed","Templo Matemático","Desafio misto","gold"],["boss","Desafio Final","Modo avançado","red"]]}
@@ -234,7 +234,7 @@ function syncLocalRank(){const r=getRankInfo(player.points);player.rank=r.name;p
 function difficultyLevel(){return (player.grade==="pre1"||player.grade==="pre2")?0:getRankInfo(player.points).index;}
 
 let selectedGrade=null;
-let player={name:"",character:"fox",points:0,record:0,level:1,xp:0,grade:"g5",rank:"Bronze",rankIndex:0,rankIcon:"🥉",correctTotal:0,missionsCompleted:0,completedMissions:[]};
+let player={name:"",character:"fox",points:0,record:0,level:1,xp:0,grade:"g5",rank:"Bronze",rankIndex:0,rankIcon:"🥉",correctTotal:0,missionsCompleted:0,completedMissions:[],coins:0,totalQuestions:0,totalCorrect:0,totalWrong:0,totalTimeouts:0,totalChutes:0,totalPenalties:0,maxWrongStreak:0,modeStats:{}};
 
 let game={
 mode:"",question:0,totalQuestions:10,answer:0,lives:3,score:0,correct:0,wrong:0,combo:0,bestCombo:0,
@@ -352,6 +352,8 @@ document.getElementById("gradeBack").onclick=()=>showScreen("loginScreen");
 document.getElementById("adminAccessButton").onclick=openAdminArea;
 document.getElementById("adminBackButton").onclick=exitAdminArea;
 document.getElementById("adminGamesButton").onclick=openAdminGames;
+document.getElementById("adminAnalyticsButton").onclick=openAdminAnalytics;
+document.getElementById("adminAnalyticsBackButton").onclick=()=>{renderAdminArea();showScreen("adminScreen");};
 document.getElementById("adminGamesBackButton").onclick=()=>{renderAdminArea();showScreen("adminScreen");};
 document.getElementById("enterGameButton").onclick=()=>{
   player.customization=JSON.parse(JSON.stringify(customization));
@@ -380,7 +382,7 @@ async function updateDashboard(){
   document.getElementById("dashboardName").textContent=player.name;
   document.getElementById("dashboardGrade").textContent=profile.label;
   syncLocalRank();
-  document.getElementById("dashboardLevel").textContent="Nível "+player.level+" • "+player.rank;
+  document.getElementById("dashboardLevel").textContent="Nível "+player.level;
   document.getElementById("totalPoints").textContent=player.points;
   document.getElementById("recordPoints").textContent=player.record;
   document.getElementById("smallCharacter").innerHTML=createCharacterSVG();
@@ -391,22 +393,22 @@ async function updateDashboard(){
   document.getElementById("gradeTitle").textContent=profile.title;
   document.getElementById("gradeDescription").textContent=profile.description;
   buildMissionGrid();
-  renderRankCard();
   renderAchievements();
-  updateRanking();
+  renderShopDashboard();
+  updateCoinUI();
 }
 function buildMissionGrid(){
-  const profile=gradeProfiles[player.grade]||gradeProfiles.g5, ri=difficultyLevel();
+  const profile=gradeProfiles[player.grade]||gradeProfiles.g5, ri=0;
   const box=document.getElementById("missionGrid");box.innerHTML="";
   profile.modes.forEach(([mode,title,subtitle,color],i)=>{
-    const required=Math.min(Math.floor(i/2),5);
-    const locked=ri<required;
+    const required=0;
+    const locked=false;
     const reward=20+i*5;
     const completed=(player.completedMissions||[]).includes(mode);
     const b=document.createElement("button");b.className="mission-card"+(color==="gold"?" featured":"")+(color==="red"?" boss":"")+(locked?" locked":"")+(completed?" completed":"");
     const icon={blue:"+",purple:"−",orange:"×",green:"÷",gold:"★",red:"👑"}[color]||"•";
     const stars=Math.min(3,1+Math.floor(i/4));
-    b.innerHTML=`<div class="mission-icon ${color}">${locked?'🔒':(completed?'✓':icon)}</div><div><strong>${title}${completed?' ✓':''}</strong><span>${locked?'Desbloqueia no rank '+RANKS_LOCAL[required].name:subtitle+' • dificuldade '+(ri+1)+' • bônus +'+reward+' pts'}</span><em class="mission-stars">${'★'.repeat(stars)}${'☆'.repeat(3-stars)}</em></div><b>${locked?'🔒':(completed?'↻':'→')}</b>`;
+    b.innerHTML=`<div class="mission-icon ${color}">${locked?'🔒':(completed?'✓':icon)}</div><div><strong>${title}${completed?' ✓':''}</strong><span>${locked?'Desbloqueia no rank '+RANKS_LOCAL[required].name:subtitle+' • bônus +'+reward+' pts'}</span><em class="mission-stars">${'★'.repeat(stars)}${'☆'.repeat(3-stars)}</em></div><b>${locked?'🔒':(completed?'↻':'→')}</b>`;
     b.disabled=locked; if(!locked)b.onclick=()=>startGame(mode); box.appendChild(b);
   });
 }
@@ -418,13 +420,9 @@ function renderRankCard(){
 }
 const ACHIEVEMENTS=[
   ['first','🚀','Primeiro passo','Conclua sua primeira missão',p=>p.missionsCompleted>=1],
-  ['500','⭐','500 pontos','Alcance 500 pontos',p=>p.points>=500],
-  ['1200','🥇','Chegou ao Ouro','Alcance o rank Ouro',p=>p.points>=1200],
-  ['2500','💠','Platina','Alcance o rank Platina',p=>p.points>=2500],
-  ['5000','💎','Diamante','Alcance o rank Diamante',p=>p.points>=5000],
   ['combo','🔥','Combo de fogo','Faça um combo de 5 acertos',p=>(p.bestCombo||0)>=5],
   ['precision','🎯','Mira certeira','Termine uma missão com 90% ou mais',p=>(p.bestAccuracy||0)>=90],
-  ['master','👑','Mestre da Matemática','Alcance o rank Mestre',p=>p.points>=9000]
+  ['coins','🪙','Colecionador','Junte 50 moedas',p=>(p.coins||0)>=50]
 ];
 function renderAchievements(){const box=document.getElementById('achievementGrid');if(!box)return;box.innerHTML='';ACHIEVEMENTS.forEach(([id,icon,title,desc,check])=>{const unlocked=check(player);const el=document.createElement('div');el.className='achievement-card '+(unlocked?'unlocked':'locked-achievement');el.innerHTML=`<div class="achievement-icon">${unlocked?icon:'🔒'}</div><div><strong>${title}</strong><span>${desc}</span></div>`;box.appendChild(el)})}
 
@@ -496,7 +494,17 @@ async function sendScoreOnline(){
       character:characterForRanking(),
       grade:player.grade||'g5',
       rank:player.rank,
-      rankIndex:player.rankIndex
+      rankIndex:player.rankIndex,
+      coins:player.coins,
+      analytics:{
+        mode:game.mode, attempts:game.correct+game.wrong, correct:game.correct, wrong:game.wrong,
+        timeouts:game.timeoutCount||0, chutes:game.guessCount||0, penalties:game.penaltyCount||0,
+        maxWrongStreak:game.wrongStreak||0, missionCompleted:1,
+        recentAttempts:[{mode:game.mode,grade:player.grade,correct:game.correct,wrong:game.wrong,
+          chutes:game.guessCount||0,timeouts:game.timeoutCount||0,penalties:game.penaltyCount||0,
+          accuracy:(game.correct+game.wrong)?Math.round(game.correct/(game.correct+game.wrong)*100):0,
+          at:new Date().toISOString()}]
+      }
     });
     if(saved && Number.isFinite(Number(saved.points))){
       player.points=Number(saved.points);
@@ -521,7 +529,7 @@ function escapeHTML(text){const d=document.createElement("div");d.textContent=te
 
 function openAdminArea(){
   const password=prompt("Área do administrador\nDigite a senha:");
-  if(password!=="admin123"){ if(password!==null) alert("Senha incorreta."); return; }
+  if(password!=="Aj0505"){ if(password!==null) alert("Senha incorreta."); return; }
   adminMode=true; renderAdminArea(); showScreen("adminScreen");
 }
 function renderAdminArea(){
@@ -535,6 +543,45 @@ function renderAdminArea(){
   box.querySelectorAll(".admin-mission-btn").forEach(btn=>btn.onclick=()=>{
     player.grade=btn.dataset.grade; startGame(btn.dataset.mode,true);
   });
+}
+
+
+async function openAdminAnalytics(){
+ showScreen("adminAnalyticsScreen");
+ const box=document.getElementById("adminAnalyticsBody");if(!box)return;
+ box.innerHTML='<div class="admin-loading">Carregando dados das turmas...</div>';
+ try{renderAdminAnalytics(await FirebaseRanking.getAllPlayers());}
+ catch(e){box.innerHTML=`<div class="admin-error">Não foi possível carregar os dados: ${escapeHTML(e.message||"erro")}</div>`;}
+}
+function renderAdminAnalytics(players){
+ const names={pre1:"Pré I",pre2:"Pré II",g1:"1º ano",g2:"2º ano",g3:"3º ano",g4:"4º ano",g5:"5º ano"};
+ const totalQ=players.reduce((s,p)=>s+(Number(p.totalQuestions)||0),0);
+ const totalC=players.reduce((s,p)=>s+(Number(p.totalCorrect)||0),0);
+ const totalCh=players.reduce((s,p)=>s+(Number(p.totalChutes)||0),0);
+ const totalPen=players.reduce((s,p)=>s+(Number(p.totalPenalties)||0),0);
+ const avg=totalQ?Math.round(totalC/totalQ*100):0;
+ const sorted=[...players].sort((a,b)=>(Number(b.points)||0)-(Number(a.points)||0));
+ const chuters=[...players].sort((a,b)=>(Number(b.totalChutes)||0)-(Number(a.totalChutes)||0)).slice(0,8);
+ const dif={};
+ players.forEach(p=>Object.entries(p.modeStats||{}).forEach(([m,s])=>{
+  if(!dif[m])dif[m]={attempts:0,correct:0,chutes:0,penalties:0};
+  dif[m].attempts+=Number(s.attempts)||0;dif[m].correct+=Number(s.correct)||0;
+  dif[m].chutes+=Number(s.chutes)||0;dif[m].penalties+=Number(s.penalties)||0;
+ }));
+ const hard=Object.entries(dif).map(([mode,s])=>({...s,mode,accuracy:s.attempts?Math.round(s.correct/s.attempts*100):0})).sort((a,b)=>a.accuracy-b.accuracy);
+ const box=document.getElementById("adminAnalyticsBody");
+ box.innerHTML=`<div class="analytics-summary">
+ <div><span>ALUNOS</span><strong>${players.length}</strong></div><div><span>PRECISÃO MÉDIA</span><strong>${avg}%</strong></div>
+ <div><span>ERROS / CHUTES</span><strong>${totalCh}</strong></div><div><span>PENALIDADES</span><strong>${totalPen}</strong></div></div>
+ <div class="analytics-grid">
+ <section class="analytics-card wide"><div class="analytics-title"><span>RANK — ADMIN</span><h2>Desempenho das crianças</h2></div><div class="analytics-table-wrap"><table><thead><tr><th>#</th><th>Aluno</th><th>Turma</th><th>Pontos</th><th>Rank</th><th>Acertos</th><th>Chutes/erros</th><th>Penal.</th></tr></thead><tbody>
+ ${sorted.slice(0,50).map((p,i)=>`<tr><td>${i+1}</td><td><strong>${escapeHTML(p.name||"Aluno")}</strong></td><td>${names[p.grade]||p.grade}</td><td>${Number(p.points)||0}</td><td>${p.rank||"—"}</td><td>${Number(p.totalCorrect)||0}</td><td>${Number(p.totalChutes)||0}</td><td>${Number(p.totalPenalties)||0}</td></tr>`).join("")||'<tr><td colspan="8">Ainda não há dados.</td></tr>'}
+ </tbody></table></div></section>
+ <section class="analytics-card"><div class="analytics-title"><span>ACOMPANHAMENTO</span><h2>Quem mais errou/chutou?</h2></div>
+ ${chuters.map((p,i)=>`<div class="student-risk"><b>${i+1}</b><span><strong>${escapeHTML(p.name||"Aluno")}</strong><small>${names[p.grade]||p.grade} • ${Number(p.totalChutes)||0} erros/chutes • ${Number(p.totalPenalties)||0} penalidades</small></span></div>`).join("")||"<p>Sem registros.</p>"}</section>
+ <section class="analytics-card wide"><div class="analytics-title"><span>DIFICULDADES</span><h2>Questões em que as turmas mais erram</h2></div>
+ ${hard.slice(0,12).map(x=>`<div class="difficulty-row"><div><strong>${escapeHTML(x.mode)}</strong><span>${x.accuracy}% acerto • ${x.attempts} questões • ${x.chutes} erros/chutes • ${x.penalties} penalidades</span></div><div class="difficulty-track"><i style="width:${x.accuracy}%"></i></div></div>`).join("")||"<p>Os dados aparecerão conforme os alunos jogarem.</p>"}</section>
+ </div>`;
 }
 
 function openAdminGames(){
@@ -569,20 +616,68 @@ function renderAdminGames(){
 
 function exitAdminArea(){adminMode=false;showScreen("gradeScreen");}
 
+
+const SHOP_ITEMS={
+ hint:{name:"Dica",icon:"💡",cost:5,desc:"Elimina uma alternativa errada."},
+ change:{name:"Mudar questão",icon:"🔄",cost:8,desc:"Troca a questão atual sem perder uma vida."},
+ life:{name:"Vida extra",icon:"❤️",cost:10,desc:"Recupera 1 vida na missão."}
+};
+function updateCoinUI(){
+ ["coinBalance","gameCoins"].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=player.coins||0;});
+}
+function spendCoins(cost){
+ if((player.coins||0)<cost){
+  const f=document.getElementById("feedback");if(f){f.textContent=`Você precisa de ${cost} moedas.`;f.style.color="#ffb648";}
+  return false;
+ }
+ player.coins-=cost;savePlayer();updateCoinUI();return true;
+}
+function useHint(){
+ if(game.locked||game.adminMode||game.hintUsed)return;
+ if(!spendCoins(SHOP_ITEMS.hint.cost))return;
+ const wrong=[...document.querySelectorAll(".answer-button")].filter(b=>!b.disabled && String(b.textContent)!==String(game.answer));
+ shuffle(wrong);if(wrong[0]){wrong[0].disabled=true;wrong[0].classList.add("hint-hidden");}
+ game.hintUsed=true;
+ const f=document.getElementById("feedback");if(f){f.textContent="💡 Dica usada: uma alternativa errada foi eliminada.";f.style.color="#4da3ff";}
+}
+function changeQuestion(){
+ if(game.locked||game.adminMode||game.changeUsed)return;
+ if(!spendCoins(SHOP_ITEMS.change.cost))return;
+ game.changeUsed=true;nextQuestion(true);
+ const f=document.getElementById("feedback");if(f){f.textContent="🔄 Questão alterada.";f.style.color="#4da3ff";}
+}
+function extraLife(){
+ if(game.locked||game.adminMode||game.lifeUsed)return;
+ if(game.lives>=3){const f=document.getElementById("feedback");if(f)f.textContent="Você já está com todas as vidas.";return;}
+ if(!spendCoins(SHOP_ITEMS.life.cost))return;
+ game.lives=Math.min(3,game.lives+1);game.lifeUsed=true;updateGameHeader();
+ const f=document.getElementById("feedback");if(f){f.textContent="❤️ Você ganhou uma vida extra!";f.style.color="#20a875";}
+}
+function renderShopDashboard(){
+ const box=document.getElementById("shopDashboardItems");if(!box)return;
+ box.innerHTML=Object.values(SHOP_ITEMS).map(it=>`<div class="shop-dashboard-card"><strong>${it.icon} ${it.name}</strong><small>${it.desc}</small><b>${it.cost} 🪙</b></div>`).join("");
+}
+function renderShop(){
+ const box=document.getElementById("shopItems");if(!box)return;
+ box.innerHTML=Object.entries(SHOP_ITEMS).map(([key,it])=>`<button class="shop-item" data-shop="${key}"><span class="shop-icon">${it.icon}</span><span><strong>${it.name}</strong><small>${it.desc}</small></span><b>${it.cost} 🪙</b></button>`).join("");
+ box.querySelectorAll("[data-shop]").forEach(b=>b.onclick=()=>({hint:useHint,change:changeQuestion,life:extraLife}[b.dataset.shop])());
+ updateCoinUI();
+}
+
 function startGame(mode,isAdmin=false){
   cancelTimer();
   const profile=gradeProfiles[player.grade]||gradeProfiles.g5;
   const ri=difficultyLevel();
   const phaseIndex=Math.max(0,profile.modes.findIndex(m=>m[0]===mode));
   const phaseBonus=20+phaseIndex*5;
-  game={mode,grade:player.grade,question:0,totalQuestions:profile.questions,answer:0,lives:profile.lives,score:0,correct:0,wrong:0,combo:0,bestCombo:0,locked:false,timeLimit:profile.time,deadline:0,animationFrame:null,phaseIndex,phaseBonus,adminMode:!!isAdmin,wrongStreak:0};
-  showScreen("gameScreen");updateGameHeader();nextQuestion();
+  game={mode,grade:player.grade,question:0,totalQuestions:profile.questions,answer:0,lives:profile.lives,score:0,correct:0,wrong:0,combo:0,bestCombo:0,locked:false,timeLimit:profile.time,deadline:0,animationFrame:null,phaseIndex,phaseBonus,adminMode:!!isAdmin,wrongStreak:0,hintUsed:false,changeUsed:false,lifeUsed:false,penaltyCount:0,timeoutCount:0,guessCount:0};
+  showScreen("gameScreen");renderShop();updateGameHeader();nextQuestion();
 }
 function nextQuestion(){
   cancelTimer();
   if(game.question>=game.totalQuestions){finishGame("complete");return;}
   if(game.lives<=0){finishGame("lives");return;}
-  game.question++;game.locked=false;
+  if(!replaceCurrent) game.question++;game.locked=false;
   const q=generateQuestion(game.mode,game.grade);game.answer=q.answer;
   document.getElementById("questionNumber").textContent=game.question;
   document.querySelector(".question-counter span").textContent=" / "+game.totalQuestions;
@@ -677,18 +772,18 @@ function generateGrade12Question(mode,grade){
   }
   if(mode==="compare"){
     const max=g2?999:99, a=random(g2?100:15,max), b=random(g2?100:15,max);
-    return {text:`Qual símbolo completa? <br><b>${a} &nbsp; ? &nbsp; ${b}</b>`,answer:a>b?">":a<b?"<":"=",type:"COMPARAÇÃO",options:[">","<","=","≠"]};
+    return {text:`Qual símbolo completa? <br>${a} &nbsp; ? &nbsp; ${b}`,answer:a>b?">":a<b?"<":"=",type:"COMPARAÇÃO",options:[">","<","=","≠"]};
   }
   if(mode==="missingNumber"){
     const step=random(g2?3:2,g2?12:6), start=random(g2?10:5,g2?80:35), pos=random(1,3);
     const nums=[start,start+step,start+step*2,start+step*3,start+step*4], ans=nums[pos]; nums[pos]="?";
-    return {text:`Descubra a regra e complete:<br><b>${nums.join(" • ")}</b>`,answer:ans,type:"NÚMERO MISTERIOSO",options:challengeOptions(ans,Math.max(0,ans-step*2),ans+step*2)};
+    return {text:`Descubra a regra e complete:<br>${nums.join(" • ")}`,answer:ans,type:"NÚMERO MISTERIOSO",options:challengeOptions(ans,Math.max(0,ans-step*2),ans+step*2)};
   }
   if(mode==="sequence"){
     const steps=g2?[2,3,4,5,10]:[2,3,5], step=steps[random(0,steps.length-1)];
     const start=random(g2?5:3,g2?50:25), nums=[start,start+step,start+step*2,start+step*3,start+step*4,start+step*5];
     const pos=random(2,4),ans=nums[pos]; nums[pos]="?";
-    return {text:`Qual é a regra?<br><b>${nums.join(" • ")}</b>`,answer:ans,type:"SEQUÊNCIA",options:challengeOptions(ans,Math.max(0,ans-step*2),ans+step*2)};
+    return {text:`Qual é a regra?<br>${nums.join(" • ")}`,answer:ans,type:"SEQUÊNCIA",options:challengeOptions(ans,Math.max(0,ans-step*2),ans+step*2)};
   }
   if(mode==="wordProblem"){
     const a=random(g2?20:8,g2?70:35), b=random(g2?8:4,g2?30:15), type=random(0,2);
@@ -727,8 +822,8 @@ function generateQuestion(mode,grade){
     const ops={
       pre1:["count","compare","sequence","shapes","beforeAfter","missing","moreLess","patterns","additionVisual"],pre2:["count","addition","subtraction","sequence","compare","beforeAfter","missing","shapes","additionVisual"],
       g1:["addition","subtraction","sequence","compare"],g2:["addition","subtraction","multiplication","division"],
-      g3:["addition","subtraction","multiplication","division"],g4:["addition","subtraction","multiplication","fraction"],
-      g5:["addition","subtraction","multiplication","division","fraction","decimal","percent"]
+      g3:["addition","subtraction","multiplication","division"],g4:["addition","subtraction","multiplication","division","fraction","decimal"],
+      g5:["addition","subtraction","multiplication","division","fraction","decimal","percent","percent"]
     };
     const list=ops[grade]||ops.g5;op=list[r(0,list.length-1)];
   }
@@ -768,7 +863,12 @@ function generateQuestion(mode,grade){
   }else if(op==="division"){
     const divisor=r(2,Math.min(18,(grade==="g2"?5:12)+ri*2)),quotient=r(2,Math.min(30,(grade==="g2"?10:20)+ri*3));a=divisor*quotient;answer=quotient;text=`${a} ÷ ${divisor} = ?`;type="DIVISÃO";options=makeNear(answer,1,10);
   }else if(op==="fraction"){
-    const den=r(2,Math.min(12,8+ri)),num=r(1,den-1);answer=num;text=`Quanto é ${num}/${den} de ${den}?`;type="FRAÇÃO";options=makeNear(answer,1,den+2);
+    const fractions=[[1,2,4],[1,2,6],[1,2,8],[1,2,10],[1,2,12],[1,3,6],[1,3,9],[1,4,8],[1,4,12],[1,4,16],[1,5,10],[1,5,20],[2,5,10],[2,5,20],[3,4,8],[3,4,12],[3,4,20],[2,3,12],[2,3,18],[4,5,10],[4,5,20]];
+    const f=fractions[r(0,fractions.length-1)],num=f[0],den=f[1],total=f[2];
+    answer=(total*num)/den;
+    text=`Quanto é ${num}/${den} de ${total}?`;
+    type="FRAÇÃO";
+    options=makeNear(answer,1,Math.max(4,answer+3));
   }else if(op==="decimal"){
     const x=r(10,90+ri*10)/10,y=r(10,90+ri*10)/10;answer=Number((x+y).toFixed(1));text=`${x.toFixed(1)} + ${y.toFixed(1)} = ?`;type="DECIMAIS";options=makeNear(answer,.1,1);
   }else if(op==="percent"){
@@ -815,7 +915,7 @@ if(game.animationFrame!==null){cancelAnimationFrame(game.animationFrame);game.an
 
 function timeExpired(){
 if(game.locked)return;
-game.locked=true;game.wrong++;game.combo=0;
+game.locked=true;game.wrong++;game.timeoutCount=(game.timeoutCount||0)+1;game.combo=0;
 document.getElementById("feedback").textContent="Tempo esgotado. O desafio terminou.";
 document.getElementById("feedback").style.color="#ff5b68";
 document.querySelectorAll(".answer-button").forEach(b=>{if(Number(b.textContent)===game.answer)b.classList.add("correct");});
@@ -834,11 +934,10 @@ function answerQuestion(button,value){
    document.getElementById("feedback").style.color="#20a875";
    document.getElementById("questionText").classList.add("pop");
  }else{
-   button.classList.add("wrong");game.wrong++;game.lives--;game.combo=0;game.wrongStreak=(game.wrongStreak||0)+1;
-   const penalty=(game.wrongStreak>=3)?7:((game.wrongStreak>=2)?4:0);
-   if(penalty && !game.adminMode){
-     game.score=Math.max(0,game.score-5);
-     document.getElementById("feedback").textContent=`Resposta errada. Penalidade: -5 pontos e ${penalty}s de espera. Evite chutar!`;
+   button.classList.add("wrong");game.wrong++;game.guessCount=(game.guessCount||0)+1;game.lives--;game.combo=0;game.wrongStreak=(game.wrongStreak||0)+1;game.penaltyCount=(game.penaltyCount||0)+1;
+   const penalty=game.wrongStreak>=2?7:4;
+   if(!game.adminMode){
+     document.getElementById("feedback").textContent=`Resposta errada: 0 pontos nesta questão. Aguarde ${penalty}s antes de continuar. Evite chutar!`;
    }else{
      document.getElementById("feedback").textContent=`Resposta correta: ${game.answer}`;
    }
@@ -846,7 +945,7 @@ function answerQuestion(button,value){
    document.querySelectorAll(".answer-button").forEach(b=>{if(Number(b.textContent)===game.answer)b.classList.add("correct");});
  }
  updateGameHeader();
- const wait=(!game.adminMode && game.wrongStreak>=3)?7000:((!game.adminMode && game.wrongStreak>=2)?4000:850);
+ const wait=(!game.adminMode && game.wrongStreak>=2)?7000:((!game.adminMode && game.wrongStreak>=1)?4000:850);
  setTimeout(()=>{if(game.lives<=0)finishGame("lives");else nextQuestion();},wait);
 }
 
@@ -858,12 +957,22 @@ document.getElementById("combo").textContent="x"+game.combo;
 
 async function finishGame(reason){
 cancelTimer();
-game.score+=game.phaseBonus||0;
+if(game.wrong===0) game.score+=game.phaseBonus||0;
+const missionCoins=(!game.adminMode && reason==="complete")?10:0;
 if(!game.adminMode){
- player.points+=game.score;player.xp=player.points;player.record=Math.max(player.record,game.score);player.correctTotal=(player.correctTotal||0)+game.correct;player.missionsCompleted=(player.missionsCompleted||0)+1;player.completedMissions=Array.from(new Set([...(player.completedMissions||[]),game.mode]));player.bestCombo=Math.max(player.bestCombo||0,game.bestCombo);const missionTotal=game.correct+game.wrong;const acc=missionTotal?Math.round(game.correct/missionTotal*100):0;player.bestAccuracy=Math.max(player.bestAccuracy||0,acc);syncLocalRank();savePlayer();await sendScoreOnline();
+ player.coins=(player.coins||0)+missionCoins;
+ player.totalQuestions=(player.totalQuestions||0)+game.correct+game.wrong;
+ player.totalCorrect=(player.totalCorrect||0)+game.correct;
+ player.totalWrong=(player.totalWrong||0)+game.wrong;
+ player.totalTimeouts=(player.totalTimeouts||0)+(game.timeoutCount||0);
+ player.totalChutes=(player.totalChutes||0)+(game.guessCount||0);
+ player.totalPenalties=(player.totalPenalties||0)+(game.penaltyCount||0);
+ player.maxWrongStreak=Math.max(player.maxWrongStreak||0,game.wrongStreak||0);
+ player.points+=game.score;player.xp=player.points;player.record=Math.max(player.record,game.score);player.correctTotal=(player.correctTotal||0)+game.correct;player.missionsCompleted=(player.missionsCompleted||0)+(reason==="complete"?1:0);player.completedMissions=Array.from(new Set([...(player.completedMissions||[]),game.mode]));player.bestCombo=Math.max(player.bestCombo||0,game.bestCombo);const missionTotal=game.correct+game.wrong;const acc=missionTotal?Math.round(game.correct/missionTotal*100):0;player.bestAccuracy=Math.max(player.bestAccuracy||0,acc);syncLocalRank();savePlayer();await sendScoreOnline();
 }
 document.getElementById("resultCharacter").innerHTML=createCharacterSVG(player.character);
 document.getElementById("finalPoints").textContent=game.score;
+ document.getElementById("finalCoins").textContent=game.adminMode?"—":"+"+missionCoins+" 🪙";
 document.getElementById("correctCount").textContent=game.correct;
 document.getElementById("wrongCount").textContent=game.wrong;
 const total=game.correct+game.wrong;

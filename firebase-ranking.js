@@ -77,24 +77,56 @@ async function saveScore(data){
  await db.runTransaction(async tx=>{
   const snap=await tx.get(ref);
   const old=snap.exists?snap.data():{};
+  const inc=data.analytics||{}, mode=inc.mode||'geral';
+  const oldMode=(old.modeStats||{})[mode]||{};
+  const modeStats={...(old.modeStats||{})};
+  modeStats[mode]={
+   attempts:(Number(oldMode.attempts)||0)+(Number(inc.attempts)||0),
+   correct:(Number(oldMode.correct)||0)+(Number(inc.correct)||0),
+   wrong:(Number(oldMode.wrong)||0)+(Number(inc.wrong)||0),
+   timeouts:(Number(oldMode.timeouts)||0)+(Number(inc.timeouts)||0),
+   chutes:(Number(oldMode.chutes)||0)+(Number(inc.chutes)||0),
+   penalties:(Number(oldMode.penalties)||0)+(Number(inc.penalties)||0)
+  };
   const points=(Number(old.points)||0)+Math.max(0,Math.floor(Number(data.score)||0));
   const r=getRankInfo(points);
   const level=Math.max(Number(old.level)||1,Math.floor(points/100)+1,Number(data.level)||1);
+  const coins=Math.max(0,Number(data.coins ?? old.coins ?? 0));
   saved={
    name:name(data.name),points,level,rank:r.name,rankIndex:r.index,rankIcon:r.icon,
-   character:character(data.character),grade:g,authUid:user.uid,
+   character:character(data.character),grade:g,authUid:user.uid,coins,
+   missionsCompleted:(Number(old.missionsCompleted)||0)+(Number(inc.missionCompleted)||0),
+   totalQuestions:(Number(old.totalQuestions)||0)+(Number(inc.attempts)||0),
+   totalCorrect:(Number(old.totalCorrect)||0)+(Number(inc.correct)||0),
+   totalWrong:(Number(old.totalWrong)||0)+(Number(inc.wrong)||0),
+   totalTimeouts:(Number(old.totalTimeouts)||0)+(Number(inc.timeouts)||0),
+   totalChutes:(Number(old.totalChutes)||0)+(Number(inc.chutes)||0),
+   totalPenalties:(Number(old.totalPenalties)||0)+(Number(inc.penalties)||0),
+   maxWrongStreak:Math.max(Number(old.maxWrongStreak)||0,Number(inc.maxWrongStreak)||0),
+   modeStats,
+   recentAttempts:[...(old.recentAttempts||[]),...(inc.recentAttempts||[])].slice(-30),
    updatedAt:firebase.firestore.FieldValue.serverTimestamp()
   };
   tx.set(ref,saved,{merge:true});
  });
  return saved;
 }
-
 async function loadScore(g){
  await init({requireAuth:true});
  const ref=db.collection('mathQuestRanking').doc(grade(g)).collection('players').doc(auth.currentUser.uid);
  const snap=await ref.get();
  return snap.exists?{id:snap.id,...snap.data()}:null;
+}
+
+
+async function getAllPlayers(){
+ await init({requireAuth:true});
+ const all=[];
+ for(const g of ['pre1','pre2','g1','g2','g3','g4','g5']){
+  const snap=await db.collection('mathQuestRanking').doc(g).collection('players').limit(500).get();
+  snap.forEach(d=>all.push({id:d.id,...d.data(),grade:g}));
+ }
+ return all;
 }
 
 function watchRanking(g,onData,onError){
@@ -108,5 +140,5 @@ function watchRanking(g,onData,onError){
  }).catch(e=>onError&&onError(e));
 }
 
-window.FirebaseRanking={isConfigured,init,ensureAuth,saveScore,loadScore,watchRanking,getRankInfo,explainError:errorText,RANKS};
+window.FirebaseRanking={isConfigured,init,ensureAuth,saveScore,loadScore,getAllPlayers,watchRanking,getRankInfo,explainError:errorText,RANKS};
 })();

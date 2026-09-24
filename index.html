@@ -119,11 +119,12 @@
 
 <section id="adminScreen" class="screen admin-screen">
 <div class="admin-page">
-<header class="admin-header"><div><span>ÁREA RESTRITA</span><h1>Painel do Administrador</h1><p>Veja todas as turmas, todas as fases e entre em qualquer jogo para testar.</p></div><div class="admin-header-actions"><button id="adminGamesButton" class="admin-games-button">🎮 Jogos</button><button id="adminBackButton" class="secondary-button">← Voltar</button></div></header>
+<header class="admin-header"><div><span>ÁREA RESTRITA</span><h1>Painel do Administrador</h1><p>Veja todas as turmas, todas as fases e entre em qualquer jogo para testar.</p></div><div class="admin-header-actions"><button id="adminAnalyticsButton" class="admin-analysis-button">📊 Analisar turmas</button><button id="adminGamesButton" class="admin-games-button">🎮 Jogos</button><button id="adminBackButton" class="secondary-button">← Voltar</button></div></header>
 <div class="admin-info"><div>🎮 <strong>Modo de teste</strong><span>Jogar aqui não altera o ranking dos alunos.</span></div><div>⏱️ <strong>Tempos</strong><span>Pré I/II 60s • 1º/2º 120s • 3º 60s • 4º 40s • 5º 30s</span></div><div>🚫 <strong>Anti-chute</strong><span>Erros consecutivos geram espera e perda de pontos.</span></div></div>
 <div id="adminGradeGrid" class="admin-grade-grid"></div>
 </div></section>
 
+<section id="adminAnalyticsScreen" class="screen admin-analytics-screen"><div class="admin-page"><header class="admin-header"><div><span>ÁREA RESTRITA • GESTÃO</span><h1>Análise das turmas</h1><p>Desempenho, dificuldades, erros/chutes, penalidades e ranking — somente para o administrador.</p></div><button id="adminAnalyticsBackButton" class="secondary-button">← Voltar</button></header><div id="adminAnalyticsBody"></div></div></section>
 <section id="adminGamesScreen" class="screen admin-games-screen">
 <div class="admin-page">
 <header class="admin-header">
@@ -153,27 +154,14 @@
     <div class="xp-card">
       <div class="xp-info"><strong>Progresso</strong><span id="xpText">0 / 100 XP</span></div>
       <div class="xp-track"><div id="xpBar" class="xp-bar"></div></div>
-    </div>
-
-    <div class="rank-card" id="rankCard">
-      <div class="rank-main"><div class="rank-icon" id="rankIcon">🥉</div><div><span>RANK ATUAL</span><h2 id="rankName">Bronze</h2><small id="rankNext">Faltam 500 pontos para Prata</small></div></div>
-      <div class="rank-progress"><div class="rank-progress-head"><b>Progresso do rank</b><strong id="rankProgressText">0%</strong></div><div class="rank-track"><div id="rankBar"></div></div></div>
-    </div>
-
-    <div class="dashboard-toolbar"><div><h2 class="section-heading">Mapa de fases</h2><p class="section-subtitle">Complete as fases em ordem e desbloqueie novos desafios.</p></div><div class="daily-badge">🎯 Missão do dia</div></div>
+    </div><div class="dashboard-toolbar"><div><h2 class="section-heading">Mapa de fases</h2><p class="section-subtitle">Complete as fases em ordem e desbloqueie novos desafios.</p></div><div class="daily-badge">🎯 Missão do dia</div></div>
     <div id="missionGrid" class="mission-grid"></div>
 
     <h2 class="section-heading">Conquistas</h2>
     <div id="achievementGrid" class="achievement-grid"></div>
-
-    <div class="ranking-card">
-      <div class="ranking-header"><div><span>COMPETIÇÃO</span><h2>Ranking da turma</h2><small id="rankingStatus" class="ranking-status">Conectando ao ranking...</small></div><div class="trophy">★</div></div>
-      <div class="ranking-head"><span>#</span><span>Jogador</span><span>Pontos</span><span>Nível</span></div>
-      <div id="ranking" class="ranking-body"></div>
-    </div>
+    <div class="student-shop-panel"><div class="student-shop-head"><div><span>MOEDINHAS</span><h2>Loja de ajudas</h2><p>Complete missões para ganhar moedas e use-as quando precisar.</p></div><strong>🪙 <b id="coinBalance">0</b></strong></div><div id="shopDashboardItems" class="shop-dashboard-items"></div></div>
   </div>
 </section>
-
 <section id="gameScreen" class="screen game-screen">
   <div class="game-container">
     <header class="game-header">
@@ -198,7 +186,9 @@
     <div class="game-footer">
       <div><span>Pontos</span><strong id="roundPoints">0</strong></div>
       <div><span>Combo</span><strong id="combo" class="combo-value">x0</strong></div>
+      <div><span>Moedas</span><strong>🪙 <b id="gameCoins">0</b></strong></div>
     </div>
+    <div class="game-shop"><div class="game-shop-title"><strong>Loja rápida</strong><span>Use suas moedas</span></div><div id="shopItems" class="shop-items"></div></div>
   </div>
 </section>
 
@@ -208,7 +198,7 @@
     <div class="result-label">DESAFIO ENCERRADO</div>
     <h1 id="resultTitle">Muito bem!</h1>
     <p id="resultMessage">Você terminou a missão.</p>
-    <div class="final-points"><span>Pontuação</span><strong id="finalPoints">0</strong></div>
+    <div class="final-points"><span>Pontuação</span><strong id="finalPoints">0</strong></div><div class="final-coins">🪙 <strong id="finalCoins">+0 🪙</strong> moedas da missão</div>
     <div class="result-stats">
       <div><strong id="correctCount">0</strong><span>Acertos</span></div>
       <div><strong id="wrongCount">0</strong><span>Erros</span></div>
