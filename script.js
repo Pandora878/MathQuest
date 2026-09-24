@@ -561,35 +561,133 @@ async function openAdminAnalytics(){
 }
 function renderAdminAnalytics(players){
  const names={pre1:"Pré I",pre2:"Pré II",g1:"1º ano",g2:"2º ano",g3:"3º ano",g4:"4º ano",g5:"5º ano"};
+ const order=["pre1","pre2","g1","g2","g3","g4","g5"];
+
  const totalQ=players.reduce((s,p)=>s+(Number(p.totalQuestions)||0),0);
  const totalC=players.reduce((s,p)=>s+(Number(p.totalCorrect)||0),0);
  const totalCh=players.reduce((s,p)=>s+(Number(p.totalChutes)||0),0);
  const totalPen=players.reduce((s,p)=>s+(Number(p.totalPenalties)||0),0);
  const avg=totalQ?Math.round(totalC/totalQ*100):0;
- const sorted=[...players].sort((a,b)=>(Number(b.points)||0)-(Number(a.points)||0));
- const chuters=[...players].sort((a,b)=>(Number(b.totalChutes)||0)-(Number(a.totalChutes)||0)).slice(0,8);
- const dif={};
- players.forEach(p=>Object.entries(p.modeStats||{}).forEach(([m,s])=>{
-  if(!dif[m])dif[m]={attempts:0,correct:0,chutes:0,penalties:0};
-  dif[m].attempts+=Number(s.attempts)||0;dif[m].correct+=Number(s.correct)||0;
-  dif[m].chutes+=Number(s.chutes)||0;dif[m].penalties+=Number(s.penalties)||0;
- }));
- const hard=Object.entries(dif).map(([mode,s])=>({...s,mode,accuracy:s.attempts?Math.round(s.correct/s.attempts*100):0})).sort((a,b)=>a.accuracy-b.accuracy);
- const box=document.getElementById("adminAnalyticsBody");
- box.innerHTML=`<div class="analytics-summary">
- <div><span>ALUNOS</span><strong>${players.length}</strong></div><div><span>PRECISÃO MÉDIA</span><strong>${avg}%</strong></div>
- <div><span>ERROS / CHUTES</span><strong>${totalCh}</strong></div><div><span>PENALIDADES</span><strong>${totalPen}</strong></div></div>
- <div class="analytics-grid">
- <section class="analytics-card wide"><div class="analytics-title"><span>RANK — ADMIN</span><h2>Desempenho das crianças</h2></div><div class="analytics-table-wrap"><table><thead><tr><th>#</th><th>Aluno</th><th>Turma</th><th>Pontos</th><th>Rank</th><th>Acertos</th><th>Chutes/erros</th><th>Penal.</th></tr></thead><tbody>
- ${sorted.slice(0,50).map((p,i)=>`<tr><td>${i+1}</td><td><strong>${escapeHTML(p.name||"Aluno")}</strong></td><td>${names[p.grade]||p.grade}</td><td>${Number(p.points)||0}</td><td>${p.rank||"—"}</td><td>${Number(p.totalCorrect)||0}</td><td>${Number(p.totalChutes)||0}</td><td>${Number(p.totalPenalties)||0}</td></tr>`).join("")||'<tr><td colspan="8">Ainda não há dados.</td></tr>'}
- </tbody></table></div></section>
- <section class="analytics-card"><div class="analytics-title"><span>ACOMPANHAMENTO</span><h2>Quem mais errou/chutou?</h2></div>
- ${chuters.map((p,i)=>`<div class="student-risk"><b>${i+1}</b><span><strong>${escapeHTML(p.name||"Aluno")}</strong><small>${names[p.grade]||p.grade} • ${Number(p.totalChutes)||0} erros/chutes • ${Number(p.totalPenalties)||0} penalidades</small></span></div>`).join("")||"<p>Sem registros.</p>"}</section>
- <section class="analytics-card wide"><div class="analytics-title"><span>DIFICULDADES</span><h2>Questões em que as turmas mais erram</h2></div>
- ${hard.slice(0,12).map(x=>`<div class="difficulty-row"><div><strong>${escapeHTML(x.mode)}</strong><span>${x.accuracy}% acerto • ${x.attempts} questões • ${x.chutes} erros/chutes • ${x.penalties} penalidades</span></div><div class="difficulty-track"><i style="width:${x.accuracy}%"></i></div></div>`).join("")||"<p>Os dados aparecerão conforme os alunos jogarem.</p>"}</section>
- </div>`;
-}
 
+ const turmaData={};
+ order.forEach(g=>{
+   const turma=players.filter(p=>(p.grade||"")==g);
+   const q=turma.reduce((s,p)=>s+(Number(p.totalQuestions)||0),0);
+   const c=turma.reduce((s,p)=>s+(Number(p.totalCorrect)||0),0);
+   const ch=turma.reduce((s,p)=>s+(Number(p.totalChutes)||0),0);
+   const pen=turma.reduce((s,p)=>s+(Number(p.totalPenalties)||0),0);
+   turmaData[g]={
+     players:turma,
+     accuracy:q?Math.round(c/q*100):0,
+     chutes:ch,
+     penalties:pen
+   };
+ });
+
+ const box=document.getElementById("adminAnalyticsBody");
+ box.innerHTML=`
+ <div class="analytics-summary">
+   <div><span>ALUNOS</span><strong>${players.length}</strong></div>
+   <div><span>PRECISÃO MÉDIA</span><strong>${avg}%</strong></div>
+   <div><span>ERROS / CHUTES</span><strong>${totalCh}</strong></div>
+   <div><span>PENALIDADES</span><strong>${totalPen}</strong></div>
+ </div>
+
+ <div class="turma-filter-bar">
+   <strong>Visualizar turma:</strong>
+   <button class="turma-filter active" data-turma="all">Todas</button>
+   ${order.map(g=>`<button class="turma-filter" data-turma="${g}">${names[g]}</button>`).join("")}
+ </div>
+
+ <div class="turmas-analysis-list">
+ ${order.map(g=>{
+   const d=turmaData[g];
+   const sorted=[...d.players].sort((a,b)=>(Number(b.points)||0)-(Number(a.points)||0));
+   const chuters=[...d.players].sort((a,b)=>(Number(b.totalChutes)||0)-(Number(a.totalChutes)||0)).slice(0,5);
+
+   const dif={};
+   d.players.forEach(p=>Object.entries(p.modeStats||{}).forEach(([m,s])=>{
+     if(!dif[m])dif[m]={attempts:0,correct:0,chutes:0,penalties:0};
+     dif[m].attempts+=Number(s.attempts)||0;
+     dif[m].correct+=Number(s.correct)||0;
+     dif[m].chutes+=Number(s.chutes)||0;
+     dif[m].penalties+=Number(s.penalties)||0;
+   }));
+   const hard=Object.entries(dif)
+     .map(([mode,s])=>({...s,mode,accuracy:s.attempts?Math.round(s.correct/s.attempts*100):0}))
+     .sort((a,b)=>a.accuracy-b.accuracy)
+     .slice(0,5);
+
+   return `
+   <section class="turma-analysis-section" data-turma-section="${g}">
+     <div class="turma-section-header">
+       <div>
+         <span>TURMA</span>
+         <h2>${names[g]}</h2>
+         <p>${d.players.length} aluno(s) registrado(s)</p>
+       </div>
+       <div class="turma-mini-stats">
+         <div><small>Precisão</small><b>${d.accuracy}%</b></div>
+         <div><small>Erros/chutes</small><b>${d.chutes}</b></div>
+         <div><small>Penalidades</small><b>${d.penalties}</b></div>
+       </div>
+     </div>
+
+     <div class="turma-analysis-grid">
+       <div class="analytics-card">
+         <div class="analytics-title"><span>RANK — ${names[g]}</span><h3>Desempenho dos alunos</h3></div>
+         <div class="analytics-table-wrap">
+           <table>
+             <thead><tr><th>#</th><th>Aluno</th><th>Pontos</th><th>Rank</th><th>Acertos</th><th>Erros/chutes</th><th>Penal.</th></tr></thead>
+             <tbody>
+             ${sorted.map((p,i)=>`
+               <tr>
+                 <td>${i+1}</td>
+                 <td><strong>${escapeHTML(p.name||"Aluno")}</strong></td>
+                 <td>${Number(p.points)||0}</td>
+                 <td>${p.rank||"—"}</td>
+                 <td>${Number(p.totalCorrect)||0}</td>
+                 <td>${Number(p.totalChutes)||0}</td>
+                 <td>${Number(p.totalPenalties)||0}</td>
+               </tr>`).join("") || '<tr><td colspan="7">Nenhum aluno registrado nesta turma.</td></tr>'}
+             </tbody>
+           </table>
+         </div>
+       </div>
+
+       <div class="analytics-card">
+         <div class="analytics-title"><span>ACOMPANHAMENTO</span><h3>Quem mais errou/chutou?</h3></div>
+         ${chuters.map((p,i)=>`
+           <div class="student-risk">
+             <b>${i+1}</b>
+             <span><strong>${escapeHTML(p.name||"Aluno")}</strong>
+             <small>${Number(p.totalChutes)||0} erros/chutes • ${Number(p.totalPenalties)||0} penalidades</small></span>
+           </div>`).join("") || "<p>Sem registros de erros nesta turma.</p>"}
+       </div>
+
+       <div class="analytics-card">
+         <div class="analytics-title"><span>DIFICULDADES</span><h3>Onde a turma mais erra</h3></div>
+         ${hard.map(x=>`
+           <div class="difficulty-row">
+             <div><strong>${escapeHTML(x.mode)}</strong><span>${x.accuracy}% • ${x.attempts} questões</span></div>
+             <div class="difficulty-track"><i style="width:${x.accuracy}%"></i></div>
+           </div>`).join("") || "<p>Os dados aparecerão conforme a turma jogar.</p>"}
+       </div>
+     </div>
+   </section>`;
+ }).join("")}
+ </div>`;
+
+ const filters=[...box.querySelectorAll(".turma-filter")];
+ const sections=[...box.querySelectorAll("[data-turma-section]")];
+
+ function filterTurma(turma){
+   filters.forEach(b=>b.classList.toggle("active",b.dataset.turma===turma));
+   sections.forEach(s=>s.style.display=(turma==="all"||s.dataset.turmaSection===turma)?"block":"none");
+ }
+ filters.forEach(b=>b.onclick=()=>filterTurma(b.dataset.turma));
+ filterTurma("all");
+}
 function openAdminGames(){
   adminMode=true;
   renderAdminGames();
