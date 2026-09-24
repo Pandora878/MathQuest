@@ -122,6 +122,34 @@ service cloud.firestore {
     // regra específica acima fica bloqueada.
     match /{document=**} {
       allow read, write: if false;
+
+
+}
+    // CONTAS DO MATH QUEST
+    // O ID do documento é o nome normalizado da conta.
+    // Isso permite recuperar a mesma conta em outro dispositivo
+    // digitando o mesmo nome.
+    match /mathQuestAccounts/{username} {
+      allow read, create, update: if signedIn();
+      allow delete: if false;
+    }
+
+    // RANKING / DADOS DE DESEMPENHO
+    // A interface do aluno não consulta esta coleção.
+    // O painel administrativo continua usando estes dados.
+    match /mathQuestRanking/{grade}/players/{playerId} {
+      allow read: if signedIn();
+
+      allow create, update: if signedIn();
+
+      allow delete: if false;
+    }
+
+    // Bloqueia qualquer outra coleção.
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }
+
+    
